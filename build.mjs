@@ -507,7 +507,7 @@ pages['privacy.html'] = {
 pages['404.html'] = {
   title: '找不到頁面', desc: '找不到這個頁面。', base: SITE.basePath, noindex: true,
   body: `
-<section class="ph" style="min-height:52vh"><div class="wrap"><p class="eyebrow num">404</p><h1>這個頁面不在這裡。</h1><p class="lead">網址可能已經變更，或頁面已移除。可以回首頁，或直接查停車據點。</p><div class="ctas" style="justify-content:flex-start"><a class="btn primary" href="index.html">回首頁</a><a class="btn ghost" href="parking.html">查停車據點</a></div></div></section>`
+<section class="ph" style="min-height:52vh"><div class="wrap"><p class="eyebrow num">404</p><h1>這個頁面不在這裡。</h1><p class="lead">網址可能已經變更，或頁面已移除。可以回首頁，或直接查停車據點。</p><div class="ctas" style="justify-content:flex-start"><a class="btn primary" href="index.html">回首頁</a><a class="btn ghost" href="parking.html">查停車據點</a></div><div class="e404"><img src="assets/img/img-404.jpg" alt=""></div></div></section>`
 };
 
 // build

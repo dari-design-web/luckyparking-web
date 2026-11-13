@@ -283,7 +283,8 @@ footer{background:var(--surface);padding-block:56px 32px;font-size:14px;color:va
 .vtoggle[aria-pressed="true"] span::after{content:"▶";font-size:13px}
 .stripband{padding-bottom:8px}
 @media (max-width:640px){.vhero{min-height:80vh}.vhero::after{background:linear-gradient(0deg,rgba(8,20,40,.88) 0%,rgba(8,20,40,.55) 55%,rgba(8,20,40,.15) 100%)}.vtext{padding-block:120px 64px}}
-@media (prefers-reduced-motion:reduce){.vmedia video{display:none}.vmedia{background:url(../img/hero.jpg) center/cover}}
+@media (prefers-reduced-motion:reduce){.vmedia video{display:none}.vmedia{background:url(../img/hero-poster.jpg) center/cover}}
+@media (prefers-reduced-motion:reduce) and (max-width:640px){.vmedia{background-position:74% center}}
 .tile .tag,.vimg .tag{position:absolute;top:14px;left:14px;z-index:1;font-size:12px;background:rgba(0,0,0,.45);color:#fff;border-radius:999px;padding:2px 10px}
 .pillar.brand img{opacity:.28}
 .report .rbtns{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
@@ -474,7 +475,7 @@ body.menu-open .nav{-webkit-backdrop-filter:none;backdrop-filter:none;background
 .ph.has-img .bgtoggle{position:absolute;right:20px;bottom:20px;color:#fff}
 .awardband .bgtoggle{position:absolute;right:20px;bottom:20px}
 @media (max-width:700px){
-  .ph.has-vid .bgv,.bgtoggle{display:none}
+  .ph.has-vid .bgv,.ph .bgtoggle,.awardband .bgtoggle{display:none}
   .ph.has-img.short .phimg img{aspect-ratio:auto;height:190px;max-height:none;object-fit:cover}
   .awardband .abv{display:none}
   .awardband .abg{background:url(../img/bg-awards.jpg) 70% center/cover}
@@ -524,3 +525,5 @@ body.menu-open .nav{-webkit-backdrop-filter:none;backdrop-filter:none;background
 .svc article.imgcard > :last-child{padding-bottom:24px}
 .nlist .nimg-ph{display:block;width:150px}
 @media (max-width:640px){.nlist article.compact{grid-template-columns:1fr}.nlist article.compact .nimg-ph{display:none}}
+.sunband .bgtoggle{position:absolute;right:20px;bottom:20px;z-index:3}
+.e404 img{width:min(560px,100%);border-radius:var(--r-lg);margin-top:28px;display:block}

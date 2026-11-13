@@ -22,7 +22,9 @@
   function norm(t){ t=String(t||''); try{ t=t.normalize('NFKC'); }catch(e){} return t.replace(/台/g,'臺').replace(/\s+/g,'').toLowerCase(); }
   function esc(s){return String(s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
   function card(s){
-    var img=s.img?'<div class="im"><img src="assets/img/sites/'+s.img+'.jpg" alt="'+esc(s.name)+'" loading="lazy">'+(s.imgNote?'<span class="tag">'+esc(s.imgNote)+'</span>':'')+'</div>':'<div class="im ph-img">照片準備中</div>';
+    var TYPE={'地下':'underground','立體':'multistorey','平面':'surface'};
+    var img=s.img?'<div class="im"><img src="assets/img/sites/'+s.img+'.jpg" alt="'+esc(s.name)+'" loading="lazy">'+(s.imgNote?'<span class="tag">'+esc(s.imgNote)+'</span>':'')+'</div>'
+      :(TYPE[s.type]?'<div class="im"><img src="assets/img/sites/type-'+TYPE[s.type]+'.jpg" alt="" loading="lazy"><span class="tag">示意圖</span></div>':'<div class="im ph-img">照片準備中</div>');
     var credit=s.imgCredit?'<a class="credit" href="'+esc(s.imgCredit.url)+'" target="_blank" rel="noopener">'+esc(s.imgCredit.label)+'</a>':'';
     var status=s.status==='營運中'?'<span class="chip g">營運中</span>':(s.status?'<span class="chip o">'+esc(s.status)+'</span>':'');
     return '<article class="site">'+img+'<div class="bd"><h3>'+esc(s.name)+'</h3><div class="meta"><span class="chip">'+esc(s.city)+(s.district?' '+esc(s.district):'')+'</span><span class="chip b">'+esc(s.type)+'</span>'+status+'</div><span class="muted" style="font-size:13px">'+esc(s.company)+'</span>'+credit+(s.map?'<a class="map" href="'+esc(s.map)+'" target="_blank" rel="noopener" aria-label="在地圖上查看'+esc(s.name)+'">地圖</a>':'')+'</div></article>';
@@ -110,4 +112,11 @@
     if('IntersectionObserver' in window){ new IntersectionObserver(function(es){ es.forEach(function(e){ vis=e.isIntersecting; go(); }); },{threshold:.1}).observe(sec||v); } else { vis=true; go(); }
     if(mqD.addEventListener) mqD.addEventListener('change',go);
   });
+})();
+
+// 叁肆行品牌浮層：Esc 或點外面收合，焦點回到摘要
+(function(){
+  var ds=document.querySelectorAll('details.brands'); if(!ds.length) return;
+  document.addEventListener('keydown',function(e){ if(e.key!=='Escape') return; ds.forEach(function(d){ if(d.open){ d.open=false; var s=d.querySelector('summary'); if(s) s.focus(); } }); });
+  document.addEventListener('click',function(e){ ds.forEach(function(d){ if(d.open && !d.contains(e.target)) d.open=false; }); });
 })();
