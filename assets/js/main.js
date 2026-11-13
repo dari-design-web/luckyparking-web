@@ -1,0 +1,43 @@
+// 選單（手機）
+(function(){
+  var b=document.getElementById('burger'), m=document.getElementById('menu');
+  if(b&&m){b.addEventListener('click',function(){m.classList.toggle('open');b.setAttribute('aria-expanded',m.classList.contains('open'));});}
+})();
+
+// 停車場篩選
+(function(){
+  var data=document.getElementById('parking-data'); if(!data) return;
+  var sites=JSON.parse(data.textContent);
+  var grid=document.getElementById('sites-grid'), cnt=document.getElementById('count');
+  var state={city:'全部',company:'全部'};
+  function esc(s){return String(s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
+  function card(s){
+    var img=s.img?'<div class="im"><img src="assets/img/sites/'+s.img+'.jpg" alt="'+esc(s.name)+'" loading="lazy"></div>':'<div class="im ph-img">照片準備中</div>';
+    var status=s.status==='營運中'?'<span class="chip g">營運中</span>':'<span class="chip o">'+esc(s.status)+'</span>';
+    return '<article class="site">'+img+'<div class="bd"><h3>'+esc(s.name)+'</h3><div class="meta"><span class="chip">'+esc(s.city)+(s.district?' '+esc(s.district):'')+'</span><span class="chip b">'+esc(s.type)+'</span>'+status+'</div><span class="muted" style="font-size:13px">'+esc(s.company)+'</span>'+(s.map?'<a class="map" href="'+esc(s.map)+'" target="_blank" rel="noopener">地圖</a>':'')+'</div></article>';
+  }
+  function render(){
+    var list=sites.filter(function(s){return (state.city==='全部'||s.city===state.city)&&(state.company==='全部'||s.company===state.company);});
+    grid.innerHTML=list.map(card).join('');
+    cnt.textContent='共 '+list.length+' 處';
+    document.querySelectorAll('[data-f]').forEach(function(btn){btn.setAttribute('aria-pressed',state[btn.dataset.f]===btn.dataset.v);});
+  }
+  document.querySelectorAll('[data-f]').forEach(function(btn){btn.addEventListener('click',function(){state[btn.dataset.f]=btn.dataset.v;render();});});
+  render();
+})();
+
+// 合作洽詢：組成電子郵件（不經伺服器）
+(function(){
+  var f=document.getElementById('cform'); if(!f) return;
+  f.addEventListener('submit',function(e){
+    e.preventDefault();
+    var st=document.getElementById('cstatus');
+    if(!f.checkValidity()){st.style.color='#b4501a';st.textContent='請填寫姓名、電子郵件與內容。';return;}
+    var v=function(id){return document.getElementById(id).value.trim();};
+    var subject='【官網洽詢】'+v('c-type')+'｜'+(v('c-org')||v('c-name'));
+    var body='姓名：'+v('c-name')+'\n單位：'+v('c-org')+'\n電話：'+v('c-tel')+'\n電子郵件：'+v('c-mail')+'\n類別：'+v('c-type')+'\n\n'+v('c-msg');
+    var to=f.dataset.to;
+    window.location.href='mailto:'+to+'?subject='+encodeURIComponent(subject)+'&body='+encodeURIComponent(body);
+    st.style.color='';st.textContent='已開啟您的郵件程式，請按「傳送」完成寄出。若沒有開啟，請直接寄信至 '+to+'。';
+  });
+})();

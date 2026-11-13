@@ -1,0 +1,7 @@
+[
+  {"id":"archives","name":"國家檔案館","kind":"商業空間＋停車場","city":"新北市林口區","summary":"國家檔案館館內商業空間與地下停車場的經營。","points":["館內商業空間經營（待確認業態）","地下停車場經營","搭配館方活動導流"],"img":"assets/img/sites/archives.jpg","link":null,"todo":true},
+  {"id":"sansihang","name":"叁肆行｜東三東四旅客服務中心","kind":"商業空間＋停車場","city":"基隆市（基隆港東岸）","summary":"基隆港東岸旅客中心的商業空間品牌「叁肆行」，總面積 3,650 坪，2 樓餐飲區約 1,800 坪可看海景；並經營東三東四停車場。","points":["2024/2/1 好食城開幕","港邊餐飲與候船空間","東三東四停車場"],"img":null,"link":null,"src":"https://www.nownews.com/news/6357573","todo":true},
+  {"id":"tyac","name":"桃園青年體驗學習園區 TYAC","kind":"休閒遊憩","city":"桃園市新屋區","summary":"擁有 53 項高低空設施的戶外體驗基地，適合團體課程與親子挑戰。","points":["53 項高低空設施","團隊體驗課程","親子戶外活動"],"img":null,"link":"https://tyacamps.com.tw","todo":true},
+  {"id":"zhouri","name":"舟日咖啡","kind":"餐飲","city":"待提供","summary":"待 Dari 提供介紹。","points":[],"img":null,"link":null,"todo":true},
+  {"id":"railbike","name":"深澳鐵道自行車","kind":"休閒遊憩","city":"新北市瑞芳區","summary":"沿著深澳海岸舊鐵道騎乘的觀光鐵道自行車。","points":["海岸鐵道風景","線上預約","多語安全說明"],"img":null,"link":"https://www.railbike.com.tw","todo":true}
+]

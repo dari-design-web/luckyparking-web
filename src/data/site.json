@@ -1,0 +1,17 @@
+{
+  "name": "大日開發有限公司",
+  "brand": "DARI GROUP",
+  "parkingBrand": "Lucky Parking",
+  "tagline": "深入在地・便利停車・智慧生活",
+  "founded": "民國 88 年",
+  "capital": "新臺幣 2.2 億元",
+  "address": "臺北市中山區建國北路二段 258 巷 27 號 1 樓",
+  "phone": "(02) 2502-3333",
+  "email": "dari25420001@gmail.com",
+  "facebook": "https://www.facebook.com/luckyparking.tw/",
+  "esgReport": {
+    "title": "2025 永續報告書",
+    "url": "https://drive.google.com/file/d/12kaNEWzyYejc0eAabvLZzf3sXVSC-oY1/view?usp=drive_link",
+    "qr": "assets/img/esg-qr.svg"
+  }
+}
