@@ -22,5 +22,8 @@
   "note": "測試影片：GPT 以六張意象圖製作（18 秒）。正式影片確定後替換 video 路徑；留空則只顯示圖片"
  },
  "employees": "約 200 名",
- "jobsEmail": "dari25420001@gmail.com"
+ "jobsEmail": "dari25420001@gmail.com",
+ "baseUrl": "https://dari-design-web.github.io/luckyparking-web/",
+ "basePath": "/luckyparking-web/",
+ "_note_domain": "買網域後：baseUrl 改成 https://新網域/，basePath 改成 /，並在 docs/ 加 CNAME"
 }

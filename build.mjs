@@ -26,19 +26,26 @@ const NAV = [
 const operating = PARKING.filter(p => p.status === '營運中').length;
 const upcoming = PARKING.length - operating;
 
-function layout({ file, title, desc, body }) {
+function layout({ file, title, desc, body, base, noindex }) {
   const t = title ? `${title}｜大日開發 DARI GROUP` : '大日開發 DARI GROUP｜Lucky Parking 停車場經營';
   const menu = NAV.map(([href, label]) => `<a href="${href}"${href === file ? ' aria-current="page"' : ''}>${label}</a>`).join('');
   return `<!doctype html>
 <html lang="zh-Hant">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+${base ? `<base href="${base}">` : ''}<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>${esc(t)}</title>
 <meta name="description" content="${esc(desc || '大日開發（DARI GROUP）自民國 88 年起經營停車場，並經營商業空間與休閒場域。')}">
 <meta property="og:title" content="${esc(t)}">
 <meta property="og:description" content="${esc(desc || '')}">
 <meta property="og:type" content="website">
+<meta property="og:image" content="${SITE.baseUrl}assets/img/og.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:locale" content="zh_TW">
+<meta name="twitter:card" content="summary_large_image">
+${noindex ? '<meta name="robots" content="noindex">' : `<link rel="canonical" href="${SITE.baseUrl}${file === 'index.html' ? '' : file}">`}
+<meta name="theme-color" content="#2561a9">
 <link rel="icon" href="assets/img/favicon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -451,6 +458,12 @@ pages['contact.html'] = {
 </div></section>`
 };
 
+pages['404.html'] = {
+  title: '找不到頁面', desc: '找不到這個頁面。', base: SITE.basePath, noindex: true,
+  body: `
+<section class="ph" style="min-height:52vh"><div class="wrap"><p class="eyebrow num">404</p><h1>這個頁面不在這裡。</h1><p class="lead">網址可能已經變更，或頁面已移除。可以回首頁，或直接查停車據點。</p><div class="ctas" style="justify-content:flex-start"><a class="btn primary" href="index.html">回首頁</a><a class="btn ghost" href="parking.html">查停車據點</a></div></div></section>`
+};
+
 // build
 fs.rmSync(OUT, { recursive: true, force: true });
 fs.mkdirSync(OUT, { recursive: true });
@@ -459,4 +472,11 @@ for (const [file, p] of Object.entries(pages)) {
   fs.writeFileSync(path.join(OUT, file), layout({ file, ...p }));
 }
 fs.writeFileSync(path.join(OUT, '.nojekyll'), '');
+const today = new Date().toISOString().slice(0, 10);
+fs.writeFileSync(path.join(OUT, 'sitemap.xml'), `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+${Object.keys(pages).filter(f => f !== '404.html').map(f => `  <url><loc>${SITE.baseUrl}${f === 'index.html' ? '' : f}</loc><lastmod>${today}</lastmod></url>`).join('\n')}
+</urlset>
+`);
+fs.writeFileSync(path.join(OUT, 'robots.txt'), `User-agent: *\nAllow: /\nSitemap: ${SITE.baseUrl}sitemap.xml\n`);
 console.log('built', Object.keys(pages).length, 'pages →', OUT);
