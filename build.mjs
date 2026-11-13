@@ -76,7 +76,7 @@ ${body}
       <div><h4>事業</h4><a href="parking.html">停車場經營</a><a href="venues.html">多元化經營</a><a href="services.html">智慧服務</a></div>
       <div><h4>聯絡</h4><a href="contact.html">合作洽詢</a><a href="news.html">最新消息</a><a href="${esc(SITE.facebook)}" target="_blank" rel="noopener">Facebook</a></div>
     </div>
-    <div class="copy"><span>© ${new Date().getFullYear()} 大日開發有限公司 DARI GROUP</span><span>Lucky Parking 為大日開發停車品牌</span></div>
+    <div class="copy"><span>© ${new Date().getFullYear()} 大日開發有限公司 DARI GROUP・<a href="privacy.html">隱私權聲明</a></span><span>Lucky Parking 為大日開發停車品牌</span></div>
   </div>
 </footer>
 <script src="assets/js/main.js" defer></script>
@@ -132,12 +132,6 @@ pages['index.html'] = {
   </div>
   ${SITE.hero.video ? '<button class="vtoggle" type="button" id="vtoggle" aria-label="暫停背景影片" aria-pressed="false"><span aria-hidden="true">❚❚</span></button>' : ''}
 </section>
-<section class="stripband" aria-label="經營場站照片">
-  <div class="strip">
-    ${['ntsec', 'jinhe', 'yonghe', 'taoyuan', 'xiulang', 'tpmc'].map(id => { const p = PARKING.find(x => x.img === id); return `<figure><img src="assets/img/sites/${id}.jpg" alt="${esc(p.name)}" loading="lazy"><figcaption>${esc(p.name.replace(/(地下|立體|平面)?停車場$/, ''))}</figcaption></figure>`; }).join('')}
-  </div>
-</section>
-
 <section class="band alt tight">
   <div class="wrap">
     <div class="stats">
@@ -452,10 +446,33 @@ pages['contact.html'] = {
     </div>
     <label for="c-type">合作類別<select id="c-type" name="type"><option>停車場委外經營</option><option>商業空間與多元化合作</option><option>場站服務意見</option><option>其他</option></select></label>
     <label for="c-msg">內容<textarea id="c-msg" name="msg" rows="5" required></textarea></label>
-    <p class="note">按「寄出」會開啟您的郵件程式並帶入內容，由您確認後寄出；本網站不另外儲存您的資料。</p>
+    <p class="note">按「寄出」會開啟您的郵件程式並帶入內容，由您確認後寄出；本網站不另外儲存您的資料。詳見<a href="privacy.html">隱私權聲明</a>。</p>
     <div style="display:flex;gap:14px;align-items:center;flex-wrap:wrap"><button class="btn primary" type="submit">寄出</button><span class="status" id="cstatus" role="status"></span></div>
   </form>
 </div></section>`
+};
+
+pages['privacy.html'] = {
+  title: '隱私權聲明', desc: '大日開發官方網站隱私權聲明。',
+  body: `
+<section class="ph"><div class="wrap"><p class="eyebrow">隱私權聲明</p><h1>我們怎麼處理<br>您提供的資料</h1><p class="lead">本網站不設會員、不設線上表單資料庫，也不使用廣告追蹤。</p></div></section>
+<section class="band tight" style="padding-top:0"><div class="wrap"><div class="prose">
+  <h2>一、適用範圍</h2>
+  <p>本聲明適用於大日開發有限公司（以下稱本公司）官方網站，以及您透過本網站寄送給本公司的電子郵件。網站中連結的其他網站（例如場域官網、政府網站、Google 雲端硬碟），依各該網站的隱私權政策處理。</p>
+  <h2>二、蒐集的資料與目的</h2>
+  <p>本網站不會自動儲存您輸入的內容。「合作洽詢」表單與「寄送履歷」按鈕，是開啟您自己的郵件程式，由您確認後寄到 ${esc(SITE.email)}。本公司只會收到您寄出的郵件內容，例如姓名、單位、電話、電子郵件、洽詢內容或履歷。</p>
+  <ul><li>合作洽詢：用於回覆與聯繫合作事宜。</li><li>應徵：用於招募評估與面試聯繫。</li></ul>
+  <h2>三、利用期間、地區、對象與方式</h2>
+  <p>資料僅在達成上述目的所需期間內，由本公司相關承辦人員於中華民國境內使用，不提供給第三人，法令另有規定者除外。目的完成後依本公司文件保存規定刪除或銷毀。</p>
+  <h2>四、您的權利</h2>
+  <p>依個人資料保護法第 3 條，您可以請求查詢、閱覽、製給複製本、補充或更正、停止蒐集處理利用，或刪除您的個人資料。請來信 ${esc(SITE.email)}，本公司將於確認身分後處理。</p>
+  <h2>五、Cookie 與外部服務</h2>
+  <p>本網站不使用追蹤型 Cookie。網頁字體由 Google Fonts 提供，影片與圖片由本網站直接提供；連到外部網站時，該網站可能依其政策記錄瀏覽資訊。</p>
+  <h2>六、聲明修訂</h2>
+  <p>本聲明如有修訂，將公告於本頁。最後更新：2026 年 11 月 13 日。</p>
+  <h2>七、聯絡方式</h2>
+  <p>大日開發有限公司｜${esc(SITE.address)}｜<span class="num">${esc(SITE.phone)}</span>｜${esc(SITE.email)}</p>
+</div></div></section>`
 };
 
 pages['404.html'] = {
