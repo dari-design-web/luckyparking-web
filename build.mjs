@@ -250,7 +250,7 @@ pages['about.html'] = {
     <div><b class="num">2017</b><p>金擘獎優等、兩項導航發明專利</p></div>
     <div><b class="num">2018</b><p>金擘獎優等</p></div>
     <div><b class="num">2019</b><p>台灣建築獎首獎（基隆東岸停車商場）</p></div>
-    <div><b class="num">2021</b><p>金擘獎優等</p></div>
+    <div><b class="num">2021</b><p>金擘獎優等（桃園青年體驗學習園區）</p></div>
     <div><b class="num">2024</b><p>叁肆行好食城開幕；依 ISO 14064-1 完成首次溫室氣體盤查</p></div>
     <div><b class="num">2025</b><p>新北市金停獎 3 場特優、12 場優等</p></div>
   </div></div>
