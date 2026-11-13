@@ -58,28 +58,6 @@
   });
 })();
 
-// 首頁背景影片：暫停／播放；系統設定「減少動態」時不自動播放
-(function(){
-  var v=document.getElementById('hero-video'), b=document.getElementById('vtoggle'); if(!v||!b) return;
-  var rm=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  function set(p){ if(p){v.pause();}else{var r=v.play(); if(r&&r.catch) r.catch(function(){});} b.setAttribute('aria-pressed',p); b.setAttribute('aria-label',p?'播放背景影片':'暫停背景影片'); }
-  if(rm) set(true);
-  b.addEventListener('click',function(){ set(!v.paused ? true : false); });
-})();
-
-// 背景影片（太陽早餐等）：暫停鍵、離開畫面時暫停、減少動態時不播
-(function(){
-  var rm=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  document.querySelectorAll('.sunband').forEach(function(sec){
-    var v=sec.querySelector('video.sunbg'), b=sec.querySelector('.bgtoggle'); if(!v) return;
-    var user=false;
-    function set(p){ if(p){v.pause();}else{var r=v.play(); if(r&&r.catch) r.catch(function(){});} if(b){b.setAttribute('aria-pressed',p); b.setAttribute('aria-label',p?'播放背景影片':'暫停背景影片');} }
-    if(rm){ set(true); user=true; }
-    if(b) b.addEventListener('click',function(){ user=!v.paused; set(!v.paused); });
-    if('IntersectionObserver' in window){ new IntersectionObserver(function(es){ es.forEach(function(e){ if(user) return; if(e.isIntersecting){ set(false); } else { v.pause(); } }); },{threshold:.15}).observe(sec); }
-  });
-})();
-
 // 有聲影片彈窗
 (function(){
   var d=document.getElementById('vdialog'); if(!d||!d.showModal) return;
@@ -117,15 +95,17 @@
   document.querySelectorAll('[data-f="city"]').forEach(function(f){ f.addEventListener('click',function(){ cms.forEach(function(x){ x.setAttribute('aria-pressed', x.dataset.city===f.dataset.v?'true':'false'); }); }); });
 })();
 
-// 背景影片（獎項區、頁首）：只在桌機且未設定「減少動態」時載入播放；有暫停鍵；離開畫面暫停
+// 背景影片（首頁主視覺、太陽早餐、獎項區、頁首）
+// 規則：未開「減少動態」才載入播放（開了就只顯示海報、不顯示暫停鍵）；頁首／獎項只在桌機播放；進入畫面才載入；可暫停，手動暫停後保持暫停
 (function(){
   var vids=document.querySelectorAll('video.bgv'); if(!vids.length) return;
   var mqD=window.matchMedia('(min-width: 701px)'), rm=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   vids.forEach(function(v){
-    var sec=v.closest('section'), b=sec&&sec.querySelector('.bgtoggle'), user=false, vis=false;
-    function canPlay(){ return mqD.matches && !rm && !user; }
-    function setBtn(paused){ if(!b) return; b.setAttribute('aria-pressed',paused); b.setAttribute('aria-label',paused?'播放背景影片':'暫停背景影片'); }
-    function go(){ if(canPlay()&&vis){ if(!v.src){ v.src=v.dataset.src; } var r=v.play(); if(r&&r.catch) r.catch(function(){}); setBtn(false); } else { v.pause(); setBtn(true); } }
+    var sec=v.closest('section'), b=sec&&sec.querySelector('.bgtoggle'), user=false, vis=false, mobileOk=v.dataset.mobile==='1';
+    if(rm){ if(b) b.hidden=true; return; }
+    function allowed(){ return mobileOk || mqD.matches; }
+    function setBtn(paused){ if(!b) return; b.hidden=!allowed(); b.setAttribute('aria-pressed',paused); b.setAttribute('aria-label',paused?'播放背景影片':'暫停背景影片'); }
+    function go(){ if(allowed() && vis && !user){ if(!v.getAttribute('src')){ v.src=v.dataset.src; } var r=v.play(); if(r&&r.catch) r.catch(function(){}); setBtn(false); } else { v.pause(); setBtn(true); } }
     if(b) b.addEventListener('click',function(){ user=!user; go(); });
     if('IntersectionObserver' in window){ new IntersectionObserver(function(es){ es.forEach(function(e){ vis=e.isIntersecting; go(); }); },{threshold:.1}).observe(sec||v); } else { vis=true; go(); }
     if(mqD.addEventListener) mqD.addEventListener('change',go);

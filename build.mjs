@@ -107,11 +107,11 @@ const ICON = {
 const SERVICES = [
   ['car', '車牌辨識・免取票', '進出場自動辨識車牌，減少排隊與票卡遺失。'],
   ['pay', '多元支付', '行動支付、電子票證與車牌綁定扣款，依場站提供。'],
-  ['pin', '車位在席與尋車', '即時顯示空位，輸入車牌即可查詢停放區位。'],
+  ['pin', '車位在席與尋車', '設有空位顯示或尋車設備的場站，可依現場指引查詢。'],
   ['eye', '智慧巡檢', '電子化巡場與案件管理，問題即時派工處理。'],
   ['exit', '智慧逃生引導', '緊急時以燈號與標示引導疏散。'],
   ['plug', '電動車充電', '依場站條件設置充電格位與管理。'],
-  ['heart', '友善停車', '無障礙、婦幼與親子停車格及設施。'],
+  ['heart', '友善停車', '無障礙停車位，以及孕婦及育有六歲以下兒童者停車位，依各場公告與現場標示使用。'],
   ['palette', '主題式場域設計', '連鎖不複製：每座停車場依在地特色設計導引與色彩。']
 ];
 const svc = s => `<article><div class="ic"><svg viewBox="0 0 24 24" aria-hidden="true">${ICON[s[0]]}</svg></div><h3>${s[1]}</h3><p>${s[2]}</p></article>`;
@@ -125,7 +125,7 @@ const sortedNews = [...NEWS].sort((a, b) => b.date.localeCompare(a.date));
 const R = SITE.esgReport;
 const reportCard = () => `<div class="report"><img src="${R.qr}" alt="掃描開啟 ${esc(R.title)}" width="150" height="150"><div><b>${esc(R.title)}</b><small>${esc(R.subtitle)}</small><div class="rbtns"><a class="btn primary" href="${esc(R.url)}" target="_blank" rel="noopener">線上閱讀</a><a class="btn ghost" href="${esc(R.download)}">下載 PDF</a></div></div></div>`;
 const sunBand = () => `<section class="sunband" id="sun-breakfast" aria-label="太陽早餐計畫">
-  <video class="sunbg" autoplay muted loop playsinline preload="metadata" poster="assets/img/sun-poster.jpg" aria-hidden="true"><source src="assets/video/sun-bg.mp4" type="video/mp4"></video>
+  <video class="sunbg bgv" data-mobile="1" muted loop playsinline preload="none" poster="assets/img/sun-poster.jpg" data-src="assets/video/sun-bg.mp4" aria-hidden="true"></video>
   <div class="wrap suntext">
     <p class="eyebrow">公益計畫</p>
     <h2>太陽早餐計畫<span class="yr num">2016–2026</span></h2>
@@ -143,14 +143,14 @@ pages['index.html'] = {
   title: '', desc: '大日開發（DARI GROUP）經營公有與民間停車場，並跨足商業空間、休閒遊憩等多元化場域。',
   body: `
 <section class="vhero" aria-label="主視覺">
-  <div class="vmedia">${SITE.hero.video ? `<video id="hero-video" autoplay muted loop playsinline preload="metadata" poster="${SITE.hero.poster}"><source src="${SITE.hero.video}" type="video/mp4"></video>` : `<img src="${SITE.hero.poster}" alt="">`}</div>
+  <div class="vmedia">${SITE.hero.video ? `<video id="hero-video" class="bgv" data-mobile="1" muted loop playsinline preload="none" poster="${SITE.hero.poster}" data-src="${SITE.hero.video}" aria-hidden="true"></video>` : `<img src="${SITE.hero.poster}" alt="">`}</div>
   <div class="wrap vtext">
     <p class="eyebrow">${esc(SITE.tagline)}</p>
     <h1>讓停車與到訪，<br>都更順路。</h1>
     <p class="lead">大日開發經營公有與民間停車場，也經營旅客服務中心、戶外學習園區與觀光遊憩場域。從入口到離場，把導引、繳費與現場協助做好，讓人容易抵達、安心停留。</p>
     <div class="ctas"><a class="btn primary" href="parking.html">查停車據點</a><a class="btn light" href="venues.html">看多元化經營</a></div>
   </div>
-  ${SITE.hero.video ? '<button class="vtoggle" type="button" id="vtoggle" aria-label="暫停背景影片" aria-pressed="false"><span aria-hidden="true">❚❚</span></button>' : ''}
+  ${SITE.hero.video ? '<button class="vtoggle bgtoggle" type="button" id="vtoggle" aria-label="暫停背景影片" aria-pressed="false"><span aria-hidden="true">❚❚</span></button>' : ''}
 </section>
 <section class="band alt tight statband">
   <div class="wrap">
@@ -197,7 +197,7 @@ pages['index.html'] = {
 
 <section class="band">
   <div class="wrap">
-    <div class="head"><div><p class="eyebrow">智慧及貼心服務</p><h2 style="margin-top:8px">科技做得到的，<br>我們先做。</h2></div><a class="link" href="services.html">了解服務</a></div>
+    <div class="head"><div><p class="eyebrow">智慧及貼心服務</p><h2 style="margin-top:8px">從辨識、導引到繳費，<br>讓停車更順暢。</h2></div><a class="link" href="services.html">了解服務</a></div>
     <div class="svc">${SERVICES.slice(0, 4).map(svc).join('')}</div>
   </div>
 </section>
@@ -208,7 +208,7 @@ pages['index.html'] = {
   <div class="wrap awards">
     <div class="atext">
       <p class="eyebrow">榮譽獎項</p>
-      <h2 style="margin-top:8px;font-size:clamp(28px,4vw,44px);line-height:1.18">三座金擘獎優等，<br>15 場金停獎肯定。</h2>
+      <h2 style="margin-top:8px;font-size:clamp(28px,4vw,44px);line-height:1.18">3 座金擘獎優等，<br>15 場金停獎肯定。</h2>
       <ul class="alist" style="margin-top:24px">
         ${AWARDS.filter(a => a.highlight).map(a => `<li><span class="y num">${a.year}</span><div><b>${esc(a.title)}</b><span>${esc(a.detail)}</span></div></li>`).join('')}
       </ul>
@@ -252,16 +252,16 @@ pages['about.html'] = {
 <section class="ph"><div class="wrap"><p class="eyebrow">關於大日</p><h1>深入在地，<br>便利停車，智慧生活。</h1><p class="lead">大日開發成立於${esc(SITE.founded)}，資本額${esc(SITE.capital)}，${esc(SITE.employees)}同仁。以停車場經營為基礎，跨足商業空間、旅遊景點與遊憩產業，目標是「創造一個政府、民眾與企業三贏的未來」。</p></div></section>
 <section class="band tight"><div class="wrap">
   <div class="group">
-    <article><p class="eyebrow">民國 88 年成立</p><h3 style="margin-top:6px">大日開發有限公司</h3><p>集團核心。經營公有與民間停車場；並在國家檔案館經營附屬商業空間與地下停車場，經營東三東四旅客服務中心「叁肆行」、桃園青年體驗學習園區、後湖溪親水園區與舟日咖啡、深澳鐵道自行車等多元化場域。</p></article>
+    <article><p class="eyebrow">民國 88 年成立</p><h3 style="margin-top:6px">大日開發有限公司</h3><p>集團核心。經營公有與民間停車場，也在國家檔案館經營附屬商業空間與地下停車場。多元化經營場域包括東三東四旅客服務中心「叁肆行」、桃園青年體驗學習園區、後湖溪親水園區與舟日咖啡，以及深澳鐵道自行車。</p></article>
     <article><p class="eyebrow">民國 93 年成立</p><h3 style="margin-top:6px">千斗開發有限公司</h3><p>關係企業。承襲大日開發的經營經驗，導入智慧停車管理設備，經營臺北、新北多處公有地下與平面停車場。</p></article>
   </div>
 </div></section>
 <section class="band alt"><div class="wrap">
   <div class="head"><h2>經營理念</h2></div>
   <div class="svc three">
-    <article><p class="eyebrow">深入在地</p><h3 style="margin-top:6px">了解每個社區的需求</h3><p>從周邊生活、通學、商圈出發，規劃停車動線與服務。</p></article>
-    <article><p class="eyebrow">便利停車</p><h3 style="margin-top:6px">從進場到離場一路順暢</h3><p>車牌辨識、多元支付與清楚導引，減少等待。</p></article>
-    <article><p class="eyebrow">智慧生活</p><h3 style="margin-top:6px">用科技讓停車更簡單</h3><p>在席偵測、尋車、電子化巡檢，持續導入新技術。</p></article>
+    <article class="imgcard"><img src="assets/img/about-1.jpg" alt="" loading="lazy"><p class="eyebrow">深入在地</p><h3 style="margin-top:6px">了解每個社區的需求</h3><p>從周邊生活、通學、商圈出發，規劃停車動線與服務。</p></article>
+    <article class="imgcard"><img src="assets/img/about-2.jpg" alt="" loading="lazy"><p class="eyebrow">便利停車</p><h3 style="margin-top:6px">從進場到離場一路順暢</h3><p>車牌辨識、多元支付與清楚導引，減少等待。</p></article>
+    <article class="imgcard"><img src="assets/img/about-3.jpg" alt="" loading="lazy"><p class="eyebrow">智慧生活</p><h3 style="margin-top:6px">用科技讓停車更簡單</h3><p>在席偵測、尋車、電子化巡檢，持續導入新技術。</p></article>
   </div>
 </div></section>
 <section class="band"><div class="wrap">
@@ -315,7 +315,7 @@ pages['venues.html'] = {
       <p class="addr">${esc(v.address || v.city)}</p>
       <p class="muted">${esc(v.summary)}</p>
       ${v.points.length ? `<ul>${v.points.map(p => `<li>${esc(p)}</li>`).join('')}</ul>` : ''}
-      ${v.brands ? `<details class="brands"><summary class="bt">進駐品牌（${v.brands.reduce((a, g) => a + g.items.length, 0)}）</summary>${v.brands.map(g => `<p class="bg">${esc(g.group)}</p><div class="pill-list sm">${g.items.map(b => `<span>${esc(b)}</span>`).join('')}</div>`).join('')}${v.brandsNote ? `<p class="bn">${esc(v.brandsNote)}${v.brandsSrc ? ` <a href="${esc(v.brandsSrc)}" target="_blank" rel="noopener">基隆港好食城店家資訊</a>` : ''}</p>` : ''}</details>` : ''}
+      ${v.brands ? `<details class="brands"><summary class="bt">進駐品牌（${v.brands.reduce((a, g) => a + g.items.length, 0)}）</summary><div class="bpanel">${v.brands.map(g => `<p class="bg">${esc(g.group)}</p><div class="pill-list sm">${g.items.map(b => `<span>${esc(b)}</span>`).join('')}</div>`).join('')}${v.brandsNote ? `<p class="bn">${esc(v.brandsNote)}${v.brandsSrc ? ` <a href="${esc(v.brandsSrc)}" target="_blank" rel="noopener">基隆港好食城店家資訊</a>` : ''}</p>` : ''}</div></details>` : ''}
       <div class="vlinks">${v.link ? `<a class="link" href="${esc(v.link)}" target="_blank" rel="noopener">${esc(v.linkLabel || '前往官網')}</a>` : ''}${v.todo ? '<span class="todo" style="margin-left:0">資料補充中</span>' : ''}</div>
     </div></article>`).join('')}
 </div></div></section>
@@ -336,13 +336,11 @@ pages['services.html'] = {
   ${[
     ['01', '入場辨識', '依場站設備採車牌辨識或其他入場方式。遇辨識異常時，依現場指示聯繫服務人員。', 'svc-01'],
     ['02', '導引與找車', '利用車道標線、樓層與分區標示辨認方向。設有空位顯示或尋車設備的場站，可依介面查詢。', 'svc-02'],
-    ['03', '付款', '依各場公告選用現金、電子支付或其他方式。完成繳費後，請按場站指示於期限內離場。', 'svc-03']
+    ['03', '付款', '依各場公告選用現金、電子支付或其他方式。完成繳費後，請按場站指示於期限內離場。', 'svc-03'],
+    ['04', '離場', '請依出口標示離場。若設備未顯示繳費完成，或出口設備異常，請依現場指示聯繫服務人員。', 'svc-04'],
+    ['05', '現場管理', '透過巡檢、設備維護與事件通報處理異常，並依場站條件提供民眾諮詢與協助。', 'svc-05']
   ].map(([n, t, d, img]) => `<div class="venue"><div class="vimg" style="position:relative"><img src="assets/img/svc/${img}.jpg" alt="" loading="lazy"><span class="tag">服務意象</span></div><div><p class="eyebrow num">STEP ${n}</p><h2>${t}</h2><p class="muted" style="margin-top:12px;font-size:18px">${d}</p></div></div>`).join('')}
-  <div class="coop" style="margin-top:8px">
-    <article><p class="eyebrow num">STEP 04</p><h3>離場</h3><p class="muted" style="margin-top:8px">依出口標示前行。遇付款未更新或出口設備異常，可透過現場求助方式聯繫服務人員。</p></article>
-    <article><p class="eyebrow num">STEP 05</p><h3>現場管理</h3><p class="muted" style="margin-top:8px">透過巡檢、設備維護與事件通報處理異常，並依場站條件提供民眾諮詢與協助。</p></article>
-  </div>
-</div></section>
+</section>
 <section class="band alt"><div class="wrap">
   <div class="head"><div><h2>依場站條件提供的設備與服務</h2><p style="margin-top:8px">各場實際提供項目不同，請以現場與各場公告為準。</p></div><a class="link" href="parking.html">查各場資訊</a></div>
   <ul class="svlist">${SERVICES.map(x => `<li><i><svg viewBox="0 0 24 24" aria-hidden="true">${ICON[x[0]]}</svg></i><div><b>${x[1]}</b><span>${x[2]}</span></div></li>`).join('')}</ul>
@@ -355,7 +353,7 @@ pages['awards.html'] = {
 <section class="ph"><div class="wrap"><p class="eyebrow">榮譽獎項</p><h1>被肯定的經營品質</h1></div></section>
 <section class="band tight"><div class="wrap"><div class="bento">
   <div class="tile c4 tall imgtile" style="background:#fff;padding:0;border:1px solid var(--line)"><img src="assets/img/awards/award-jinbi.jpg" alt="金擘獎優等獎座" style="position:static;width:100%;height:100%;object-fit:contain"></div>
-  <div class="tile c2 tall"><p class="eyebrow">財政部</p><h3 style="margin-top:8px">金擘獎優等 ×3</h3><p class="muted">106、107、110 年度民間經營團隊</p></div>
+  <div class="tile c2 tall"><p class="eyebrow">財政部</p><h3 style="margin-top:8px">3 座金擘獎優等</h3><p class="muted">106、107、110 年度民間經營團隊</p></div>
   <div class="tile c3 imgtile" style="background:#fff;padding:0;min-height:220px;border:1px solid var(--line)"><img src="assets/img/awards/award-jinting.jpg" alt="114 年度新北市金停獎獎狀" style="position:static;width:100%;height:100%;object-fit:contain"></div>
   <div class="tile c3"><p class="eyebrow">新北市政府 114 年度</p><h3 style="margin-top:8px">金停獎 3 場特優、12 場優等</h3><p class="muted">特優：三重光榮國小、中和錦和運動公園、碧潭東岸平面停車場</p></div>
 </div></div></section>
@@ -378,7 +376,7 @@ ${sunBand()}
 <section class="band alt" id="ghg"><div class="wrap">
   <div class="head"><div><p class="eyebrow">E 環境</p><h2 style="margin-top:8px">2024 年溫室氣體盤查</h2></div><p>依 ISO/CNS 14064-1:2018，自願盤查臺北總公司（基準年 2024）。</p></div>
   <div class="ghg">
-    <div class="ghg-total"><b class="num">64.0</b><span>公噸 CO<sub>2</sub>e<br>2024 年總排放量</span></div>
+    <div class="ghg-total" role="group" aria-label="臺北總公司 2024 年總排放量 64.0 公噸二氧化碳當量"><b class="num" aria-hidden="true">64.0</b><span aria-hidden="true">公噸 CO₂e<br>臺北總公司 2024 年總排放量</span></div>
     <div class="ghg-bar" role="img" aria-label="排放占比：直接排放 45.3%、使用產品 20.0%、外購電力 19.7%、運輸 15.0%">
       <span style="flex:45.32;background:var(--blue)"></span><span style="flex:20;background:#6f9bd1"></span><span style="flex:19.68;background:var(--orange)"></span><span style="flex:15.01;background:#f4b088"></span>
     </div>
@@ -418,9 +416,9 @@ ${sunBand()}
 pages['careers.html'] = {
   title: '人才招募', desc: '加入大日開發：停車場營運、場域經營、工程、行銷與資訊等職務。',
   body: `
-<section class="ph"><div class="wrap"><p class="eyebrow">人才招募</p><h1>一起把每一處場域，<br>經營得更好。</h1><p class="lead">大日開發${esc(SITE.employees)}同仁，在總公司與北北桃基的停車場、商業空間與遊憩場域工作。我們需要願意在現場解決問題的人。</p></div></section>
-<section class="band tight"><div class="wrap">
-  <div class="intro-img"><img src="assets/img/img-careers.jpg" alt="" loading="lazy"><p>從停車場的每日巡檢、設備維護，到商業空間與遊憩場域的營運，每個崗位都在讓到訪的人更順利、更安心。</p></div>
+<section class="ph"><div class="wrap"><p class="eyebrow">人才招募</p><h1>一起把每一處場域，<br>經營得更好。</h1><p class="lead">大日開發${esc(SITE.employees)}同仁，在總公司與北北桃基的停車場、商業空間與遊憩場域工作。我們需要願意在現場解決問題的人。</p><nav class="anchors" aria-label="本頁導覽"><a href="#fields">工作領域</a><a href="#apply">應徵方式</a></nav></div></section>
+<section class="band tight" id="fields"><div class="wrap reorder">
+  <div class="intro-img"><img src="assets/img/img-careers.jpg" alt="" loading="lazy"><p>從停車場的每日巡檢、設備維護，到商業空間與遊憩場域的營運，每個職務都在協助民眾順利到訪、安心使用場域。</p></div>
   <div class="head"><h2>工作領域</h2></div>
   <div class="svc three">
     <article><div class="ic"><svg viewBox="0 0 24 24" aria-hidden="true">${ICON.car}</svg></div><h3>停車場營運</h3><p>場站服務、巡場與現場協助，維持停車場每天順暢運作。</p></article>
@@ -431,8 +429,8 @@ pages['careers.html'] = {
     <article><div class="ic"><svg viewBox="0 0 24 24" aria-hidden="true">${ICON.shield}</svg></div><h3>行政與管理</h3><p>財務、人資、法務與商業開發。</p></article>
   </div>
 </div></section>
-<section class="band alt"><div class="wrap">
-  <div class="head"><div><h2>目前職缺</h2><p style="margin-top:8px">職缺資訊整理中，近期公布；歡迎先來信自我推薦。</p></div></div>
+<section class="band alt" id="apply"><div class="wrap">
+  <div class="head"><div><h2>目前職缺</h2><p style="margin-top:8px">職缺資訊整理中。歡迎來信自我推薦。</p></div></div>
   <div class="coop">
     <article><p class="eyebrow">怎麼應徵</p><h3>來信附上履歷</h3><ul><li>信件主旨寫「應徵：職務名稱」</li><li>附上履歷與可聯絡時間</li><li>收到後由人資與您聯繫</li></ul><p style="margin-top:16px"><a class="btn primary" href="mailto:${esc(SITE.jobsEmail)}?subject=${encodeURIComponent('應徵：')}">寄送履歷</a></p></article>
     <article><p class="eyebrow">工作地點</p><h3>總公司與各場站</h3><ul><li>總公司：${esc(SITE.address)}</li><li>停車場：臺北、新北、桃園、基隆</li><li>場域：林口、基隆港、桃園新屋、瑞芳</li></ul></article>
@@ -446,15 +444,15 @@ pages['news.html'] = {
   body: `
 <section class="ph"><div class="wrap"><p class="eyebrow">最新消息</p><h1>公告與動態</h1></div></section>
 <section class="band tight" style="padding-top:8px"><div class="wrap"><div class="nlist">
-  ${sortedNews.map(n => `<article id="n-${n.date}"><time class="num muted">${esc(n.date)}</time><img class="nimg" src="assets/img/news-${NEWS_IMG[n.cat] || 'notice'}.jpg" alt="" loading="lazy"><div><span class="chip ${n.cat === '獲獎' ? 'o' : 'b'}">${esc(n.cat)}</span><h3 style="margin-top:6px">${esc(n.title)}</h3>${n.body ? `<p>${esc(n.body)}</p>` : ''}${n.link ? `<p><a class="link" href="${esc(n.link)}" target="_blank" rel="noopener">${esc(n.linkLabel || '相關連結')}</a></p>` : ''}</div></article>`).join('')}
+  ${sortedNews.map((n, i) => `<article id="n-${n.date}"${i && sortedNews[i - 1].cat === n.cat ? ' class="compact"' : ''}><time class="num muted" datetime="${esc(n.date)}">${esc(n.date)}</time>${i && sortedNews[i - 1].cat === n.cat ? '<span class="nimg-ph" aria-hidden="true"></span>' : `<img class="nimg" src="assets/img/news-${NEWS_IMG[n.cat] || 'notice'}.jpg" alt="" loading="lazy">`}<div><span class="chip ${n.cat === '獲獎' ? 'o' : 'b'}">${esc(n.cat)}</span><h3 style="margin-top:6px">${esc(n.title)}</h3>${n.body ? `<p>${esc(n.body)}</p>` : ''}${n.link ? `<p><a class="link" href="${esc(n.link)}" target="_blank" rel="noopener">${esc(n.linkLabel || '相關連結')}</a></p>` : ''}</div></article>`).join('')}
 </div></div></section>`
 };
 
 pages['contact.html'] = {
   title: '合作洽詢', desc: '停車場委外經營與商業空間多元化合作洽詢。',
   body: `
-<section class="ph"><div class="wrap"><p class="eyebrow">合作洽詢</p><h1>兩種合作方式，<br>找到適合您的。</h1></div></section>
-<section class="band tight"><div class="wrap"><div class="intro-img"><img src="assets/img/img-contact.jpg" alt="" loading="lazy"><p>不論是公有停車場委外、民間停車場代管，或商業空間與遊憩場域的整體經營，我們會先了解場域條件與目標，再提出可行的經營規劃。</p></div><div class="coop">
+<section class="ph"><div class="wrap"><p class="eyebrow">合作洽詢</p><h1>兩種合作方式，<br>找到適合您的。</h1><nav class="anchors" aria-label="本頁導覽"><a href="#modes">看合作方式</a><a href="#cform">直接洽詢</a></nav></div></section>
+<section class="band tight" id="modes"><div class="wrap reorder"><div class="intro-img"><img src="assets/img/img-contact.jpg" alt="" loading="lazy"><p>不論是公有停車場委外、民間停車場代管，或商業空間與遊憩場域的整體經營，我們會先了解場域條件與目標，再提出可行的經營規劃。</p></div><div class="coop">
   <article><p class="eyebrow">PARKING</p><h3>停車場委外經營</h3><ul><li>公有停車場標案與營運移轉</li><li>民間大樓、園區、社宅停車場代管</li><li>智慧停管設備導入與場域改善</li></ul></article>
   <article><p class="eyebrow">BEYOND PARKING</p><h3>商業空間與多元化合作</h3><ul><li>商業空間＋停車場整合經營</li><li>餐飲、休閒遊憩場域營運</li><li>場域規劃與活動合作</li></ul></article>
 </div></div></section>
@@ -477,7 +475,7 @@ pages['contact.html'] = {
     </div>
     <label for="c-type">合作類別<select id="c-type" name="type"><option>停車場委外經營</option><option>商業空間與多元化合作</option><option>場站服務意見</option><option>其他</option></select></label>
     <label for="c-msg">內容<textarea id="c-msg" name="msg" rows="5" required></textarea></label>
-    <p class="note">按「開啟郵件草稿」會開啟您的郵件程式並帶入內容，由您確認後寄出；本網站不另外儲存您的資料。請勿填寫身分證字號、車牌等非必要資料。詳見<a href="privacy.html">隱私權聲明</a>。</p>
+    <p class="note">選擇「開啟郵件草稿」後，請在郵件程式確認內容再寄出。本網站不會儲存表單內容；請勿填寫身分證字號、車牌等非必要資料。詳見<a href="privacy.html">隱私權聲明</a>。</p>
     <div style="display:flex;gap:14px;align-items:center;flex-wrap:wrap"><button class="btn primary" type="submit">開啟郵件草稿</button><span class="status" id="cstatus" role="status"></span></div>
   </form>
 </div></section>`
@@ -496,7 +494,7 @@ pages['privacy.html'] = {
   <h2>三、利用期間、地區、對象與方式</h2>
   <p>資料僅在達成上述目的所需期間內，由本公司相關承辦人員於中華民國境內使用，不提供給第三人，法令另有規定者除外。目的完成後依本公司文件保存規定刪除或銷毀。</p>
   <h2>四、您的權利</h2>
-  <p>依個人資料保護法第 3 條，您可以請求查詢、閱覽、製給複製本、補充或更正、停止蒐集處理利用，或刪除您的個人資料。請來信 ${esc(SITE.email)}，本公司將於確認身分後處理。</p>
+  <p>依個人資料保護法第 3 條，您可以請求查詢、閱覽、製給複製本、補充或更正、停止蒐集、處理或利用，或請求刪除個人資料。請來信 ${esc(SITE.email)}，本公司將於確認身分後處理。</p>
   <h2>五、Cookie 與外部服務</h2>
   <p>本網站不使用追蹤型 Cookie。網頁字體由 Google Fonts 提供，影片與圖片由本網站直接提供；連到外部網站時，該網站可能依其政策記錄瀏覽資訊。</p>
   <h2>六、聲明修訂</h2>
