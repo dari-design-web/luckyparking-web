@@ -12,9 +12,10 @@
   var state={city:'全部',company:'全部'};
   function esc(s){return String(s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
   function card(s){
-    var img=s.img?'<div class="im"><img src="assets/img/sites/'+s.img+'.jpg" alt="'+esc(s.name)+'" loading="lazy"></div>':'<div class="im ph-img">照片準備中</div>';
+    var img=s.img?'<div class="im"><img src="assets/img/sites/'+s.img+'.jpg" alt="'+esc(s.name)+'" loading="lazy">'+(s.imgNote?'<span class="tag">'+esc(s.imgNote)+'</span>':'')+'</div>':'<div class="im ph-img">照片準備中</div>';
+    var credit=s.imgCredit?'<a class="credit" href="'+esc(s.imgCredit.url)+'" target="_blank" rel="noopener">'+esc(s.imgCredit.label)+'</a>':'';
     var status=s.status==='營運中'?'<span class="chip g">營運中</span>':'<span class="chip o">'+esc(s.status)+'</span>';
-    return '<article class="site">'+img+'<div class="bd"><h3>'+esc(s.name)+'</h3><div class="meta"><span class="chip">'+esc(s.city)+(s.district?' '+esc(s.district):'')+'</span><span class="chip b">'+esc(s.type)+'</span>'+status+'</div><span class="muted" style="font-size:13px">'+esc(s.company)+'</span>'+(s.map?'<a class="map" href="'+esc(s.map)+'" target="_blank" rel="noopener">地圖</a>':'')+'</div></article>';
+    return '<article class="site">'+img+'<div class="bd"><h3>'+esc(s.name)+'</h3><div class="meta"><span class="chip">'+esc(s.city)+(s.district?' '+esc(s.district):'')+'</span><span class="chip b">'+esc(s.type)+'</span>'+status+'</div><span class="muted" style="font-size:13px">'+esc(s.company)+'</span>'+credit+(s.map?'<a class="map" href="'+esc(s.map)+'" target="_blank" rel="noopener">地圖</a>':'')+'</div></article>';
   }
   function render(){
     var list=sites.filter(function(s){return (state.city==='全部'||s.city===state.city)&&(state.company==='全部'||s.company===state.company);});

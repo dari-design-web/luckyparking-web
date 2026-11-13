@@ -17,9 +17,9 @@
   "qr": "assets/img/esg-qr.svg"
  },
  "hero": {
-  "video": "assets/video/hero-test.mp4",
+  "video": "assets/video/hero.mp4",
   "poster": "assets/img/hero.jpg",
-  "note": "測試影片：由場域意象圖合成，正式影片確定後替換 video 路徑即可；留空則只顯示圖片"
+  "note": "測試影片：GPT 以六張意象圖製作（18 秒）。正式影片確定後替換 video 路徑；留空則只顯示圖片"
  },
  "employees": "約 200 名",
  "jobsEmail": "dari25420001@gmail.com"

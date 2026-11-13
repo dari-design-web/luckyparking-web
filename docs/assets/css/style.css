@@ -290,3 +290,6 @@ footer{background:var(--surface);padding-block:56px 32px;font-size:14px;color:va
 .ghg-legend b{margin-left:auto}
 @media (max-width:700px){.ghg{grid-template-columns:1fr}.ghg-legend{grid-template-columns:1fr}}
 .vcard .vimg{position:relative}
+.site .im{position:relative}
+.site .im .tag,.vimg .tag{position:absolute;top:12px;left:12px;z-index:1;font-size:12px;background:rgba(0,0,0,.5);color:#fff;border-radius:999px;padding:2px 10px}
+.site .credit{display:block;font-size:12px;color:var(--ink-2);margin-top:4px;text-decoration:underline;text-underline-offset:2px}

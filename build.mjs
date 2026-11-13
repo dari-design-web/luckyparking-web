@@ -301,14 +301,24 @@ pages['venues.html'] = {
 };
 
 pages['services.html'] = {
-  title: '智慧服務', desc: '車牌辨識、多元支付、車位在席與尋車、智慧巡檢等服務。',
+  title: '智慧服務', desc: '從入場、導引與找車、付款、離場到現場管理的停車服務。',
   body: `
-<section class="ph"><div class="wrap"><p class="eyebrow">智慧及貼心服務</p><h1>從進場到離場，<br>每一步都想好了。</h1></div></section>
-<section class="band tight"><div class="wrap"><div class="svc">${SERVICES.map(svc).join('')}</div></div></section>
-<section class="band alt"><div class="wrap"><div class="bento">
-  <div class="tile photo c3 tall"><img src="assets/img/sites/jinan.jpg" alt=""><h3>車牌辨識・免取票</h3><p>進出場自動辨識，搭配多元支付。</p></div>
-  <div class="tile photo c3 tall"><img src="assets/img/sites/yonghe-b1.jpg" alt=""><h3>清楚的場內導引</h3><p>色彩分區、樓層標示與尋車資訊。</p></div>
-</div></div></section>`
+<section class="ph"><div class="wrap"><p class="eyebrow">智慧及貼心服務</p><h1>從進場到離場，<br>每一步都有清楚指引。</h1><p class="lead">依各場的空間、設備與車流安排停車服務。實際提供的功能與付款方式，以各場公告為準。</p></div></section>
+<section class="band tight" style="padding-top:0"><div class="wrap">
+  ${[
+    ['01', '入場辨識', '依場站設備採車牌辨識或其他入場方式。遇辨識異常時，依現場指示聯繫服務人員。', 'svc-01'],
+    ['02', '導引與找車', '利用車道標線、樓層與分區標示辨認方向。設有空位顯示或尋車設備的場站，可依介面查詢。', 'svc-02'],
+    ['03', '付款', '依各場公告選用現金、電子支付或其他方式。完成繳費後，請按場站指示於期限內離場。', 'svc-03']
+  ].map(([n, t, d, img]) => `<div class="venue"><div class="vimg" style="position:relative"><img src="assets/img/svc/${img}.jpg" alt="" loading="lazy"><span class="tag">服務意象</span></div><div><p class="eyebrow num">STEP ${n}</p><h2>${t}</h2><p class="muted" style="margin-top:12px;font-size:18px">${d}</p></div></div>`).join('')}
+  <div class="coop" style="margin-top:8px">
+    <article><p class="eyebrow num">STEP 04</p><h3>離場</h3><p class="muted" style="margin-top:8px">依出口標示前行。遇付款未更新或出口設備異常，可透過現場求助方式聯繫服務人員。</p></article>
+    <article><p class="eyebrow num">STEP 05</p><h3>現場管理</h3><p class="muted" style="margin-top:8px">透過巡檢、設備維護與事件通報處理異常，並依場站條件提供民眾諮詢與協助。</p></article>
+  </div>
+</div></section>
+<section class="band alt"><div class="wrap">
+  <div class="head"><h2>服務項目</h2><p>依場站條件提供。</p></div>
+  <div class="svc">${SERVICES.map(svc).join('')}</div>
+</div></section>`
 };
 
 pages['awards.html'] = {
