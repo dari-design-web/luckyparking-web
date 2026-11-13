@@ -241,3 +241,17 @@ footer{background:var(--surface);padding-block:56px 32px;font-size:14px;color:va
 @media (max-width:760px){.fgrid{grid-template-columns:1fr 1fr}}
 .todo{display:inline-block;font-size:12px;font-weight:700;color:#b4501a;background:#fde9dc;border-radius:6px;padding:1px 8px;margin-left:6px;vertical-align:middle}
 @media (prefers-reduced-motion:no-preference){.tile img,.pillar img{transition:transform .6s ease}.tile:hover img,.pillar:hover img{transform:scale(1.04)}}
+
+/* venues: card grid (3 + 2) */
+.vcards{display:grid;grid-template-columns:repeat(6,1fr);gap:20px}
+.vcard{grid-column:span 2;background:#fff;border:1px solid var(--line);border-radius:var(--r-lg);overflow:hidden;display:flex;flex-direction:column;scroll-margin-top:90px}
+.vcard:nth-child(4),.vcard:nth-child(5){grid-column:span 3}
+.vcard .vimg{border-radius:0;aspect-ratio:16/10;font-size:14px}
+.vcard .vb{padding:22px 24px 24px;display:flex;flex-direction:column;gap:8px;flex:1}
+.vcard h2{font-size:22px;font-weight:800;line-height:1.3}
+.vcard .addr{font-size:13px;color:var(--ink-2)}
+.vcard .muted{font-size:15px}
+.vcard ul{padding-left:1.2em;margin:4px 0 0;color:var(--ink-2);font-size:14px}
+.vcard .vlinks{margin-top:auto;padding-top:12px;display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+@media (max-width:980px){.vcard,.vcard:nth-child(4),.vcard:nth-child(5){grid-column:span 3}}
+@media (max-width:640px){.vcards{grid-template-columns:1fr}.vcard,.vcard:nth-child(4),.vcard:nth-child(5){grid-column:auto}}

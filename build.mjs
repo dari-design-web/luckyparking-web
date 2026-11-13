@@ -116,7 +116,7 @@ pages['index.html'] = {
     <p class="eyebrow">${esc(SITE.tagline)}</p>
     <h1 style="margin-top:16px">讓每一次停車，<br><span class="hl">都更安心。</span></h1>
     <p class="lead">大日開發自${esc(SITE.founded)}起經營停車場，從公有地下停車場到商業空間與休閒場域，用智慧設備與在地服務照顧每一位用路人。</p>
-    <div class="ctas"><a class="btn primary" href="parking.html">停車場經營</a><a class="btn ghost" href="contact.html">合作洽詢</a></div>
+    <div class="ctas"><a class="btn primary" href="parking.html">查停車據點</a><a class="btn ghost" href="venues.html">看多元化經營</a></div>
   </div>
   <div class="strip" aria-label="經營場站照片">
     ${['ntsec', 'jinhe', 'yonghe', 'taoyuan', 'xiulang', 'tpmc'].map(id => { const p = PARKING.find(x => x.img === id); return `<figure><img src="assets/img/sites/${id}.jpg" alt="${esc(p.name)}"><figcaption>${esc(p.name.replace(/(地下|立體|平面)?停車場$/, ''))}</figcaption></figure>`; }).join('')}
@@ -253,16 +253,27 @@ pages['parking.html'] = {
 };
 
 pages['venues.html'] = {
-  title: '多元化經營', desc: '國家檔案館、叁肆行、桃園青年體驗學習園區、舟日咖啡、深澳鐵道自行車。',
+  title: '多元化經營', desc: '國家檔案館、叁肆行、桃園青年體驗學習園區、後湖溪親水園區與舟日咖啡、深澳鐵道自行車。',
   body: `
 <section class="ph"><div class="wrap"><p class="eyebrow">多元化經營</p><h1>不只停車，<br>還有值得停留的地方。</h1><p class="lead">把停車場經營的經驗延伸到商業空間、餐飲與休閒遊憩，讓到訪者從停好車開始，就有完整的體驗。</p></div></section>
-<section class="band tight" style="padding-top:0"><div class="wrap">
-  ${VENUES.map(v => `<div class="venue" id="${v.id}">
-    <div class="vimg">${v.img ? `<img src="${v.img}" alt="${esc(v.name)}" loading="lazy">` : '<span>圖片製作中</span>'}</div>
-    <div><p class="eyebrow">${esc(v.kind)}・${esc(v.city)}</p><h2>${esc(v.name)}</h2><p class="muted" style="margin-top:12px">${esc(v.summary)}${v.todo ? '<span class="todo">資料補充中</span>' : ''}</p>
-    ${v.points.length ? `<ul>${v.points.map(p => `<li>${esc(p)}</li>`).join('')}</ul>` : ''}
-    ${v.link ? `<p style="margin-top:16px"><a class="link" href="${esc(v.link)}" target="_blank" rel="noopener">前往官網</a></p>` : ''}
-    </div></div>`).join('')}
+<section class="band tight" style="padding-top:8px"><div class="wrap"><div class="vcards">
+  ${VENUES.map(v => `<article class="vcard" id="${v.id}">
+    <div class="vimg">${v.img ? `<img src="${v.img}" alt="${esc(v.name)}" loading="lazy">` : '<span>場域意象・照片準備中</span>'}</div>
+    <div class="vb">
+      <p class="eyebrow">${esc(v.kind)}</p>
+      <h2>${esc(v.name)}</h2>
+      <p class="addr">${esc(v.address || v.city)}</p>
+      <p class="muted">${esc(v.summary)}</p>
+      ${v.points.length ? `<ul>${v.points.map(p => `<li>${esc(p)}</li>`).join('')}</ul>` : ''}
+      <div class="vlinks">${v.link ? `<a class="link" href="${esc(v.link)}" target="_blank" rel="noopener">前往官網</a>` : ''}${v.todo ? '<span class="todo" style="margin-left:0">資料補充中</span>' : ''}</div>
+    </div></article>`).join('')}
+</div></div></section>
+<section class="band alt"><div class="wrap">
+  <div class="head"><div><p class="eyebrow">合作模式</p><h2 style="margin-top:8px">單純停車場，<br>或整個場域一起經營。</h2></div><a class="btn orange" href="contact.html">合作洽詢</a></div>
+  <div class="coop">
+    <article><p class="eyebrow">PARKING</p><h3>停車場委外經營</h3><ul><li>公有停車場標案與營運移轉</li><li>民間大樓、園區停車場代管</li><li>智慧停管設備導入與場域改善</li></ul></article>
+    <article><p class="eyebrow">BEYOND PARKING</p><h3>商業空間與多元化合作</h3><ul><li>商業空間＋停車場整合經營</li><li>餐飲、休閒遊憩與體驗場域營運</li><li>場域規劃與活動合作</li></ul></article>
+  </div>
 </div></section>`
 };
 
