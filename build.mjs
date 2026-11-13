@@ -341,8 +341,8 @@ pages['services.html'] = {
   </div>
 </div></section>
 <section class="band alt"><div class="wrap">
-  <div class="head"><h2>服務項目</h2><p>依場站條件提供。</p></div>
-  <div class="svc">${SERVICES.map(svc).join('')}</div>
+  <div class="head"><div><h2>依場站條件提供的設備與服務</h2><p style="margin-top:8px">各場實際提供項目不同，請以現場與各場公告為準。</p></div><a class="link" href="parking.html">查各場資訊</a></div>
+  <ul class="svlist">${SERVICES.map(x => `<li><i><svg viewBox="0 0 24 24" aria-hidden="true">${ICON[x[0]]}</svg></i><div><b>${x[1]}</b><span>${x[2]}</span></div></li>`).join('')}</ul>
 </div></section>`
 };
 
@@ -367,12 +367,12 @@ pages['esg.html'] = {
   title: '永續 ESG', desc: '大日開發 2025 永續報告書（2024 年溫室氣體盤查）與公益足跡。',
   body: `
 ${sunBand()}
-<section class="ph"><div class="wrap"><p class="eyebrow">永續 ESG</p><h1>取之於社會，<br>用之於社會。</h1><p class="lead">從總公司的溫室氣體盤查開始，掌握自己的排放，再擬定減量做法；同時持續投入在地公益。</p></div></section>
-<section class="band tight"><div class="wrap esg">
+<section class="ph"><div class="wrap"><p class="eyebrow">永續 ESG</p><h1>取之於社會，<br>用之於社會。</h1><p class="lead">從總公司的溫室氣體盤查開始，掌握自己的排放，再擬定減量做法；同時持續投入在地公益。</p><nav class="anchors" aria-label="本頁導覽"><a href="#report">報告書下載</a><a href="#ghg">環境盤查</a><a href="#footprint">公益足跡</a><a href="#sun-breakfast">太陽早餐計畫</a></nav></div></section>
+<section class="band tight" id="report"><div class="wrap esg">
   ${reportCard()}
   <div><h2 style="font-size:28px">手機掃描即可開啟</h2><p class="muted" style="margin-top:10px">QR Code 連到報告書線上閱讀頁；「下載 PDF」直接下載同一份檔案（約 6.6 MB）。</p></div>
 </div></section>
-<section class="band alt"><div class="wrap">
+<section class="band alt" id="ghg"><div class="wrap">
   <div class="head"><div><p class="eyebrow">E 環境</p><h2 style="margin-top:8px">2024 年溫室氣體盤查</h2></div><p>依 ISO/CNS 14064-1:2018，自願盤查臺北總公司（基準年 2024）。</p></div>
   <div class="ghg">
     <div class="ghg-total"><b class="num">64.0</b><span>公噸 CO<sub>2</sub>e<br>2024 年總排放量</span></div>
@@ -399,7 +399,7 @@ ${sunBand()}
     <article><p class="eyebrow">G 治理</p><h3 style="margin-top:6px">盤查管理程序</h3><p>訂有溫室氣體盤查管理與內部查證程序，報告每年製作一次，紀錄保存 6 年。</p></article>
   </div>
 </div></section>
-<section class="band alt"><div class="wrap">
+<section class="band alt" id="footprint"><div class="wrap">
   <div class="head"><h2>公益足跡</h2></div>
   <div class="tl-wrap"><div class="tl">
     <div><b class="num">2016 起</b><p>支持基隆市太陽早餐計畫</p></div>

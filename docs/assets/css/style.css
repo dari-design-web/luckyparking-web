@@ -455,3 +455,15 @@ body.menu-open .nav{-webkit-backdrop-filter:none;backdrop-filter:none;background
 .search input:focus{outline:2px solid var(--blue);outline-offset:1px;border-color:var(--blue)}
 .search svg{position:absolute;left:16px;top:50%;transform:translateY(-50%);width:20px;height:20px;fill:none;stroke:var(--ink-2);stroke-width:1.8;stroke-linecap:round}
 .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+
+.svlist{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(2,1fr);gap:0 40px}
+.svlist li{display:flex;gap:14px;align-items:flex-start;padding:16px 0;border-bottom:1px solid var(--line)}
+.svlist i{flex:none;width:38px;height:38px;border-radius:10px;background:#eaf1fa;display:grid;place-items:center}
+.svlist svg{width:20px;height:20px;fill:none;stroke:var(--blue);stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.svlist b{display:block;font-size:16px}
+.svlist span{display:block;font-size:14px;color:var(--ink-2);margin-top:2px}
+@media (max-width:700px){.svlist{grid-template-columns:1fr}}
+.anchors{display:flex;flex-wrap:wrap;gap:8px;margin-top:22px}
+.anchors a{font-size:14px;font-weight:700;text-decoration:none;color:var(--blue);background:rgba(255,255,255,.85);border:1px solid #cfdcee;border-radius:999px;padding:7px 14px}
+.anchors a:hover{background:#fff;border-color:var(--blue)}
+[id]{scroll-margin-top:80px}
