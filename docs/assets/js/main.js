@@ -51,3 +51,29 @@
   if(rm) set(true);
   b.addEventListener('click',function(){ set(!v.paused ? true : false); });
 })();
+
+// 背景影片（太陽早餐等）：暫停鍵、離開畫面時暫停、減少動態時不播
+(function(){
+  var rm=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  document.querySelectorAll('.sunband').forEach(function(sec){
+    var v=sec.querySelector('video.sunbg'), b=sec.querySelector('.bgtoggle'); if(!v) return;
+    var user=false;
+    function set(p){ if(p){v.pause();}else{var r=v.play(); if(r&&r.catch) r.catch(function(){});} if(b){b.setAttribute('aria-pressed',p); b.setAttribute('aria-label',p?'播放背景影片':'暫停背景影片');} }
+    if(rm){ set(true); user=true; }
+    if(b) b.addEventListener('click',function(){ user=!v.paused; set(!v.paused); });
+    if('IntersectionObserver' in window){ new IntersectionObserver(function(es){ es.forEach(function(e){ if(user) return; if(e.isIntersecting){ set(false); } else { v.pause(); } }); },{threshold:.15}).observe(sec); }
+  });
+})();
+
+// 有聲影片彈窗
+(function(){
+  var d=document.getElementById('vdialog'); if(!d||!d.showModal) return;
+  var v=d.querySelector('video'), c=d.querySelector('.vclose');
+  document.querySelectorAll('[data-video]').forEach(function(btn){
+    btn.addEventListener('click',function(){ v.src=btn.getAttribute('data-video'); d.setAttribute('aria-label',btn.getAttribute('data-title')||'影片播放'); d.showModal(); var r=v.play(); if(r&&r.catch) r.catch(function(){}); });
+  });
+  function close(){ v.pause(); d.close(); }
+  c.addEventListener('click',close);
+  d.addEventListener('click',function(e){ if(e.target===d) close(); });
+  d.addEventListener('close',function(){ v.pause(); });
+})();

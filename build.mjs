@@ -79,6 +79,7 @@ ${body}
     <div class="copy"><span>© ${new Date().getFullYear()} 大日開發有限公司 DARI GROUP・<a href="privacy.html">隱私權聲明</a></span><span>Lucky Parking 為大日開發停車品牌</span></div>
   </div>
 </footer>
+<dialog class="vdialog" id="vdialog" aria-label="影片播放"><button class="vclose" type="button" aria-label="關閉影片">✕</button><video controls playsinline preload="none"></video></dialog>
 <script src="assets/js/main.js" defer></script>
 </body>
 </html>
@@ -115,6 +116,17 @@ const sortedNews = [...NEWS].sort((a, b) => b.date.localeCompare(a.date));
 
 const R = SITE.esgReport;
 const reportCard = () => `<div class="report"><img src="${R.qr}" alt="掃描開啟 ${esc(R.title)}" width="150" height="150"><div><b>${esc(R.title)}</b><small>${esc(R.subtitle)}</small><div class="rbtns"><a class="btn primary" href="${esc(R.url)}" target="_blank" rel="noopener">線上閱讀</a><a class="btn ghost" href="${esc(R.download)}">下載 PDF</a></div></div></div>`;
+const sunBand = () => `<section class="sunband" id="sun-breakfast" aria-label="太陽早餐計畫">
+  <video class="sunbg" autoplay muted loop playsinline preload="metadata" poster="assets/img/sun-poster.jpg" aria-hidden="true"><source src="assets/video/sun-bg.mp4" type="video/mp4"></video>
+  <div class="wrap suntext">
+    <p class="eyebrow">公益計畫</p>
+    <h2>太陽早餐計畫<span class="yr num">2016–2026</span></h2>
+    <p class="sub">一份早餐・十年陪伴・持續前行</p>
+    <p class="lead">我們想做的很簡單：讓孩子吃飽，再去上學。大日開發自 2016 年起支持基隆市太陽早餐計畫。</p>
+    <button class="btn light" type="button" data-video="assets/video/sun-full.mp4" data-title="太陽早餐計畫｜有人記得你"><span aria-hidden="true">▶</span> 觀看影片（有聲・65 秒）</button>
+  </div>
+  <button class="vtoggle bgtoggle" type="button" aria-label="暫停背景影片" aria-pressed="false"><span aria-hidden="true">❚❚</span></button>
+</section>`;
 const DEPTS = ['營運管理部', '工程管理部', '財務管理及計畫預算部', '行銷企劃部', '人力資源部', '商業開發部', '廣告設計部', '資訊管理部', '法務部'];
 
 const pages = {};
@@ -203,6 +215,8 @@ pages['index.html'] = {
   </div>
 </section>
 
+${sunBand()}
+
 <section class="band alt">
   <div class="wrap esg">
     <div>
@@ -247,7 +261,7 @@ pages['about.html'] = {
     <div><b class="num">1999</b><p>大日開發成立（民國 88 年）</p></div>
     <div><b class="num">2004</b><p>千斗開發成立（民國 93 年）</p></div>
     <div><b class="num">2015</b><p>與資策會合作開發 MoBuy 智慧停車 App</p></div>
-    <div><b class="num">2016</b><p>智慧運輸產業創新獎</p></div>
+    <div><b class="num">2016</b><p>智慧運輸產業創新獎；開始支持基隆市太陽早餐計畫</p></div>
     <div><b class="num">2017</b><p>金擘獎優等、兩項導航發明專利</p></div>
     <div><b class="num">2018</b><p>金擘獎優等</p></div>
     <div><b class="num">2019</b><p>台灣建築獎首獎（基隆東岸停車商場）</p></div>
@@ -342,6 +356,7 @@ pages['awards.html'] = {
 pages['esg.html'] = {
   title: '永續 ESG', desc: '大日開發 2025 永續報告書（2024 年溫室氣體盤查）與公益足跡。',
   body: `
+${sunBand()}
 <section class="ph"><div class="wrap"><p class="eyebrow">永續 ESG</p><h1>取之於社會，<br>用之於社會。</h1><p class="lead">從總公司的溫室氣體盤查開始，掌握自己的排放，再擬定減量做法；同時持續投入在地公益。</p></div></section>
 <section class="band tight"><div class="wrap esg">
   ${reportCard()}
@@ -369,7 +384,7 @@ pages['esg.html'] = {
 </div></section>
 <section class="band"><div class="wrap">
   <div class="svc three">
-    <article><p class="eyebrow">S 社會</p><h3 style="margin-top:6px">公益與在地</h3><p>每年提撥營餘投入公益：贊助基層球隊、希望工程課後照顧與公益捐血；108 年獲頒華人公益大使。</p></article>
+    <article><p class="eyebrow">S 社會</p><h3 style="margin-top:6px">公益與在地</h3><p>2016 年起支持基隆市太陽早餐計畫；每年提撥營餘投入公益：贊助基層球隊、希望工程課後照顧與公益捐血；108 年獲頒華人公益大使。</p></article>
     <article><p class="eyebrow">S 社會</p><h3 style="margin-top:6px">${esc(SITE.employees)}同仁</h3><p>總公司與各停車場、場域的服務團隊，部門涵蓋營運、工程、商業開發、資訊與法務。</p></article>
     <article><p class="eyebrow">G 治理</p><h3 style="margin-top:6px">盤查管理程序</h3><p>訂有溫室氣體盤查管理與內部查證程序，報告每年製作一次，紀錄保存 6 年。</p></article>
   </div>
@@ -377,6 +392,7 @@ pages['esg.html'] = {
 <section class="band alt"><div class="wrap">
   <div class="head"><h2>公益足跡</h2></div>
   <div class="tl-wrap"><div class="tl">
+    <div><b class="num">2016 起</b><p>支持基隆市太陽早餐計畫</p></div>
     <div><b class="num">長期</b><p>公益贊助棒球隊、壘球隊、籃球隊</p></div>
     <div><b class="num">長期</b><p>希望工程課業輔導延長照顧計畫</p></div>
     <div><b class="num">2019</b><p>獲頒華人公益大使（108 年）</p></div>
