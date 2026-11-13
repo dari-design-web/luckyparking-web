@@ -1,9 +1,9 @@
 [
  {
-  "date": "2026-11-13",
+  "date": "2026-11-14",
   "cat": "公告",
-  "title": "官網改版上線測試中，內容陸續更新",
-  "body": "新版官網目前為測試版，場域資料、照片與文案將陸續補齊。"
+  "title": "大日開發官網全新改版",
+  "body": "新版官網整理了停車場、多元化經營場域、榮譽獎項與永續資訊，內容將持續更新。"
  },
  {
   "date": "2025",
@@ -16,27 +16,31 @@
   "cat": "獲獎",
   "title": "基隆東岸立體停車場營運移轉案，榮獲第 16 屆金擘獎民間經營團隊優等獎",
   "body": "",
-  "link": "https://ppp.mof.gov.tw/ppp.website/DownFile.aspx?id=3qbhuR%2b8iwU%3d"
+  "link": "https://ppp.mof.gov.tw/ppp.website/DownFile.aspx?id=3qbhuR%2b8iwU%3d",
+  "linkLabel": "財政部第 16 屆金擘獎公告"
  },
  {
   "date": "2017-10-13",
   "cat": "獲獎",
   "title": "榮獲財政部第 15 屆金擘獎民間經營團隊優等獎",
   "body": "",
-  "link": "https://ppp.mof.gov.tw/PPP.Website/News/Display.aspx?ID=1840"
+  "link": "https://ppp.mof.gov.tw/PPP.Website/News/Display.aspx?ID=1840",
+  "linkLabel": "財政部第 15 屆金擘獎公告"
  },
  {
   "date": "2025-11-22",
   "cat": "場域",
   "title": "國家檔案館正式開館",
   "body": "位於新北市林口的國家檔案館 11 月 22 日正式開館。館內的文創商店、WALK IN 咖啡與地下停車場由大日開發經營。",
-  "link": "https://www.nownews.com/news/6726071"
+  "link": "https://www.nownews.com/news/6726071",
+  "linkLabel": "NOWnews 報導"
  },
  {
   "date": "2021-12-03",
   "cat": "獲獎",
   "title": "桃園青年體驗學習園區增建營運移轉案，榮獲第 19 屆金擘獎民間團隊優等",
   "body": "",
-  "link": "https://fb.tycg.gov.tw/News_Content.aspx?n=7958&s=901647"
+  "link": "https://fb.tycg.gov.tw/News_Content.aspx?n=7958&s=901647",
+  "linkLabel": "桃園市政府財政局公告"
  }
 ]

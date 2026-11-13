@@ -15,18 +15,22 @@
   var data=document.getElementById('parking-data'); if(!data) return;
   var sites=JSON.parse(data.textContent);
   var grid=document.getElementById('sites-grid'), cnt=document.getElementById('count');
-  var state={city:'全部',company:'全部'};
+  var state={city:'全部',company:'全部',q:''};
+  var qi=document.getElementById('q');
+  try{ var qp=new URLSearchParams(location.search).get('q'); if(qp&&qi){ qi.value=qp; state.q=qp; } }catch(e){}
+  if(qi) qi.addEventListener('input',function(){ state.q=qi.value.trim(); render(); try{ var u=new URL(location.href); if(state.q) u.searchParams.set('q',state.q); else u.searchParams.delete('q'); history.replaceState(null,'',u); }catch(e){} });
   function esc(s){return String(s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
   function card(s){
     var img=s.img?'<div class="im"><img src="assets/img/sites/'+s.img+'.jpg" alt="'+esc(s.name)+'" loading="lazy">'+(s.imgNote?'<span class="tag">'+esc(s.imgNote)+'</span>':'')+'</div>':'<div class="im ph-img">照片準備中</div>';
     var credit=s.imgCredit?'<a class="credit" href="'+esc(s.imgCredit.url)+'" target="_blank" rel="noopener">'+esc(s.imgCredit.label)+'</a>':'';
     var status=s.status==='營運中'?'<span class="chip g">營運中</span>':(s.status?'<span class="chip o">'+esc(s.status)+'</span>':'');
-    return '<article class="site">'+img+'<div class="bd"><h3>'+esc(s.name)+'</h3><div class="meta"><span class="chip">'+esc(s.city)+(s.district?' '+esc(s.district):'')+'</span><span class="chip b">'+esc(s.type)+'</span>'+status+'</div><span class="muted" style="font-size:13px">'+esc(s.company)+'</span>'+credit+(s.map?'<a class="map" href="'+esc(s.map)+'" target="_blank" rel="noopener">地圖</a>':'')+'</div></article>';
+    return '<article class="site">'+img+'<div class="bd"><h3>'+esc(s.name)+'</h3><div class="meta"><span class="chip">'+esc(s.city)+(s.district?' '+esc(s.district):'')+'</span><span class="chip b">'+esc(s.type)+'</span>'+status+'</div><span class="muted" style="font-size:13px">'+esc(s.company)+'</span>'+credit+(s.map?'<a class="map" href="'+esc(s.map)+'" target="_blank" rel="noopener" aria-label="在地圖上查看'+esc(s.name)+'">地圖</a>':'')+'</div></article>';
   }
   function render(){
-    var list=sites.filter(function(s){return (state.city==='全部'||s.city===state.city)&&(state.company==='全部'||s.company===state.company);});
+    var q=(state.q||'').replace(/\s+/g,'');
+    var list=sites.filter(function(s){return (state.city==='全部'||s.city===state.city)&&(state.company==='全部'||s.company===state.company)&&(!q||(s.name+(s.district||'')+s.city).indexOf(q)>-1);});
     grid.innerHTML=list.map(card).join('');
-    cnt.textContent='共 '+list.length+' 處';
+    cnt.textContent=list.length?('共 '+list.length+' 處'):'找不到符合的停車場，請換個關鍵字或清除篩選。';
     document.querySelectorAll('[data-f]').forEach(function(btn){btn.setAttribute('aria-pressed',state[btn.dataset.f]===btn.dataset.v);});
   }
   document.querySelectorAll('[data-f]').forEach(function(btn){btn.addEventListener('click',function(){state[btn.dataset.f]=btn.dataset.v;render();});});
@@ -106,4 +110,12 @@
   var cms=document.querySelectorAll('.citymap .cm'); if(!cms.length) return;
   cms.forEach(function(b){ b.addEventListener('click',function(){ var on=b.getAttribute('aria-pressed')==='true'; var target=document.querySelector('[data-f="city"][data-v="'+(on?'全部':b.dataset.city)+'"]'); if(target) target.click(); cms.forEach(function(x){ x.setAttribute('aria-pressed', (!on && x===b)?'true':'false'); }); }); });
   document.querySelectorAll('[data-f="city"]').forEach(function(f){ f.addEventListener('click',function(){ cms.forEach(function(x){ x.setAttribute('aria-pressed', x.dataset.city===f.dataset.v?'true':'false'); }); }); });
+})();
+
+// 獎項背景影片：離開畫面暫停；減少動態不播
+(function(){
+  var v=document.querySelector('.abv'); if(!v) return;
+  var rm=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if(rm){ v.pause(); v.removeAttribute('autoplay'); return; }
+  if('IntersectionObserver' in window){ new IntersectionObserver(function(es){ es.forEach(function(e){ if(e.isIntersecting){ var r=v.play(); if(r&&r.catch) r.catch(function(){}); } else v.pause(); }); },{threshold:.1}).observe(v); }
 })();

@@ -37,33 +37,34 @@
   "src": [
    "https://travel.klcg.gov.tw/TourContent.aspx?n=7841&s=710",
    "https://www.nownews.com/news/6357573",
-   "https://supertaste.tvbs.com.tw/travel/347601"
+   "https://travel.klcg.gov.tw/TourContent.aspx?n=8159&s=710"
   ],
   "todo": false,
-  "imgNote": "場域意象",
+  "imgNote": "依實景參考繪製",
   "brands": [
    {
-    "group": "餐飲",
+    "group": "餐飲・咖啡",
     "items": [
      "新宿勝博殿日式豬排",
      "饗泰多",
      "開飯川食堂",
+     "金春喜韓廚",
      "檀島香港餐廳",
      "布娜飛比利時啤酒餐酒館",
      "涮乃葉日式涮涮鍋",
-     "雙月食品社"
+     "三奇壹號 × 築甜製菓"
     ]
    },
    {
-    "group": "咖啡・選物",
+    "group": "藥妝・選物",
     "items": [
-     "三奇壹號 × 築甜製菓",
      "札幌藥妝",
-     "屋裡商行"
+     "屋裡商行",
+     "委託行街區"
     ]
    }
   ],
-  "brandsNote": "2024 年 2 月開幕時進駐品牌"
+  "brandsNote": "依基隆市政府觀光旅遊網公開資料整理（2026 年 11 月查詢），實際營業以商場及各店公告為準。"
  },
  {
   "id": "tyac",
@@ -124,7 +125,7 @@
    "https://www.railbike.com.tw/tw"
   ],
   "todo": false,
-  "imgNote": "場域意象",
+  "imgNote": "依實景參考繪製",
   "linkLabel": "深澳鐵道自行車官網"
  }
 ]
