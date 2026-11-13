@@ -23,21 +23,33 @@
   function esc(s){return String(s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
   function card(s){
     var TYPE={'地下':'underground','立體':'multistorey','平面':'surface'};
-    var cap='', img;
-    if(s.img){ img='<div class="im"><img src="assets/img/sites/'+s.img+'.jpg" alt="'+esc(s.name)+'" loading="lazy"></div>'; if(s.imgNote==='暫用') cap='<span class="imcap">暫用照片</span>'; }
-    else if(TYPE[s.type]){ img='<div class="im"><img src="assets/img/sites/type-'+TYPE[s.type]+'.jpg" alt="" loading="lazy"></div>'; cap='<span class="imcap">場型示意｜非現場照片</span>'; }
-    else { img='<div class="im ph-img">照片準備中</div>'; }
+    var cap='', img='', im;
+    if(s.img){ img='<img src="assets/img/sites/'+s.img+'.jpg" alt="'+esc(s.name)+'" loading="lazy">'; if(s.imgNote==='暫用') cap='<span class="imcap">暫用照片</span>'; }
+    else if(TYPE[s.type]){ img='<img src="assets/img/sites/type-'+TYPE[s.type]+'.jpg" alt="" loading="lazy">'; cap='<span class="imcap">場型示意｜非現場照片</span>'; }
+    im=img?'<div class="im">'+img+cap+'</div>':'<div class="im ph-img"><span class="imcap">照片準備中</span></div>';
     var credit=s.imgCredit?'<a class="credit" href="'+esc(s.imgCredit.url)+'" target="_blank" rel="noopener">'+esc(s.imgCredit.label)+'</a>':'';
     var status=s.status==='營運中'?'<span class="chip g">營運中</span>':(s.status?'<span class="chip o">'+esc(s.status)+'</span>':'');
-    var addr=s.address?'<span class="addr">'+esc(s.address)+'</span>':'';
-    return '<article class="site">'+img+'<div class="bd">'+cap+'<h3>'+esc(s.name)+'</h3><div class="meta"><span class="chip">'+esc(s.city)+(s.district?' '+esc(s.district):'')+'</span><span class="chip b">'+esc(s.type)+'</span>'+status+'</div>'+addr+'<span class="muted" style="font-size:13px">'+esc(s.company)+'</span>'+credit+(s.map?'<a class="map" href="'+esc(s.map)+'" target="_blank" rel="noopener" aria-label="在地圖上查看'+esc(s.name)+'">地圖</a>':'')+'</div></article>';
+    var map=s.map?'<a class="map" href="'+esc(s.map)+'" target="_blank" rel="noopener" aria-label="在地圖上查看'+esc(s.name)+(s.mapLabel?'周邊':'')+'">'+esc(s.mapLabel||'地圖')+'</a>':'';
+    var loc=(s.address||map)?'<div class="loc">'+(s.address?'<span class="addr">'+esc(s.address)+'</span>':'')+map+'</div>':'';
+    return '<article class="site"><div class="bd"><h3>'+esc(s.name)+'</h3><div class="meta"><span class="chip">'+esc(s.city)+(s.district?' '+esc(s.district):'')+'</span><span class="chip b">'+esc(s.type)+'</span>'+status+'</div><span class="co">'+esc(s.company)+'</span>'+credit+loc+'</div>'+im+'</article>';
   }
 
   function render(){
-    var q=norm(state.q||'');
-    var list=sites.filter(function(s){return (state.city==='全部'||s.city===state.city)&&(state.company==='全部'||s.company===state.company)&&(!q||norm(s.name+(s.district||'')+s.city+(s.address||'')).indexOf(q)>-1);});
+    var raw=String(state.q||'').trim(), whole=norm(raw);
+    var toks=raw.split(/[\s,，、\/／;；]+/).map(norm).filter(Boolean);
+    var list=sites.filter(function(s){
+      if(!(state.city==='全部'||s.city===state.city)) return false;
+      if(!(state.company==='全部'||s.company===state.company)) return false;
+      if(!whole) return true;
+      var h=norm(s.name+(s.district||'')+s.city+(s.address||''));
+      if(h.indexOf(whole)>-1) return true;
+      for(var i=0;i<toks.length;i++){ if(h.indexOf(toks[i])<0) return false; }
+      return toks.length>0;
+    });
     grid.innerHTML=list.map(card).join('');
     cnt.textContent=list.length?('共 '+list.length+' 處'):'找不到符合的停車場，請換個關鍵字或清除篩選。';
+    var qh=document.getElementById('qhint'), qt=document.getElementById('qhint-t'), qg=document.getElementById('qhint-go');
+    if(qh&&qt){ qh.hidden=!state.q; qt.textContent=list.length?('找到 '+list.length+' 處'):'找不到符合「'+state.q+'」的停車場，請換個關鍵字。'; if(qg) qg.hidden=!list.length; }
     var z=document.getElementById('zero'); if(z){ z.hidden=!!list.length; var cq=document.getElementById('clear-q'), cf=document.getElementById('clear-f'); if(cq) cq.hidden=!state.q; if(cf) cf.hidden=(state.city==='全部'&&state.company==='全部'); }
     document.querySelectorAll('[data-f]').forEach(function(btn){btn.setAttribute('aria-pressed',state[btn.dataset.f]===btn.dataset.v);});
   }
@@ -45,7 +57,9 @@
   var cqb=document.getElementById('clear-q'), cfb=document.getElementById('clear-f');
   if(cqb) cqb.addEventListener('click',function(){ state.q=''; if(qi){ qi.value=''; } try{ var u=new URL(location.href); u.searchParams.delete('q'); history.replaceState(null,'',u);}catch(e){} render(); if(qi) qi.focus(); });
   if(cfb) cfb.addEventListener('click',function(){ state.city='全部'; state.company='全部'; render(); document.querySelectorAll('.citymap .cm').forEach(function(x){ x.setAttribute('aria-pressed','false'); }); });
+  var qhc=document.getElementById('qhint-clear'); if(qhc&&cqb) qhc.addEventListener('click',function(){ cqb.click(); });
   render();
+  if(state.q){ var tgt=document.getElementById('results')||cnt; requestAnimationFrame(function(){ var r=cnt.getBoundingClientRect(); if(r.top>window.innerHeight*0.6){ try{ tgt.scrollIntoView({block:'start'}); }catch(e){ tgt.scrollIntoView(); } } }); }
 })();
 
 // 合作洽詢：組成電子郵件（不經伺服器）
