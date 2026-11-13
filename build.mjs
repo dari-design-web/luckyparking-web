@@ -285,6 +285,14 @@ pages['about.html'] = {
 </div></section>`
 };
 
+const SITE_TYPE = { '地下': 'underground', '立體': 'multistorey', '平面': 'surface' };
+const siteCard = x => {
+  let img, cap = '';
+  if (x.img) { img = `<div class="im"><img src="assets/img/sites/${x.img}.jpg" alt="${esc(x.name)}" loading="lazy"></div>`; if (x.imgNote === '暫用') cap = '<span class="imcap">暫用照片</span>'; }
+  else if (SITE_TYPE[x.type]) { img = `<div class="im"><img src="assets/img/sites/type-${SITE_TYPE[x.type]}.jpg" alt="" loading="lazy"></div>`; cap = '<span class="imcap">場型示意｜非現場照片</span>'; }
+  else img = '<div class="im ph-img">照片準備中</div>';
+  return `<article class="site">${img}<div class="bd">${cap}<h3>${esc(x.name)}</h3><div class="meta"><span class="chip">${esc(x.city)}${x.district ? ' ' + esc(x.district) : ''}</span><span class="chip b">${esc(x.type)}</span>${x.status === '營運中' ? '<span class="chip g">營運中</span>' : ''}</div>${x.address ? `<span class="addr">${esc(x.address)}</span>` : ''}<span class="muted" style="font-size:13px">${esc(x.company)}</span>${x.imgCredit ? `<a class="credit" href="${esc(x.imgCredit.url)}" target="_blank" rel="noopener">${esc(x.imgCredit.label)}</a>` : ''}${x.map ? `<a class="map" href="${esc(x.map)}" target="_blank" rel="noopener" aria-label="在地圖上查看${esc(x.name)}">地圖</a>` : ''}</div></article>`;
+};
 const cities = ['全部', ...new Set(PARKING.map(p => p.city))];
 pages['parking.html'] = {
   title: '停車場經營', desc: `大日開發與千斗開發經營的 ${PARKING.length} 處停車場。`,
@@ -295,9 +303,10 @@ pages['parking.html'] = {
   <div class="citymap" aria-label="依縣市分布">${cities.filter(c => c !== '全部').map(c => `<button type="button" class="cm" data-city="${c}"><b class="num">${PARKING.filter(p => p.city === c).length}</b><span>${c}</span></button>`).join('')}</div>
   <div class="filters" role="group" aria-label="依縣市篩選">${cities.map(c => `<button type="button" data-f="city" data-v="${c}" aria-pressed="${c === '全部'}">${c}</button>`).join('')}</div>
   <div class="filters" role="group" aria-label="依經營公司篩選">${['全部', '大日開發', '千斗開發'].map(c => `<button type="button" data-f="company" data-v="${c}" aria-pressed="${c === '全部'}">${c === '全部' ? '全部公司' : c}</button>`).join('')}</div>
+  <noscript><p class="note">目前瀏覽器未啟用 JavaScript，以下為完整場站清單；搜尋與篩選需啟用 JavaScript。</p></noscript>
   <p class="count" id="count" role="status">共 ${PARKING.length} 處</p>
   <div class="zero" id="zero" hidden><button type="button" class="btn ghost" id="clear-q">清除關鍵字</button><button type="button" class="btn ghost" id="clear-f">清除篩選</button></div>
-  <div class="sites" id="sites-grid">${PARKING.map(s => `<article class="site">${s.img ? `<div class="im"><img src="assets/img/sites/${s.img}.jpg" alt="${esc(s.name)}" loading="lazy"></div>` : '<div class="im ph-img">照片準備中</div>'}<div class="bd"><h3>${esc(s.name)}</h3></div></article>`).join('')}</div>
+  <div class="sites" id="sites-grid">${PARKING.map(siteCard).join('')}</div>
   <script type="application/json" id="parking-data">${JSON.stringify(PARKING).replace(/</g, '\\u003c')}</script>
 </div></section>`
 };

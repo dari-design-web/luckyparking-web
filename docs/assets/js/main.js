@@ -23,15 +23,19 @@
   function esc(s){return String(s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
   function card(s){
     var TYPE={'地下':'underground','立體':'multistorey','平面':'surface'};
-    var img=s.img?'<div class="im"><img src="assets/img/sites/'+s.img+'.jpg" alt="'+esc(s.name)+'" loading="lazy">'+(s.imgNote?'<span class="tag">'+esc(s.imgNote)+'</span>':'')+'</div>'
-      :(TYPE[s.type]?'<div class="im"><img src="assets/img/sites/type-'+TYPE[s.type]+'.jpg" alt="" loading="lazy"><span class="tag">示意圖</span></div>':'<div class="im ph-img">照片準備中</div>');
+    var cap='', img;
+    if(s.img){ img='<div class="im"><img src="assets/img/sites/'+s.img+'.jpg" alt="'+esc(s.name)+'" loading="lazy"></div>'; if(s.imgNote==='暫用') cap='<span class="imcap">暫用照片</span>'; }
+    else if(TYPE[s.type]){ img='<div class="im"><img src="assets/img/sites/type-'+TYPE[s.type]+'.jpg" alt="" loading="lazy"></div>'; cap='<span class="imcap">場型示意｜非現場照片</span>'; }
+    else { img='<div class="im ph-img">照片準備中</div>'; }
     var credit=s.imgCredit?'<a class="credit" href="'+esc(s.imgCredit.url)+'" target="_blank" rel="noopener">'+esc(s.imgCredit.label)+'</a>':'';
     var status=s.status==='營運中'?'<span class="chip g">營運中</span>':(s.status?'<span class="chip o">'+esc(s.status)+'</span>':'');
-    return '<article class="site">'+img+'<div class="bd"><h3>'+esc(s.name)+'</h3><div class="meta"><span class="chip">'+esc(s.city)+(s.district?' '+esc(s.district):'')+'</span><span class="chip b">'+esc(s.type)+'</span>'+status+'</div><span class="muted" style="font-size:13px">'+esc(s.company)+'</span>'+credit+(s.map?'<a class="map" href="'+esc(s.map)+'" target="_blank" rel="noopener" aria-label="在地圖上查看'+esc(s.name)+'">地圖</a>':'')+'</div></article>';
+    var addr=s.address?'<span class="addr">'+esc(s.address)+'</span>':'';
+    return '<article class="site">'+img+'<div class="bd">'+cap+'<h3>'+esc(s.name)+'</h3><div class="meta"><span class="chip">'+esc(s.city)+(s.district?' '+esc(s.district):'')+'</span><span class="chip b">'+esc(s.type)+'</span>'+status+'</div>'+addr+'<span class="muted" style="font-size:13px">'+esc(s.company)+'</span>'+credit+(s.map?'<a class="map" href="'+esc(s.map)+'" target="_blank" rel="noopener" aria-label="在地圖上查看'+esc(s.name)+'">地圖</a>':'')+'</div></article>';
   }
+
   function render(){
     var q=norm(state.q||'');
-    var list=sites.filter(function(s){return (state.city==='全部'||s.city===state.city)&&(state.company==='全部'||s.company===state.company)&&(!q||norm(s.name+(s.district||'')+s.city).indexOf(q)>-1);});
+    var list=sites.filter(function(s){return (state.city==='全部'||s.city===state.city)&&(state.company==='全部'||s.company===state.company)&&(!q||norm(s.name+(s.district||'')+s.city+(s.address||'')).indexOf(q)>-1);});
     grid.innerHTML=list.map(card).join('');
     cnt.textContent=list.length?('共 '+list.length+' 處'):'找不到符合的停車場，請換個關鍵字或清除篩選。';
     var z=document.getElementById('zero'); if(z){ z.hidden=!!list.length; var cq=document.getElementById('clear-q'), cf=document.getElementById('clear-f'); if(cq) cq.hidden=!state.q; if(cf) cf.hidden=(state.city==='全部'&&state.company==='全部'); }
