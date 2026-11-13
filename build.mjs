@@ -72,6 +72,7 @@ ${body}
   <a href="contact.html"${file === 'contact.html' ? ' aria-current="page"' : ''}><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg>合作洽詢</a>
 </nav>
 <footer>
+  <div class="fband" aria-hidden="true"></div>
   <div class="wrap">
     <div class="fgrid">
       <div>
@@ -153,10 +154,10 @@ pages['index.html'] = {
 <section class="band alt tight">
   <div class="wrap">
     <div class="stats">
-      <div class="stat"><b class="num">${PARKING.length}<sub>處</sub></b><span>經營停車場，遍及臺北、新北、桃園、基隆</span></div>
-      <div class="stat"><b class="num">${VENUES.length}<sub>處</sub></b><span>多元化經營場域</span></div>
-      <div class="stat"><b class="num">3<sub>座</sub></b><span>財政部金擘獎優等</span></div>
-      <div class="stat"><b class="num">15<sub>場</sub></b><span>114 年度新北市金停獎（3 特優、12 優等）</span></div>
+      <div class="stat"><i class="si"><svg viewBox="0 0 24 24" aria-hidden="true">${ICON.car}</svg></i><b class="num"><span class="cu" data-to="${PARKING.length}">${PARKING.length}</span><sub>處</sub></b><span>經營停車場，遍及臺北、新北、桃園、基隆</span></div>
+      <div class="stat"><i class="si"><svg viewBox="0 0 24 24" aria-hidden="true">${ICON.heart}</svg></i><b class="num"><span class="cu" data-to="${VENUES.length}">${VENUES.length}</span><sub>處</sub></b><span>多元化經營場域</span></div>
+      <div class="stat"><i class="si"><svg viewBox="0 0 24 24" aria-hidden="true">${ICON.shield}</svg></i><b class="num"><span class="cu" data-to="3">3</span><sub>座</sub></b><span>財政部金擘獎優等</span></div>
+      <div class="stat"><i class="si"><svg viewBox="0 0 24 24" aria-hidden="true">${ICON.pin}</svg></i><b class="num"><span class="cu" data-to="15">15</span><sub>場</sub></b><span>114 年度新北市金停獎（3 特優、12 優等）</span></div>
     </div>
   </div>
 </section>
@@ -288,6 +289,7 @@ pages['parking.html'] = {
   body: `
 <section class="ph"><div class="wrap"><p class="eyebrow">停車場經營</p><h1>${PARKING.length} 處停車場，<br>遍及北北桃基。</h1><p class="lead">公有地下停車場、立體與平面停車場的委外經營。依縣市或經營公司篩選，點「地圖」查看位置。</p></div></section>
 <section class="band tight" style="padding-top:8px"><div class="wrap">
+  <div class="citymap" aria-label="依縣市分布">${cities.filter(c => c !== '全部').map(c => `<button type="button" class="cm" data-city="${c}"><b class="num">${PARKING.filter(p => p.city === c).length}</b><span>${c}</span></button>`).join('')}</div>
   <div class="filters" role="group" aria-label="依縣市篩選">${cities.map(c => `<button type="button" data-f="city" data-v="${c}" aria-pressed="${c === '全部'}">${c}</button>`).join('')}</div>
   <div class="filters" role="group" aria-label="依經營公司篩選">${['全部', '大日開發', '千斗開發'].map(c => `<button type="button" data-f="company" data-v="${c}" aria-pressed="${c === '全部'}">${c === '全部' ? '全部公司' : c}</button>`).join('')}</div>
   <p class="count" id="count" role="status">共 ${PARKING.length} 處</p>

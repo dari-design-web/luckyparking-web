@@ -83,3 +83,27 @@
   d.addEventListener('click',function(e){ if(e.target===d) close(); });
   d.addEventListener('close',function(){ v.pause(); });
 })();
+
+// v0.2：捲動淡入、數字跑動、縣市分布卡
+(function(){
+  var rm=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if(!('IntersectionObserver' in window)) return;
+  if(!rm){
+    document.documentElement.classList.add('js-rv');
+    var els=document.querySelectorAll('.band .head, .ph .wrap > *, .stat, .pillar, .tile, .vcard, .svc article, .news > a, .nlist article, .coop article, .venue, .ghg, .report, .group article, .tl > div, .site');
+    var io=new IntersectionObserver(function(es){ es.forEach(function(e){ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target);} }); },{rootMargin:'0px 0px -8% 0px'});
+    els.forEach(function(el,i){ var r=el.getBoundingClientRect(); if(r.top<window.innerHeight){ return; } el.classList.add('rv'); el.style.transitionDelay=((i%3)*80)+'ms'; io.observe(el); });
+  }
+  var cus=document.querySelectorAll('.cu[data-to]');
+  if(cus.length && !rm){
+    var io2=new IntersectionObserver(function(es){ es.forEach(function(e){ if(!e.isIntersecting) return; io2.unobserve(e.target); var el=e.target, to=+el.dataset.to, t0=null, d=1100;
+      function step(t){ if(!t0) t0=t; var p=Math.min(1,(t-t0)/d); el.textContent=Math.round(to*(1-Math.pow(1-p,3))); if(p<1) requestAnimationFrame(step); }
+      el.textContent='0'; requestAnimationFrame(step); }); },{threshold:.6});
+    cus.forEach(function(el){ io2.observe(el); });
+  }
+})();
+(function(){
+  var cms=document.querySelectorAll('.citymap .cm'); if(!cms.length) return;
+  cms.forEach(function(b){ b.addEventListener('click',function(){ var on=b.getAttribute('aria-pressed')==='true'; var target=document.querySelector('[data-f="city"][data-v="'+(on?'全部':b.dataset.city)+'"]'); if(target) target.click(); cms.forEach(function(x){ x.setAttribute('aria-pressed', (!on && x===b)?'true':'false'); }); }); });
+  document.querySelectorAll('[data-f="city"]').forEach(function(f){ f.addEventListener('click',function(){ cms.forEach(function(x){ x.setAttribute('aria-pressed', x.dataset.city===f.dataset.v?'true':'false'); }); }); });
+})();

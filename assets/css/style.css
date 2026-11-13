@@ -400,3 +400,19 @@ body.menu-open .nav{-webkit-backdrop-filter:none;backdrop-filter:none;background
 .vtiles .tile{flex:0 1 calc((100% - 32px) / 3);min-height:320px}
 @media (max-width:900px){.vtiles .tile{flex-basis:calc((100% - 16px) / 2)}}
 @media (max-width:560px){.vtiles .tile{flex-basis:100%;min-height:260px}}
+
+/* v0.2：數字圖示、捲動淡入、縣市分布、頁尾色帶 */
+.stat{position:relative}
+.stat .si{position:absolute;top:20px;right:20px;width:36px;height:36px;border-radius:10px;background:#eef3fa;display:grid;place-items:center}
+.stat .si svg{width:20px;height:20px;fill:none;stroke:var(--blue);stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.js-rv .rv{opacity:0;transform:translateY(22px);transition:opacity .7s ease,transform .7s cubic-bezier(.2,.7,.2,1)}
+.js-rv .rv.in{opacity:1;transform:none}
+@media (prefers-reduced-motion:reduce){.js-rv .rv{opacity:1;transform:none;transition:none}}
+.citymap{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:8px 0 20px}
+.citymap .cm{display:flex;align-items:baseline;gap:8px;justify-content:flex-start;padding:16px 18px;border-radius:16px;border:1px solid var(--line);background:linear-gradient(135deg,#fff,#f3f7fc);cursor:pointer;font:inherit;text-align:left;transition:border-color .2s,box-shadow .2s}
+.citymap .cm b{font-family:"Inter Tight";font-size:32px;font-weight:800;color:var(--blue);line-height:1}
+.citymap .cm span{font-size:15px;font-weight:700;color:var(--ink)}
+.citymap .cm:hover,.citymap .cm[aria-pressed="true"]{border-color:var(--blue);box-shadow:0 6px 18px rgba(37,97,169,.12)}
+@media (max-width:640px){.citymap{grid-template-columns:repeat(2,1fr);gap:8px}.citymap .cm{padding:12px 14px}.citymap .cm b{font-size:26px}}
+.fband{height:4px;background:linear-gradient(90deg,var(--blue) 0%,var(--blue) 60%,var(--orange) 100%);margin:-56px 0 52px}
+.stat b .cu{display:inline;margin:0;font-size:inherit;color:inherit}
