@@ -118,7 +118,8 @@ const svc = s => `<article><div class="ic"><svg viewBox="0 0 24 24" aria-hidden=
 
 const withImg = PARKING.filter(p => p.img);
 const fmtDate = d => d.length === 4 ? d : d;
-const newsCard = n => `<a href="news.html#n-${n.date}"><span class="chip ${n.cat === '獲獎' ? 'o' : 'b'}">${esc(n.cat)}</span><h3>${esc(n.title)}</h3><time class="num">${esc(fmtDate(n.date))}</time></a>`;
+const NEWS_IMG = { '公告': 'notice', '獲獎': 'award', '場域': 'venue' };
+const newsCard = n => `<a href="news.html#n-${n.date}"><img class="nimg" src="assets/img/news-${NEWS_IMG[n.cat] || 'notice'}.jpg" alt="" loading="lazy"><span class="chip ${n.cat === '獲獎' ? 'o' : 'b'}">${esc(n.cat)}</span><h3>${esc(n.title)}</h3><time class="num">${esc(fmtDate(n.date))}</time></a>`;
 const sortedNews = [...NEWS].sort((a, b) => b.date.localeCompare(a.date));
 
 const R = SITE.esgReport;
@@ -151,7 +152,7 @@ pages['index.html'] = {
   </div>
   ${SITE.hero.video ? '<button class="vtoggle" type="button" id="vtoggle" aria-label="暫停背景影片" aria-pressed="false"><span aria-hidden="true">❚❚</span></button>' : ''}
 </section>
-<section class="band alt tight">
+<section class="band alt tight statband">
   <div class="wrap">
     <div class="stats">
       <div class="stat"><i class="si"><svg viewBox="0 0 24 24" aria-hidden="true">${ICON.car}</svg></i><b class="num"><span class="cu" data-to="${PARKING.length}">${PARKING.length}</span><sub>處</sub></b><span>經營停車場，遍及臺北、新北、桃園、基隆</span></div>
@@ -166,7 +167,7 @@ pages['index.html'] = {
   <div class="wrap">
     <div class="head"><div><p class="eyebrow">我們的事業</p><h2 style="margin-top:8px">停車場，<br>也是城市的生活場域。</h2></div></div>
     <div class="pillars">
-      <a class="pillar" href="parking.html"><img src="assets/img/sites/rongxing.jpg" alt=""><span class="k">PARKING</span><h3>停車場經營</h3><p>公有與民間停車場委外經營，涵蓋臺北、新北、桃園、基隆。</p><span class="go">${PARKING.length} 處停車場</span></a>
+      <a class="pillar" href="parking.html"><img src="assets/img/pillar-parking.jpg" alt=""><span class="k">PARKING</span><h3>停車場經營</h3><p>公有與民間停車場委外經營，涵蓋臺北、新北、桃園、基隆。</p><span class="go">${PARKING.length} 處停車場</span></a>
       <a class="pillar brand" href="venues.html"><img src="assets/img/venues/railbike.jpg" alt=""><span class="k">BEYOND PARKING</span><h3>多元化經營</h3><p>結合商業空間、餐飲與休閒遊憩，讓停車延伸成完整的到訪體驗。</p><div class="names">${VENUES.map(v => `<span>${esc(v.name.split('｜')[0])}</span>`).join('')}</div><span class="go">了解多元化經營</span></a>
     </div>
   </div>
@@ -202,7 +203,8 @@ pages['index.html'] = {
 </section>
 
 <section class="band dark awardband">
-  <div class="abg" aria-hidden="true"><video class="abv" autoplay muted loop playsinline preload="none" poster="assets/img/bg-awards.jpg"><source src="assets/video/awards.mp4" type="video/mp4"></video></div>
+  <div class="abg" aria-hidden="true"><video class="abv bgv" muted loop playsinline preload="none" poster="assets/img/bg-awards.jpg" data-src="assets/video/awards.mp4"></video></div>
+  <button class="vtoggle bgtoggle" type="button" aria-label="暫停背景影片" aria-pressed="false"><span aria-hidden="true">❚❚</span></button>
   <div class="wrap awards">
     <div class="atext">
       <p class="eyebrow">榮譽獎項</p>
@@ -271,7 +273,7 @@ pages['about.html'] = {
     <div><b class="num">2016</b><p>智慧運輸產業創新獎；開始支持基隆市太陽早餐計畫</p></div>
     <div><b class="num">2017</b><p>金擘獎優等、兩項導航發明專利</p></div>
     <div><b class="num">2018</b><p>金擘獎優等</p></div>
-    <div><b class="num">2019</b><p>台灣建築獎首獎（基隆東岸停車商場）</p></div>
+    <div><b class="num">2019</b><p>臺灣建築獎首獎（基隆東岸停車商場）</p></div>
     <div><b class="num">2021</b><p>金擘獎優等（桃園青年體驗學習園區）</p></div>
     <div><b class="num">2024</b><p>叁肆行好食城開幕；依 ISO 14064-1 完成首次溫室氣體盤查</p></div>
     <div><b class="num">2025</b><p>新北市金停獎 3 場特優、12 場優等</p></div>
@@ -289,11 +291,12 @@ pages['parking.html'] = {
   body: `
 <section class="ph"><div class="wrap"><p class="eyebrow">停車場經營</p><h1>${PARKING.length} 處停車場，<br>遍及北北桃基。</h1><p class="lead">公有地下停車場、立體與平面停車場的委外經營。依縣市或經營公司篩選，點「地圖」查看位置。</p></div></section>
 <section class="band tight" style="padding-top:8px"><div class="wrap">
-  <div class="citymap" aria-label="依縣市分布">${cities.filter(c => c !== '全部').map(c => `<button type="button" class="cm" data-city="${c}"><b class="num">${PARKING.filter(p => p.city === c).length}</b><span>${c}</span></button>`).join('')}</div>
   <div class="search"><label for="q" class="sr">搜尋停車場</label><input id="q" type="search" placeholder="搜尋停車場名稱或行政區，例如：中和、榮星" autocomplete="off"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4.5 4.5"/></svg></div>
+  <div class="citymap" aria-label="依縣市分布">${cities.filter(c => c !== '全部').map(c => `<button type="button" class="cm" data-city="${c}"><b class="num">${PARKING.filter(p => p.city === c).length}</b><span>${c}</span></button>`).join('')}</div>
   <div class="filters" role="group" aria-label="依縣市篩選">${cities.map(c => `<button type="button" data-f="city" data-v="${c}" aria-pressed="${c === '全部'}">${c}</button>`).join('')}</div>
   <div class="filters" role="group" aria-label="依經營公司篩選">${['全部', '大日開發', '千斗開發'].map(c => `<button type="button" data-f="company" data-v="${c}" aria-pressed="${c === '全部'}">${c === '全部' ? '全部公司' : c}</button>`).join('')}</div>
   <p class="count" id="count" role="status">共 ${PARKING.length} 處</p>
+  <div class="zero" id="zero" hidden><button type="button" class="btn ghost" id="clear-q">清除關鍵字</button><button type="button" class="btn ghost" id="clear-f">清除篩選</button></div>
   <div class="sites" id="sites-grid">${PARKING.map(s => `<article class="site">${s.img ? `<div class="im"><img src="assets/img/sites/${s.img}.jpg" alt="${esc(s.name)}" loading="lazy"></div>` : '<div class="im ph-img">照片準備中</div>'}<div class="bd"><h3>${esc(s.name)}</h3></div></article>`).join('')}</div>
   <script type="application/json" id="parking-data">${JSON.stringify(PARKING).replace(/</g, '\\u003c')}</script>
 </div></section>`
@@ -312,7 +315,7 @@ pages['venues.html'] = {
       <p class="addr">${esc(v.address || v.city)}</p>
       <p class="muted">${esc(v.summary)}</p>
       ${v.points.length ? `<ul>${v.points.map(p => `<li>${esc(p)}</li>`).join('')}</ul>` : ''}
-      ${v.brands ? `<details class="brands"><summary class="bt">進駐品牌（${v.brands.reduce((a, g) => a + g.items.length, 0)}）</summary>${v.brands.map(g => `<p class="bg">${esc(g.group)}</p><div class="pill-list sm">${g.items.map(b => `<span>${esc(b)}</span>`).join('')}</div>`).join('')}${v.brandsNote ? `<p class="bn">${esc(v.brandsNote)}</p>` : ''}</details>` : ''}
+      ${v.brands ? `<details class="brands"><summary class="bt">進駐品牌（${v.brands.reduce((a, g) => a + g.items.length, 0)}）</summary>${v.brands.map(g => `<p class="bg">${esc(g.group)}</p><div class="pill-list sm">${g.items.map(b => `<span>${esc(b)}</span>`).join('')}</div>`).join('')}${v.brandsNote ? `<p class="bn">${esc(v.brandsNote)}${v.brandsSrc ? ` <a href="${esc(v.brandsSrc)}" target="_blank" rel="noopener">基隆港好食城店家資訊</a>` : ''}</p>` : ''}</details>` : ''}
       <div class="vlinks">${v.link ? `<a class="link" href="${esc(v.link)}" target="_blank" rel="noopener">${esc(v.linkLabel || '前往官網')}</a>` : ''}${v.todo ? '<span class="todo" style="margin-left:0">資料補充中</span>' : ''}</div>
     </div></article>`).join('')}
 </div></div></section>
@@ -417,6 +420,7 @@ pages['careers.html'] = {
   body: `
 <section class="ph"><div class="wrap"><p class="eyebrow">人才招募</p><h1>一起把每一處場域，<br>經營得更好。</h1><p class="lead">大日開發${esc(SITE.employees)}同仁，在總公司與北北桃基的停車場、商業空間與遊憩場域工作。我們需要願意在現場解決問題的人。</p></div></section>
 <section class="band tight"><div class="wrap">
+  <div class="intro-img"><img src="assets/img/img-careers.jpg" alt="" loading="lazy"><p>從停車場的每日巡檢、設備維護，到商業空間與遊憩場域的營運，每個崗位都在讓到訪的人更順利、更安心。</p></div>
   <div class="head"><h2>工作領域</h2></div>
   <div class="svc three">
     <article><div class="ic"><svg viewBox="0 0 24 24" aria-hidden="true">${ICON.car}</svg></div><h3>停車場營運</h3><p>場站服務、巡場與現場協助，維持停車場每天順暢運作。</p></article>
@@ -442,7 +446,7 @@ pages['news.html'] = {
   body: `
 <section class="ph"><div class="wrap"><p class="eyebrow">最新消息</p><h1>公告與動態</h1></div></section>
 <section class="band tight" style="padding-top:8px"><div class="wrap"><div class="nlist">
-  ${sortedNews.map(n => `<article id="n-${n.date}"><time class="num muted">${esc(n.date)}</time><div><span class="chip ${n.cat === '獲獎' ? 'o' : 'b'}">${esc(n.cat)}</span><h3 style="margin-top:6px">${esc(n.title)}</h3>${n.body ? `<p>${esc(n.body)}</p>` : ''}${n.link ? `<p><a class="link" href="${esc(n.link)}" target="_blank" rel="noopener">${esc(n.linkLabel || '相關連結')}</a></p>` : ''}</div></article>`).join('')}
+  ${sortedNews.map(n => `<article id="n-${n.date}"><time class="num muted">${esc(n.date)}</time><img class="nimg" src="assets/img/news-${NEWS_IMG[n.cat] || 'notice'}.jpg" alt="" loading="lazy"><div><span class="chip ${n.cat === '獲獎' ? 'o' : 'b'}">${esc(n.cat)}</span><h3 style="margin-top:6px">${esc(n.title)}</h3>${n.body ? `<p>${esc(n.body)}</p>` : ''}${n.link ? `<p><a class="link" href="${esc(n.link)}" target="_blank" rel="noopener">${esc(n.linkLabel || '相關連結')}</a></p>` : ''}</div></article>`).join('')}
 </div></div></section>`
 };
 
@@ -450,7 +454,7 @@ pages['contact.html'] = {
   title: '合作洽詢', desc: '停車場委外經營與商業空間多元化合作洽詢。',
   body: `
 <section class="ph"><div class="wrap"><p class="eyebrow">合作洽詢</p><h1>兩種合作方式，<br>找到適合您的。</h1></div></section>
-<section class="band tight"><div class="wrap"><div class="coop">
+<section class="band tight"><div class="wrap"><div class="intro-img"><img src="assets/img/img-contact.jpg" alt="" loading="lazy"><p>不論是公有停車場委外、民間停車場代管，或商業空間與遊憩場域的整體經營，我們會先了解場域條件與目標，再提出可行的經營規劃。</p></div><div class="coop">
   <article><p class="eyebrow">PARKING</p><h3>停車場委外經營</h3><ul><li>公有停車場標案與營運移轉</li><li>民間大樓、園區、社宅停車場代管</li><li>智慧停管設備導入與場域改善</li></ul></article>
   <article><p class="eyebrow">BEYOND PARKING</p><h3>商業空間與多元化合作</h3><ul><li>商業空間＋停車場整合經營</li><li>餐飲、休閒遊憩場域營運</li><li>場域規劃與活動合作</li></ul></article>
 </div></div></section>
@@ -514,9 +518,12 @@ fs.mkdirSync(OUT, { recursive: true });
 fs.cpSync(path.join(ROOT, 'assets'), path.join(OUT, 'assets'), { recursive: true });
 const PH = { 'about.html': 'about', 'parking.html': 'parking', 'venues.html': 'venues', 'services.html': 'services', 'awards.html': 'awards', 'esg.html': 'esg', 'news.html': 'news', 'contact.html': 'contact', 'careers.html': 'careers' };
 const PH_DARK = new Set(['awards']);
+const PH_SHORT = new Set(['parking', 'news']);
+const PH_VIDEO = { parking: { src: 'assets/video/parking.mp4', poster: 'assets/img/ph/parking-poster.jpg' } };
 for (const [file, p] of Object.entries(pages)) {
   const n = PH[file];
-  if (n) p.body = p.body.replace('<section class="ph"><div class="wrap">', `<section class="ph has-img${PH_DARK.has(n) ? ' dark' : ''}"><picture class="phimg"><source media="(max-width:700px)" srcset="assets/img/ph/${n}-m.jpg"><img src="assets/img/ph/${n}.jpg" alt="" fetchpriority="high"></picture><div class="wrap">`);
+  const vid = PH_VIDEO[n];
+  if (n) p.body = p.body.replace('<section class="ph"><div class="wrap">', `<section class="ph has-img${PH_DARK.has(n) ? ' dark' : ''}${vid ? ' has-vid' : ''}${PH_SHORT.has(n) ? ' short' : ''}"><picture class="phimg"><source media="(max-width:700px)" srcset="assets/img/ph/${n}-m.jpg"><img src="${vid ? vid.poster : `assets/img/ph/${n}.jpg`}" alt="" fetchpriority="high"></picture>${vid ? `<video class="bgv" muted loop playsinline preload="none" poster="${vid.poster}" data-src="${vid.src}" aria-hidden="true"></video><button class="vtoggle bgtoggle" type="button" aria-label="暫停背景影片" aria-pressed="false"><span aria-hidden="true">❚❚</span></button>` : ''}<div class="wrap">`);
   fs.writeFileSync(path.join(OUT, file), layout({ file, ...p }));
 }
 fs.writeFileSync(path.join(OUT, '.nojekyll'), '');

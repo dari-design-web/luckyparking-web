@@ -19,6 +19,7 @@
   var qi=document.getElementById('q');
   try{ var qp=new URLSearchParams(location.search).get('q'); if(qp&&qi){ qi.value=qp; state.q=qp; } }catch(e){}
   if(qi) qi.addEventListener('input',function(){ state.q=qi.value.trim(); render(); try{ var u=new URL(location.href); if(state.q) u.searchParams.set('q',state.q); else u.searchParams.delete('q'); history.replaceState(null,'',u); }catch(e){} });
+  function norm(t){ t=String(t||''); try{ t=t.normalize('NFKC'); }catch(e){} return t.replace(/台/g,'臺').replace(/\s+/g,'').toLowerCase(); }
   function esc(s){return String(s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
   function card(s){
     var img=s.img?'<div class="im"><img src="assets/img/sites/'+s.img+'.jpg" alt="'+esc(s.name)+'" loading="lazy">'+(s.imgNote?'<span class="tag">'+esc(s.imgNote)+'</span>':'')+'</div>':'<div class="im ph-img">照片準備中</div>';
@@ -27,13 +28,17 @@
     return '<article class="site">'+img+'<div class="bd"><h3>'+esc(s.name)+'</h3><div class="meta"><span class="chip">'+esc(s.city)+(s.district?' '+esc(s.district):'')+'</span><span class="chip b">'+esc(s.type)+'</span>'+status+'</div><span class="muted" style="font-size:13px">'+esc(s.company)+'</span>'+credit+(s.map?'<a class="map" href="'+esc(s.map)+'" target="_blank" rel="noopener" aria-label="在地圖上查看'+esc(s.name)+'">地圖</a>':'')+'</div></article>';
   }
   function render(){
-    var q=(state.q||'').replace(/\s+/g,'');
-    var list=sites.filter(function(s){return (state.city==='全部'||s.city===state.city)&&(state.company==='全部'||s.company===state.company)&&(!q||(s.name+(s.district||'')+s.city).indexOf(q)>-1);});
+    var q=norm(state.q||'');
+    var list=sites.filter(function(s){return (state.city==='全部'||s.city===state.city)&&(state.company==='全部'||s.company===state.company)&&(!q||norm(s.name+(s.district||'')+s.city).indexOf(q)>-1);});
     grid.innerHTML=list.map(card).join('');
     cnt.textContent=list.length?('共 '+list.length+' 處'):'找不到符合的停車場，請換個關鍵字或清除篩選。';
+    var z=document.getElementById('zero'); if(z){ z.hidden=!!list.length; var cq=document.getElementById('clear-q'), cf=document.getElementById('clear-f'); if(cq) cq.hidden=!state.q; if(cf) cf.hidden=(state.city==='全部'&&state.company==='全部'); }
     document.querySelectorAll('[data-f]').forEach(function(btn){btn.setAttribute('aria-pressed',state[btn.dataset.f]===btn.dataset.v);});
   }
   document.querySelectorAll('[data-f]').forEach(function(btn){btn.addEventListener('click',function(){state[btn.dataset.f]=btn.dataset.v;render();});});
+  var cqb=document.getElementById('clear-q'), cfb=document.getElementById('clear-f');
+  if(cqb) cqb.addEventListener('click',function(){ state.q=''; if(qi){ qi.value=''; } try{ var u=new URL(location.href); u.searchParams.delete('q'); history.replaceState(null,'',u);}catch(e){} render(); if(qi) qi.focus(); });
+  if(cfb) cfb.addEventListener('click',function(){ state.city='全部'; state.company='全部'; render(); document.querySelectorAll('.citymap .cm').forEach(function(x){ x.setAttribute('aria-pressed','false'); }); });
   render();
 })();
 
@@ -112,10 +117,17 @@
   document.querySelectorAll('[data-f="city"]').forEach(function(f){ f.addEventListener('click',function(){ cms.forEach(function(x){ x.setAttribute('aria-pressed', x.dataset.city===f.dataset.v?'true':'false'); }); }); });
 })();
 
-// 獎項背景影片：離開畫面暫停；減少動態不播
+// 背景影片（獎項區、頁首）：只在桌機且未設定「減少動態」時載入播放；有暫停鍵；離開畫面暫停
 (function(){
-  var v=document.querySelector('.abv'); if(!v) return;
-  var rm=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  if(rm){ v.pause(); v.removeAttribute('autoplay'); return; }
-  if('IntersectionObserver' in window){ new IntersectionObserver(function(es){ es.forEach(function(e){ if(e.isIntersecting){ var r=v.play(); if(r&&r.catch) r.catch(function(){}); } else v.pause(); }); },{threshold:.1}).observe(v); }
+  var vids=document.querySelectorAll('video.bgv'); if(!vids.length) return;
+  var mqD=window.matchMedia('(min-width: 701px)'), rm=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  vids.forEach(function(v){
+    var sec=v.closest('section'), b=sec&&sec.querySelector('.bgtoggle'), user=false, vis=false;
+    function canPlay(){ return mqD.matches && !rm && !user; }
+    function setBtn(paused){ if(!b) return; b.setAttribute('aria-pressed',paused); b.setAttribute('aria-label',paused?'播放背景影片':'暫停背景影片'); }
+    function go(){ if(canPlay()&&vis){ if(!v.src){ v.src=v.dataset.src; } var r=v.play(); if(r&&r.catch) r.catch(function(){}); setBtn(false); } else { v.pause(); setBtn(true); } }
+    if(b) b.addEventListener('click',function(){ user=!user; go(); });
+    if('IntersectionObserver' in window){ new IntersectionObserver(function(es){ es.forEach(function(e){ vis=e.isIntersecting; go(); }); },{threshold:.1}).observe(sec||v); } else { vis=true; go(); }
+    if(mqD.addEventListener) mqD.addEventListener('change',go);
+  });
 })();
