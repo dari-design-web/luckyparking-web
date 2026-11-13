@@ -187,8 +187,8 @@ pages['index.html'] = {
 <section class="band">
   <div class="wrap">
     <div class="head"><div><p class="eyebrow">多元化經營</p><h2 style="margin-top:8px">從停車入口，<br>走進不同的場域。</h2></div><a class="link" href="venues.html">五個場域</a></div>
-    <div class="bento">
-      ${VENUES.map((v, i) => `<a class="tile photo ${['c4 tall', 'c2 tall', 'c2', 'c2', 'c2'][i] || 'c2'}" href="venues.html#${v.id}"><img src="${v.img}" alt="" loading="lazy"><span class="tag">場域意象</span><h3>${esc(v.name.split('｜')[0])}</h3><p>${esc(v.kind)}・${esc(v.city)}</p></a>`).join('')}
+    <div class="vtiles">
+      ${VENUES.map((v, i) => `<a class="tile photo" href="venues.html#${v.id}"><img src="${v.img}" alt="" loading="lazy"><span class="tag">場域意象</span><h3>${esc(v.name.split('｜')[0])}</h3><p>${esc(v.kind)}・${esc(v.city)}</p></a>`).join('')}
     </div>
   </div>
 </section>
@@ -309,7 +309,8 @@ pages['venues.html'] = {
       <p class="addr">${esc(v.address || v.city)}</p>
       <p class="muted">${esc(v.summary)}</p>
       ${v.points.length ? `<ul>${v.points.map(p => `<li>${esc(p)}</li>`).join('')}</ul>` : ''}
-      <div class="vlinks">${v.link ? `<a class="link" href="${esc(v.link)}" target="_blank" rel="noopener">前往官網</a>` : ''}${v.todo ? '<span class="todo" style="margin-left:0">資料補充中</span>' : ''}</div>
+      ${v.brands ? `<div class="brands"><p class="bt">進駐品牌</p>${v.brands.map(g => `<p class="bg">${esc(g.group)}</p><div class="pill-list sm">${g.items.map(b => `<span>${esc(b)}</span>`).join('')}</div>`).join('')}${v.brandsNote ? `<p class="bn">${esc(v.brandsNote)}</p>` : ''}</div>` : ''}
+      <div class="vlinks">${v.link ? `<a class="link" href="${esc(v.link)}" target="_blank" rel="noopener">${esc(v.linkLabel || '前往官網')}</a>` : ''}${v.todo ? '<span class="todo" style="margin-left:0">資料補充中</span>' : ''}</div>
     </div></article>`).join('')}
 </div></div></section>
 <section class="band alt"><div class="wrap">

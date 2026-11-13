@@ -384,3 +384,19 @@ footer{background:var(--surface);padding-block:56px 32px;font-size:14px;color:va
 }
 body.menu-open .nav{-webkit-backdrop-filter:none;backdrop-filter:none;background:#fff}
 .menu.open .menu-extra > a{display:block}
+
+/* 多元化經營：五張卡同尺寸（3＋2，第二列置中） */
+.vcards{display:flex;flex-wrap:wrap;justify-content:center;gap:20px}
+.vcard,.vcard:nth-child(4),.vcard:nth-child(5){grid-column:auto;flex:0 1 calc((100% - 40px) / 3);min-width:0}
+@media (max-width:980px){.vcard,.vcard:nth-child(4),.vcard:nth-child(5){flex-basis:calc((100% - 20px) / 2)}}
+@media (max-width:640px){.vcard,.vcard:nth-child(4),.vcard:nth-child(5){flex-basis:100%}}
+.brands{margin-top:6px;padding-top:12px;border-top:1px solid var(--line)}
+.brands .bt{font-size:13px;font-weight:800;letter-spacing:.08em;color:var(--blue)}
+.brands .bg{font-size:12.5px;color:var(--ink-2);margin-top:8px}
+.pill-list.sm{margin-top:6px;gap:6px}
+.pill-list.sm span{font-size:13px;padding:4px 10px}
+.brands .bn{font-size:12px;color:var(--ink-2);margin-top:8px}
+.vtiles{display:flex;flex-wrap:wrap;justify-content:center;gap:16px}
+.vtiles .tile{flex:0 1 calc((100% - 32px) / 3);min-height:320px}
+@media (max-width:900px){.vtiles .tile{flex-basis:calc((100% - 16px) / 2)}}
+@media (max-width:560px){.vtiles .tile{flex-basis:100%;min-height:260px}}

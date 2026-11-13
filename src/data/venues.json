@@ -12,12 +12,13 @@
    "地下停車場"
   ],
   "img": "assets/img/venues/archives.jpg",
-  "link": null,
+  "link": "https://www.archives.gov.tw/tw/arctw/",
   "src": [
    "https://www.nownews.com/news/6726071"
   ],
   "todo": false,
-  "imgNote": "場域意象"
+  "imgNote": "場域意象",
+  "linkLabel": "國家檔案館官網"
  },
  {
   "id": "sansihang",
@@ -35,10 +36,34 @@
   "link": null,
   "src": [
    "https://travel.klcg.gov.tw/TourContent.aspx?n=7841&s=710",
-   "https://www.nownews.com/news/6357573"
+   "https://www.nownews.com/news/6357573",
+   "https://supertaste.tvbs.com.tw/travel/347601"
   ],
   "todo": false,
-  "imgNote": "場域意象"
+  "imgNote": "場域意象",
+  "brands": [
+   {
+    "group": "餐飲",
+    "items": [
+     "新宿勝博殿日式豬排",
+     "饗泰多",
+     "開飯川食堂",
+     "檀島香港餐廳",
+     "布娜飛比利時啤酒餐酒館",
+     "涮乃葉日式涮涮鍋",
+     "雙月食品社"
+    ]
+   },
+   {
+    "group": "咖啡・選物",
+    "items": [
+     "三奇壹號 × 築甜製菓",
+     "札幌藥妝",
+     "屋裡商行"
+    ]
+   }
+  ],
+  "brandsNote": "2024 年 2 月開幕時進駐品牌"
  },
  {
   "id": "tyac",
@@ -58,7 +83,8 @@
    "https://www.tyacamps.com.tw/tw/introduction/base"
   ],
   "todo": false,
-  "imgNote": "場域意象"
+  "imgNote": "場域意象",
+  "linkLabel": "TYAC 官網"
  },
  {
   "id": "houhu",
@@ -98,6 +124,7 @@
    "https://www.railbike.com.tw/tw"
   ],
   "todo": false,
-  "imgNote": "場域意象"
+  "imgNote": "場域意象",
+  "linkLabel": "深澳鐵道自行車官網"
  }
 ]
