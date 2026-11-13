@@ -1,7 +1,13 @@
 // 選單（手機）
 (function(){
   var b=document.getElementById('burger'), m=document.getElementById('menu');
-  if(b&&m){b.addEventListener('click',function(){m.classList.toggle('open');b.setAttribute('aria-expanded',m.classList.contains('open'));});}
+  if(b&&m){
+    function setOpen(o){ m.classList.toggle('open',o); b.setAttribute('aria-expanded',o); b.setAttribute('aria-label',o?'關閉選單':'開啟選單'); document.body.classList.toggle('menu-open',o); }
+    b.addEventListener('click',function(){ setOpen(!m.classList.contains('open')); });
+    m.addEventListener('click',function(e){ if(e.target.closest('a')) setOpen(false); });
+    document.addEventListener('keydown',function(e){ if(e.key==='Escape'&&m.classList.contains('open')){ setOpen(false); b.focus(); } });
+    window.addEventListener('resize',function(){ if(window.innerWidth>1040) setOpen(false); });
+  }
 })();
 
 // 停車場篩選

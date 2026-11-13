@@ -57,20 +57,26 @@ ${noindex ? '<meta name="robots" content="noindex">' : `<link rel="canonical" hr
 <header class="nav">
   <div class="wrap">
     <a class="brand" href="index.html" aria-label="大日開發 首頁"><img src="assets/img/logo-dari.png" alt="大日 DARI GROUP" width="130" height="34"></a>
-    <nav class="menu" id="menu" aria-label="主選單">${menu}</nav>
+    <nav class="menu" id="menu" aria-label="主選單">${menu}<div class="menu-extra"><a href="careers.html"${file === 'careers.html' ? ' aria-current="page"' : ''}>人才招募</a><div class="menu-actions"><a class="btn primary" href="contact.html">合作洽詢</a><a class="btn ghost" href="tel:${SITE.phone.replace(/[^0-9]/g, '')}">撥打 ${esc(SITE.phone)}</a></div></div></nav>
     <a class="nav-cta" href="contact.html">合作洽詢</a>
-    <button class="burger" type="button" id="burger" aria-label="開啟選單" aria-expanded="false" aria-controls="menu">≡</button>
+    <button class="burger" type="button" id="burger" aria-label="開啟選單" aria-expanded="false" aria-controls="menu"><span></span><span></span><span></span></button>
   </div>
 </header>
 <main id="main">
 ${body}
 </main>
+<nav class="tabbar" aria-label="快速功能">
+  <a href="parking.html"${file === 'parking.html' ? ' aria-current="page"' : ''}><svg viewBox="0 0 24 24" aria-hidden="true">${ICON.pin}</svg>查停車</a>
+  <a href="venues.html"${file === 'venues.html' ? ' aria-current="page"' : ''}><svg viewBox="0 0 24 24" aria-hidden="true">${ICON.heart}</svg>多元場域</a>
+  <a href="tel:${SITE.phone.replace(/[^0-9]/g, '')}"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2z"/></svg>來電</a>
+  <a href="contact.html"${file === 'contact.html' ? ' aria-current="page"' : ''}><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg>合作洽詢</a>
+</nav>
 <footer>
   <div class="wrap">
     <div class="fgrid">
       <div>
         <img class="flogo" src="assets/img/logo-dari-full.png" alt="大日開發有限公司 DARI GROUP" width="186" height="30">
-        <p>${esc(SITE.address)}<br><span class="num">${esc(SITE.phone)}</span><br>${esc(SITE.email)}</p>
+        <p>${esc(SITE.address)}<br><a class="num" href="tel:${SITE.phone.replace(/[^0-9]/g, '')}">${esc(SITE.phone)}</a><br><a href="mailto:${esc(SITE.email)}">${esc(SITE.email)}</a></p>
       </div>
       <div><h4>關於</h4><a href="about.html">關於大日</a><a href="awards.html">榮譽獎項</a><a href="esg.html">永續 ESG</a><a href="careers.html">人才招募</a></div>
       <div><h4>事業</h4><a href="parking.html">停車場經營</a><a href="venues.html">多元化經營</a><a href="services.html">智慧服務</a></div>
@@ -341,14 +347,14 @@ pages['awards.html'] = {
   body: `
 <section class="ph"><div class="wrap"><p class="eyebrow">榮譽獎項</p><h1>被肯定的經營品質</h1></div></section>
 <section class="band tight"><div class="wrap"><div class="bento">
-  <div class="tile c4 tall" style="background:#fff;padding:0;border:1px solid var(--line)"><img src="assets/img/awards/award-jinbi.jpg" alt="金擘獎優等獎座" style="position:static;width:100%;height:100%;object-fit:contain"></div>
+  <div class="tile c4 tall imgtile" style="background:#fff;padding:0;border:1px solid var(--line)"><img src="assets/img/awards/award-jinbi.jpg" alt="金擘獎優等獎座" style="position:static;width:100%;height:100%;object-fit:contain"></div>
   <div class="tile c2 tall"><p class="eyebrow">財政部</p><h3 style="margin-top:8px">金擘獎優等 ×3</h3><p class="muted">106、107、110 年度民間經營團隊</p></div>
-  <div class="tile c3" style="background:#fff;padding:0;min-height:220px;border:1px solid var(--line)"><img src="assets/img/awards/award-jinting.jpg" alt="114 年度新北市金停獎獎狀" style="position:static;width:100%;height:100%;object-fit:contain"></div>
+  <div class="tile c3 imgtile" style="background:#fff;padding:0;min-height:220px;border:1px solid var(--line)"><img src="assets/img/awards/award-jinting.jpg" alt="114 年度新北市金停獎獎狀" style="position:static;width:100%;height:100%;object-fit:contain"></div>
   <div class="tile c3"><p class="eyebrow">新北市政府 114 年度</p><h3 style="margin-top:8px">金停獎 3 場特優、12 場優等</h3><p class="muted">特優：三重光榮國小、中和錦和運動公園、碧潭東岸平面停車場</p></div>
 </div></div></section>
 <section class="band alt"><div class="wrap">
   <div class="tbl"><table><thead><tr><th>年份</th><th>獎項</th><th>說明</th></tr></thead><tbody>
-  ${AWARDS.map(a => `<tr><td class="n">${a.year}</td><td><b>${esc(a.title)}</b></td><td>${esc(a.detail)}</td></tr>`).join('')}
+  ${AWARDS.map(a => `<tr><td class="n">${a.year}</td><td class="t"><b>${esc(a.title)}</b></td><td class="d">${esc(a.detail)}</td></tr>`).join('')}
   </tbody></table></div>
 </div></section>`
 };
@@ -446,8 +452,8 @@ pages['contact.html'] = {
 </div></div></section>
 <section class="band alt"><div class="wrap contact">
   <dl>
-    <div><dt>商業合作信箱</dt><dd>${esc(SITE.email)}</dd></div>
-    <div><dt>電話</dt><dd class="num">${esc(SITE.phone)}</dd></div>
+    <div><dt>商業合作信箱</dt><dd><a href="mailto:${esc(SITE.email)}">${esc(SITE.email)}</a></dd></div>
+    <div><dt>電話</dt><dd class="num"><a href="tel:${SITE.phone.replace(/[^0-9]/g, '')}">${esc(SITE.phone)}</a></dd></div>
     <div><dt>地址</dt><dd>${esc(SITE.address)}</dd></div>
     <div><dt>社群</dt><dd><a href="${esc(SITE.facebook)}" target="_blank" rel="noopener">Facebook 粉絲專頁</a></dd></div>
   </dl>
