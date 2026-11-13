@@ -1,17 +1,26 @@
 {
-  "name": "大日開發有限公司",
-  "brand": "DARI GROUP",
-  "parkingBrand": "Lucky Parking",
-  "tagline": "深入在地・便利停車・智慧生活",
-  "founded": "民國 88 年",
-  "capital": "新臺幣 2.2 億元",
-  "address": "臺北市中山區建國北路二段 258 巷 27 號 1 樓",
-  "phone": "(02) 2502-3333",
-  "email": "dari25420001@gmail.com",
-  "facebook": "https://www.facebook.com/luckyparking.tw/",
-  "esgReport": {
-    "title": "2025 永續報告書",
-    "url": "https://drive.google.com/file/d/12kaNEWzyYejc0eAabvLZzf3sXVSC-oY1/view?usp=drive_link",
-    "qr": "assets/img/esg-qr.svg"
-  }
+ "name": "大日開發有限公司",
+ "brand": "DARI GROUP",
+ "parkingBrand": "Lucky Parking",
+ "tagline": "深入在地・便利停車・智慧生活",
+ "founded": "民國 88 年",
+ "capital": "新臺幣 2.2 億元",
+ "address": "臺北市中山區建國北路二段 258 巷 27 號 1 樓",
+ "phone": "(02) 2502-3333",
+ "email": "dari25420001@gmail.com",
+ "facebook": "https://www.facebook.com/luckyparking.tw/",
+ "esgReport": {
+  "title": "2025 永續報告書",
+  "subtitle": "2024 年溫室氣體盤查管理報告書（ISO 14064-1:2018）",
+  "url": "https://drive.google.com/file/d/12kaNEWzyYejc0eAabvLZzf3sXVSC-oY1/view?usp=drive_link",
+  "download": "https://drive.google.com/uc?export=download&id=12kaNEWzyYejc0eAabvLZzf3sXVSC-oY1",
+  "qr": "assets/img/esg-qr.svg"
+ },
+ "hero": {
+  "video": "assets/video/hero-test.mp4",
+  "poster": "assets/img/hero.jpg",
+  "note": "測試影片：由場域意象圖合成，正式影片確定後替換 video 路徑即可；留空則只顯示圖片"
+ },
+ "employees": "約 200 名",
+ "jobsEmail": "dari25420001@gmail.com"
 }

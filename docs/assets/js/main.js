@@ -41,3 +41,12 @@
     st.style.color='';st.textContent='已開啟您的郵件程式，請按「傳送」完成寄出。若沒有開啟，請直接寄信至 '+to+'。';
   });
 })();
+
+// 首頁背景影片：暫停／播放；系統設定「減少動態」時不自動播放
+(function(){
+  var v=document.getElementById('hero-video'), b=document.getElementById('vtoggle'); if(!v||!b) return;
+  var rm=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  function set(p){ if(p){v.pause();}else{var r=v.play(); if(r&&r.catch) r.catch(function(){});} b.setAttribute('aria-pressed',p); b.setAttribute('aria-label',p?'播放背景影片':'暫停背景影片'); }
+  if(rm) set(true);
+  b.addEventListener('click',function(){ set(!v.paused ? true : false); });
+})();

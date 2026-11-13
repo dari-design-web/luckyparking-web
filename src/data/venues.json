@@ -1,7 +1,103 @@
 [
-  {"id":"archives","name":"國家檔案館","kind":"商業空間＋停車場","city":"新北市林口區","address":"新北市林口區檔案館路 1 號","summary":"國家檔案館的附屬商業空間與停車服務。館內有檔案展覽與閱覽空間，到訪者停好車即可參觀、用餐。","points":["館內附屬商業空間經營","地下停車場經營","鄰近檔案展覽與閱覽空間"],"img":"assets/img/sites/archives.jpg","link":null,"src":["https://www.nownews.com/news/6726071"],"todo":true},
-  {"id":"sansihang","name":"叁肆行｜東三東四旅客服務中心","kind":"商業空間＋停車場","city":"基隆市中正區","address":"基隆市中正區中正路 3 號 1、2 樓","summary":"基隆港東岸旅客服務中心 1、2 樓的商業空間「叁肆行」，總面積約 3,650 坪。好食城集結臺灣小吃、異國料理與人氣餐廳，座位面向基隆港與郵輪。","points":["叁肆行好食城：小吃、異國料理與人氣餐廳","面向基隆港的海景座位","同棟的東三東四停車場"],"img":null,"link":null,"src":["https://travel.klcg.gov.tw/TourContent.aspx?n=7841&s=710","https://www.nownews.com/news/6357573"],"todo":true},
-  {"id":"tyac","name":"桃園青年體驗學習園區 TYAC","kind":"體驗學習・休閒遊憩","city":"桃園市新屋區","address":"桃園市新屋區新港路 16 號","summary":"以繩索挑戰、團隊課程與水上活動為主的戶外體驗學習基地，可辦理學校、企業與親子團體活動。","points":["60 項高低空及自我確保挑戰設施，另有 2 項團隊對抗設施","水上獨木舟體驗課程","會議廳、教室、宿舍、餐飲與烤肉場地"],"img":null,"link":"https://www.tyacamps.com.tw/","src":["https://www.tyacamps.com.tw/tw/introduction/base"],"todo":true},
-  {"id":"houhu","name":"後湖溪親水園區｜舟日咖啡","kind":"水岸遊憩＋餐飲","city":"桃園市新屋區","address":"舟日咖啡：桃園市新屋區永安里新港路 166 號","summary":"新屋後湖溪的水岸園區。園區內的舟日咖啡以大片玻璃窗面向水岸，把咖啡休憩、濱海生態與戶外活動串在一起。","points":["玻璃面水景咖啡空間","鄰近獨木舟、SUP 等水域活動（依園區公告）","可串連永安漁港、海螺文化體驗園區"],"img":null,"link":null,"src":["https://travel.tycg.gov.tw/zh-tw/consume/detail/3252"],"todo":true},
-  {"id":"railbike","name":"深澳鐵道自行車","kind":"觀光遊憩","city":"新北市瑞芳區","address":"八斗子月台：新北市瑞芳區建基路二段 121 號","summary":"由舊運煤鐵道改建的觀光鐵道自行車，全長約 1.3 公里，沿北海岸行駛，一路看海景與礦業遺跡。","points":["河豚造型車廂","深澳端隧道的海底主題燈光","鄰近象鼻岩、潮境公園、望幽谷"],"img":null,"link":"https://www.railbike.com.tw/","src":["https://www.railbike.com.tw/tw"],"todo":false}
+ {
+  "id": "archives",
+  "name": "國家檔案館",
+  "kind": "商業空間＋停車場",
+  "city": "新北市林口區",
+  "address": "新北市林口區檔案館路 1 號",
+  "summary": "國家檔案館的附屬商業空間與停車場由大日招商經營：館內文創商店與 WALK IN 咖啡，讓參觀檔案展覽的民眾可以逛、可以坐下來喝杯咖啡。",
+  "points": [
+   "館內文創商店",
+   "WALK IN 咖啡",
+   "地下停車場"
+  ],
+  "img": "assets/img/venues/archives.jpg",
+  "link": null,
+  "src": [
+   "https://www.nownews.com/news/6726071"
+  ],
+  "todo": false,
+  "imgNote": "場域意象"
+ },
+ {
+  "id": "sansihang",
+  "name": "叁肆行｜東三東四旅客服務中心",
+  "kind": "商業空間＋停車場",
+  "city": "基隆市中正區",
+  "address": "基隆市中正區中正路 3 號 1、2 樓",
+  "summary": "基隆港東岸旅客服務中心 1、2 樓的商業空間「叁肆行」由大日招商經營，總面積約 3,650 坪。好食城集結臺灣小吃、異國料理與人氣餐廳，另有藥局與伴手禮店，座位面向基隆港與郵輪。",
+  "points": [
+   "好食城：臺灣小吃、異國料理、人氣餐廳",
+   "藥局與伴手禮店",
+   "同棟的東三東四停車場"
+  ],
+  "img": "assets/img/venues/sansihang.jpg",
+  "link": null,
+  "src": [
+   "https://travel.klcg.gov.tw/TourContent.aspx?n=7841&s=710",
+   "https://www.nownews.com/news/6357573"
+  ],
+  "todo": false,
+  "imgNote": "場域意象"
+ },
+ {
+  "id": "tyac",
+  "name": "桃園青年體驗學習園區 TYAC",
+  "kind": "體驗學習・休閒遊憩",
+  "city": "桃園市新屋區",
+  "address": "桃園市新屋區新港路 16 號",
+  "summary": "以繩索挑戰、團隊課程與水上活動為主的戶外體驗學習基地，可辦理學校、企業與親子團體活動。",
+  "points": [
+   "60 項高低空及自我確保挑戰設施，另有 2 項團隊對抗設施",
+   "水上獨木舟體驗課程",
+   "會議廳、教室、宿舍、餐飲與烤肉場地"
+  ],
+  "img": "assets/img/venues/tyac.jpg",
+  "link": "https://www.tyacamps.com.tw/",
+  "src": [
+   "https://www.tyacamps.com.tw/tw/introduction/base"
+  ],
+  "todo": false,
+  "imgNote": "場域意象"
+ },
+ {
+  "id": "houhu",
+  "name": "後湖溪親水園區｜舟日咖啡",
+  "kind": "水岸遊憩＋餐飲",
+  "city": "桃園市新屋區",
+  "address": "舟日咖啡：桃園市新屋區永安里新港路 166 號",
+  "summary": "新屋後湖溪的水岸園區，由大日經營園區水域活動與園區咖啡。舟日咖啡以大片玻璃窗面向河口與紅樹林，玩水之後可以坐下來休息。",
+  "points": [
+   "獨木舟、SUP 等水域活動",
+   "舟日咖啡：玻璃面水景座位",
+   "可串連永安漁港、海螺文化體驗園區"
+  ],
+  "img": "assets/img/venues/houhu.jpg",
+  "link": null,
+  "src": [
+   "https://travel.tycg.gov.tw/zh-tw/consume/detail/3252"
+  ],
+  "todo": false,
+  "imgNote": "場域意象"
+ },
+ {
+  "id": "railbike",
+  "name": "深澳鐵道自行車",
+  "kind": "觀光遊憩",
+  "city": "新北市瑞芳區",
+  "address": "八斗子月台：新北市瑞芳區建基路二段 121 號",
+  "summary": "由舊運煤鐵道改建的觀光鐵道自行車，全長約 1.3 公里，沿北海岸行駛，一路看海景與礦業遺跡。",
+  "points": [
+   "河豚造型車廂",
+   "深澳端隧道的海底主題燈光",
+   "鄰近象鼻岩、潮境公園、望幽谷"
+  ],
+  "img": "assets/img/venues/railbike.jpg",
+  "link": "https://www.railbike.com.tw/",
+  "src": [
+   "https://www.railbike.com.tw/tw"
+  ],
+  "todo": false,
+  "imgNote": "場域意象"
+ }
 ]

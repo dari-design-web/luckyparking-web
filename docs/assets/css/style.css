@@ -102,7 +102,7 @@ section.band.tight{padding-block:56px}
 .tile > *:not(img){position:relative;z-index:1}
 .tile h3{font-size:clamp(20px,2.2vw,28px);font-weight:800;line-height:1.25}
 .tile p{font-size:14.5px;margin-top:6px;opacity:.92}
-.tile .tag{align-self:flex-start;font-size:12px;font-weight:700;letter-spacing:.06em;background:var(--orange);color:#fff;border-radius:999px;padding:3px 10px;margin-bottom:auto}
+.tile .tag,.vimg .tag{align-self:flex-start;font-size:12px;font-weight:700;letter-spacing:.06em;background:var(--orange);color:#fff;border-radius:999px;padding:3px 10px;margin-bottom:auto}
 .c2{grid-column:span 2}.c3{grid-column:span 3}.c4{grid-column:span 4}.c6{grid-column:span 6}
 .tall{min-height:420px}
 @media (max-width:900px){.bento{grid-template-columns:repeat(2,1fr)}.c2,.c3{grid-column:span 1}.c4,.c6{grid-column:span 2}}
@@ -255,3 +255,38 @@ footer{background:var(--surface);padding-block:56px 32px;font-size:14px;color:va
 .vcard .vlinks{margin-top:auto;padding-top:12px;display:flex;gap:12px;align-items:center;flex-wrap:wrap}
 @media (max-width:980px){.vcard,.vcard:nth-child(4),.vcard:nth-child(5){grid-column:span 3}}
 @media (max-width:640px){.vcards{grid-template-columns:1fr}.vcard,.vcard:nth-child(4),.vcard:nth-child(5){grid-column:auto}}
+
+/* video hero */
+.vhero{position:relative;min-height:min(86vh,780px);display:flex;align-items:flex-end;color:#fff;overflow:hidden;background:#0d1b2e}
+.vmedia{position:absolute;inset:0}
+.vmedia video,.vmedia img{width:100%;height:100%;object-fit:cover;display:block}
+.vhero::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(8,20,40,.8) 0%,rgba(8,20,40,.5) 42%,rgba(8,20,40,.08) 78%),linear-gradient(0deg,rgba(8,20,40,.5),transparent 40%);pointer-events:none}
+.vtext{position:relative;z-index:1;width:100%;padding-block:140px 80px;text-align:left}
+.vtext .eyebrow{color:#ffc39e}
+.vtext h1{font-size:clamp(42px,7vw,88px);font-weight:900;line-height:1.06;letter-spacing:-.03em;margin-top:14px}
+.vtext .lead{color:rgba(255,255,255,.9);max-width:36ch;margin-top:20px;font-size:clamp(16px,1.8vw,20px)}
+.vtext .ctas{justify-content:flex-start}
+.btn.light{background:rgba(255,255,255,.14);color:#fff;box-shadow:inset 0 0 0 1.5px rgba(255,255,255,.7);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}
+.btn.light:hover{background:rgba(255,255,255,.26)}
+.vtoggle{position:absolute;right:20px;bottom:20px;z-index:2;width:42px;height:42px;border-radius:50%;border:1px solid rgba(255,255,255,.6);background:rgba(0,0,0,.35);color:#fff;cursor:pointer;font-size:12px}
+.vtoggle[aria-pressed="true"] span{font-size:0}
+.vtoggle[aria-pressed="true"] span::after{content:"▶";font-size:13px}
+.stripband{padding-bottom:8px}
+@media (max-width:640px){.vhero{min-height:80vh}.vhero::after{background:linear-gradient(0deg,rgba(8,20,40,.88) 0%,rgba(8,20,40,.55) 55%,rgba(8,20,40,.15) 100%)}.vtext{padding-block:120px 64px}}
+@media (prefers-reduced-motion:reduce){.vmedia video{display:none}.vmedia{background:url(../img/hero.jpg) center/cover}}
+.tile .tag,.vimg .tag{position:absolute;top:14px;left:14px;z-index:1;font-size:12px;background:rgba(0,0,0,.45);color:#fff;border-radius:999px;padding:2px 10px}
+.pillar.brand img{opacity:.28}
+.report .rbtns{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.report .rbtns .btn{padding:9px 16px;font-size:14px}
+
+/* ESG GHG */
+.ghg{background:#fff;border:1px solid var(--line);border-radius:var(--r-lg);padding:28px;display:grid;grid-template-columns:auto 1fr;gap:20px 36px;align-items:center}
+.ghg-total b{font-size:clamp(44px,6vw,64px);font-weight:800;color:var(--blue);line-height:1;display:block}
+.ghg-total span{font-size:14px;color:var(--ink-2)}
+.ghg-bar{display:flex;height:22px;border-radius:999px;overflow:hidden;gap:2px}
+.ghg-legend{grid-column:1/-1;list-style:none;padding:0;margin:0;display:grid;grid-template-columns:repeat(2,1fr);gap:10px 28px;font-size:15px}
+.ghg-legend li{display:flex;align-items:center;gap:10px}
+.ghg-legend i{width:12px;height:12px;border-radius:3px;flex:none}
+.ghg-legend b{margin-left:auto}
+@media (max-width:700px){.ghg{grid-template-columns:1fr}.ghg-legend{grid-template-columns:1fr}}
+.vcard .vimg{position:relative}
