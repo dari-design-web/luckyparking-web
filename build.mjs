@@ -211,7 +211,7 @@ pages['about.html'] = {
 <section class="ph"><div class="wrap"><p class="eyebrow">關於大日</p><h1>深入在地，<br>便利停車，智慧生活。</h1><p class="lead">大日開發成立於${esc(SITE.founded)}，資本額${esc(SITE.capital)}。以停車場經營為核心，結合場域規劃、商業空間與休閒遊憩，打造新型態的智慧停車模式。</p></div></section>
 <section class="band tight"><div class="wrap">
   <div class="group">
-    <article><p class="eyebrow">民國 88 年成立</p><h3 style="margin-top:6px">大日開發有限公司</h3><p>集團核心。經營公有與民間停車場，並經營國家檔案館、東三東四旅客服務中心「叁肆行」、桃園青年體驗學習園區、深澳鐵道自行車等多元化場域。</p></article>
+    <article><p class="eyebrow">民國 88 年成立</p><h3 style="margin-top:6px">大日開發有限公司</h3><p>集團核心。經營公有與民間停車場，並經營國家檔案館、東三東四旅客服務中心「叁肆行」、桃園青年體驗學習園區、後湖溪親水園區與舟日咖啡、深澳鐵道自行車等多元化場域。</p></article>
     <article><p class="eyebrow">民國 93 年成立</p><h3 style="margin-top:6px">千斗開發有限公司</h3><p>關係企業。承襲大日開發的經營經驗，導入智慧停車管理設備，經營臺北、新北多處公有地下與平面停車場。</p></article>
   </div>
 </div></section>
