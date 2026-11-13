@@ -39,6 +39,6 @@
   {"name": "水碓三路平面停車場", "company": "千斗開發", "city": "新北市", "district": null, "type": "平面", "status": "營運中", "map": null, "img": null},
   {"name": "新五平面停車場", "company": "千斗開發", "city": "新北市", "district": null, "type": "平面", "status": "營運中", "map": "https://reurl.cc/beQr7E", "img": null},
   {"name": "合安路停車場", "company": "千斗開發", "city": "新北市", "district": "板橋區", "type": "停車場", "status": "營運中", "map": null, "img": null},
-  {"name": "南林段平面停車場", "company": "千斗開發", "city": "新北市", "district": "泰山區", "type": "平面", "status": "2027/6/1 起營運", "map": null, "img": "nanlin", "imgNote": "暫用", "imgCredit": {"label": "照片：新北市政府（2024 年場站入口，已裁切）", "url": "https://www.ntpc.gov.tw/ch/home.jsp?dataserno=202405310021&id=28"}},
-  {"name": "義學立體停車場", "company": "千斗開發", "city": "新北市", "district": "泰山區", "type": "立體", "status": "2027/3/1 起營運", "map": null, "img": null}
+  {"name": "南林段平面停車場", "company": "千斗開發", "city": "新北市", "district": "泰山區", "type": "平面", "status": "", "map": null, "img": "nanlin", "imgNote": "暫用", "imgCredit": {"label": "照片：新北市政府（2024 年場站入口，已裁切）", "url": "https://www.ntpc.gov.tw/ch/home.jsp?dataserno=202405310021&id=28"}},
+  {"name": "義學立體停車場", "company": "千斗開發", "city": "新北市", "district": "泰山區", "type": "立體", "status": "", "map": null, "img": null}
 ]
