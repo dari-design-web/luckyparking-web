@@ -485,27 +485,30 @@ pages['contact.html'] = {
   <article><p class="eyebrow">BEYOND PARKING</p><h3>商業空間與多元化合作</h3><ul><li>商業空間＋停車場整合經營</li><li>餐飲、休閒遊憩場域營運</li><li>場域規劃與活動合作</li></ul></article>
 </div></div></section>
 <section class="band alt"><div class="wrap contact">
+  <div class="cinfo"><h2 class="ch">直接聯絡</h2>
   <dl>
     <div><dt>商業合作信箱</dt><dd><a href="mailto:${esc(SITE.email)}">${esc(SITE.email)}</a></dd></div>
     <div><dt>電話</dt><dd class="num"><a href="tel:${SITE.phone.replace(/[^0-9]/g, '')}">${esc(SITE.phone)}</a></dd></div>
     <div><dt>地址</dt><dd>${esc(SITE.address)}</dd></div>
     <div><dt>社群</dt><dd><a href="${esc(SITE.facebook)}" target="_blank" rel="noopener">Facebook 粉絲專頁</a></dd></div>
-  </dl>
+  </dl></div>
   <p class="note nojs-note">目前請直接來信 <a href="mailto:${esc(SITE.email)}">${esc(SITE.email)}</a> 或來電 <a href="tel:${SITE.phone.replace(/[^0-9]/g, '')}">${esc(SITE.phone)}</a> 洽詢（聯絡資訊見本頁）。</p>
   <form class="f js-only" id="cform" aria-describedby="cform-intro" data-to="${esc(SITE.email)}" data-tel="${esc(SITE.phone)}" novalidate onsubmit="return false">
+    <h2 class="ch">填寫洽詢內容</h2>
     <p class="note" id="cform-intro" style="margin:0 0 4px">也可以直接來信 <a href="mailto:${esc(SITE.email)}">${esc(SITE.email)}</a> 或來電 <a href="tel:${SITE.phone.replace(/[^0-9]/g, '')}">${esc(SITE.phone)}</a>。姓名、電子郵件與內容為必填。</p>
     <div class="row">
-      <label for="c-name">姓名<input id="c-name" name="name" required autocomplete="name"></label>
+      <label for="c-name"><span>姓名<span class="req">必填</span></span><input id="c-name" name="name" required autocomplete="name"></label>
       <label for="c-org">單位<input id="c-org" name="org" autocomplete="organization"></label>
     </div>
     <div class="row">
-      <label for="c-mail">電子郵件<input id="c-mail" name="mail" type="email" required autocomplete="email"></label>
+      <label for="c-mail"><span>電子郵件<span class="req">必填</span></span><input id="c-mail" name="mail" type="email" required autocomplete="email"></label>
       <label for="c-tel">電話<input id="c-tel" name="tel" type="tel" autocomplete="tel"></label>
     </div>
     <label for="c-type">合作類別<select id="c-type" name="type"><option>停車場委外經營</option><option>商業空間與多元化合作</option><option>場站服務意見</option><option>其他</option></select></label>
-    <label for="c-msg">內容<textarea id="c-msg" name="msg" rows="5" required></textarea></label>
+    <label for="c-msg"><span>內容<span class="req">必填</span></span><textarea id="c-msg" name="msg" rows="5" required></textarea></label>
     <p class="note">姓名、電子郵件與洽詢內容供回覆使用。未填寫必要項目，將無法完成郵件草稿或回覆。電話、單位可依需要提供。選擇「開啟郵件草稿」後，請在郵件程式中確認內容再寄出。本網站不會儲存表單內容，請勿填寫身分證字號、車牌等非必要資料。詳見<a href="privacy.html">隱私權聲明</a>。</p>
-    <div style="display:flex;gap:14px;align-items:center;flex-wrap:wrap"><button class="btn primary" type="submit" disabled>開啟郵件草稿</button><span class="status" id="cstatus" role="status"></span></div>
+    <div style="display:flex;gap:14px;align-items:center;flex-wrap:wrap"><button class="btn primary" type="submit" disabled>開啟郵件草稿</button><span class="hint">按下後會開啟您的郵件程式，仍需在郵件程式中按「傳送」。</span></div>
+    <span class="status" id="cstatus" role="status"></span>
   </form>
 </div></section>`
 };

@@ -622,3 +622,25 @@ h1,h2,h3{word-break:keep-all;overflow-wrap:anywhere}
 /* 重要歷程：桌機兩列五欄完整顯示（不再需要橫向捲動）；平板改兩欄直式 */
 @media (min-width:901px){.tl-wrap{overflow:visible}.tl{grid-auto-flow:row;grid-template-columns:repeat(5,1fr);grid-auto-columns:auto;row-gap:40px;min-width:0}}
 @media (min-width:701px) and (max-width:900px){.tl-wrap{overflow:visible}.tl{grid-auto-flow:row;grid-template-columns:repeat(2,1fr);grid-auto-columns:auto;row-gap:28px;column-gap:24px;min-width:0}}
+
+/* ===== v0.3 第二批（GPT W32 設計審查） ===== */
+/* 1 停車場卡：桌機照片縮矮，「地圖」改成同位置的按鈕 */
+@media (min-width:561px){.site .im{aspect-ratio:2/1}}
+.site .loc .map{display:inline-flex;align-items:center;gap:4px;border:1px solid rgba(37,97,169,.45);border-radius:999px;padding:4px 12px;font-size:13px;line-height:1.4}
+.site .loc .map:hover{background:var(--blue);border-color:var(--blue);color:#fff}
+/* 2 首頁手機：主題停車場與五個場域改為左右滑動，縮短頁面 */
+@media (max-width:700px){
+  .bento,.vtiles{display:flex;flex-wrap:nowrap;justify-content:flex-start;overflow-x:auto;scroll-snap-type:x mandatory;gap:12px;margin-inline:-20px;padding:0 20px 10px;scroll-padding-inline:20px;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+  .bento::-webkit-scrollbar,.vtiles::-webkit-scrollbar{display:none}
+  .bento > *,.vtiles .tile{flex:0 0 80%;scroll-snap-align:start;min-height:280px}
+}
+/* 4 智慧服務：平板圖一律在左、步驟名稱在同一側；手機先看步驟名稱再看圖 */
+@media (min-width:641px) and (max-width:860px){.venue:nth-child(even) .vimg{order:0}}
+@media (max-width:640px){.venue .vimg,.venue:nth-child(even) .vimg{order:2;aspect-ratio:16/10}}
+/* 5 合作洽詢：兩欄加欄首、必填標示、按鈕旁說明 */
+.contact .ch{font-size:20px;font-weight:800;font-family:var(--text);letter-spacing:0;margin-bottom:14px}
+.contact .cinfo{background:#fff;border:1px solid var(--line);border-radius:var(--r-md);padding:24px;align-self:start}
+.contact .cinfo dl > div:nth-child(2){padding-bottom:18px;border-bottom:1px solid var(--line)}
+.f label > span{display:inline-flex;align-items:center;gap:8px}
+.f .req{font-size:11px;font-weight:700;color:var(--orange);border:1px solid rgba(239,120,54,.5);border-radius:999px;padding:0 7px;line-height:1.6}
+.f .hint{font-size:13px;color:var(--ink-2)}
