@@ -571,3 +571,15 @@ h2.count.quiet:focus-visible{outline:none}
 html:not(.js) .js-only{display:none!important}
 .contact .nojs-note{align-self:start}
 @media (max-width:980px){ .brands .bpanel{scroll-margin-bottom:96px} .brands .bpanel a{scroll-margin-bottom:96px} }
+
+/* 頁首媒體：寬度最多 1920px、維持 8:3 比例並貼齊右側；超寬螢幕左側由白色（深色版為深藍）漸層接到背景，避免影片上下被裁太多 */
+@media (min-width:701px){
+  .ph.has-img{min-height:clamp(380px,37.5vw,720px)}
+  .ph.has-img .phimg img,.ph.has-vid .bgv,.ph.has-img::before{left:auto;right:0;width:min(100%,1920px)}
+}
+@media (min-width:701px){
+  .ph.has-img{background:#fff}
+  .ph.has-img::before{background:linear-gradient(90deg,#fff 0%,rgba(255,255,255,.97) 6%,rgba(255,255,255,.92) 40%,rgba(255,255,255,.4) 62%,rgba(255,255,255,0) 76%)}
+  .ph.has-img.dark{background:#080e1c}
+  .ph.has-img.dark::before{background:linear-gradient(90deg,#080e1c 0%,rgba(8,14,28,.95) 6%,rgba(8,14,28,.8) 36%,rgba(8,14,28,.2) 62%,rgba(8,14,28,0) 75%)}
+}

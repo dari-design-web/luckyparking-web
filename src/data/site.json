@@ -19,8 +19,7 @@
   "hero": {
     "video": "assets/video/hero.mp4",
     "poster": "assets/img/hero-poster.jpg",
-    "note": "V1 由影片製作專案以 Lumina／Seedance 生成（2026-11-14）。換片只改 video 與 poster",
-    "once": true
+    "note": "V1 由影片製作專案以 Lumina／Seedance 生成（2026-11-14）。換片只改 video 與 poster"
   },
   "employees": "約 200 名",
   "jobsEmail": "dari25420001@gmail.com",

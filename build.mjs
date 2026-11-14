@@ -134,7 +134,6 @@ const sunBand = () => `<section class="sunband" id="sun-breakfast" aria-label="�
     <p class="lead">我們想做的很簡單：讓孩子吃飽，再去上學。大日開發自 2016 年起支持基隆市太陽早餐計畫。</p>
     <button class="btn light" type="button" data-video="assets/video/sun-full.mp4" data-title="太陽早餐計畫｜有人記得你"><span aria-hidden="true">▶</span> 觀看影片（有聲・65 秒）</button>
   </div>
-  <button class="vtoggle bgtoggle" type="button" aria-label="暫停背景影片" aria-pressed="false"><span aria-hidden="true">❚❚</span></button>
 </section>`;
 const DEPTS = ['營運管理部', '工程管理部', '財務管理及計畫預算部', '行銷企劃部', '人力資源部', '商業開發部', '廣告設計部', '資訊管理部', '法務部'];
 
@@ -144,14 +143,13 @@ pages['index.html'] = {
   title: '', desc: '大日開發（DARI GROUP）經營公有與民間停車場，並跨足商業空間、休閒遊憩等多元化場域。',
   body: `
 <section class="vhero" aria-label="主視覺">
-  <div class="vmedia">${SITE.hero.video ? `<video id="hero-video" class="bgv" data-mobile="1" muted ${SITE.hero.once ? 'data-once="1"' : 'loop'} playsinline preload="none" poster="${SITE.hero.poster}" data-src="${SITE.hero.video}" aria-hidden="true"></video>` : `<img src="${SITE.hero.poster}" alt="">`}</div>
+  <div class="vmedia">${SITE.hero.video ? `<video id="hero-video" class="bgv" data-mobile="1" muted loop playsinline preload="none" poster="${SITE.hero.poster}" data-src="${SITE.hero.video}" aria-hidden="true"></video>` : `<img src="${SITE.hero.poster}" alt="">`}</div>
   <div class="wrap vtext">
     <p class="eyebrow">${esc(SITE.tagline)}</p>
     <h1>讓停車與到訪，<br>都更順路。</h1>
     <p class="lead">大日開發經營公有與民間停車場，也經營旅客服務中心、戶外學習園區與觀光遊憩場域。從入口到離場，把導引、繳費與現場協助做好，讓人容易抵達、安心停留。</p>
     <div class="ctas"><a class="btn primary" href="parking.html">查停車據點</a><a class="btn light" href="venues.html">看多元化經營</a></div>
   </div>
-  ${SITE.hero.video ? '<button class="vtoggle bgtoggle" type="button" id="vtoggle" aria-label="暫停背景影片" aria-pressed="false"><span aria-hidden="true">❚❚</span></button>' : ''}
 </section>
 <section class="band alt tight statband">
   <div class="wrap">
@@ -204,8 +202,7 @@ pages['index.html'] = {
 </section>
 
 <section class="band dark awardband">
-  <div class="abg" aria-hidden="true"><video class="abv bgv" muted loop playsinline preload="none" poster="assets/img/bg-awards.jpg" data-src="assets/video/awards.mp4"></video></div>
-  <button class="vtoggle bgtoggle" type="button" aria-label="暫停背景影片" aria-pressed="false"><span aria-hidden="true">❚❚</span></button>
+  <div class="abg" aria-hidden="true"><video class="abv bgv" muted loop playsinline preload="none" poster="assets/img/awards-poster.jpg" data-src="assets/video/awards.mp4"></video></div>
   <div class="wrap awards">
     <div class="atext">
       <p class="eyebrow">榮譽獎項</p>
@@ -532,11 +529,18 @@ fs.cpSync(path.join(ROOT, 'assets'), path.join(OUT, 'assets'), { recursive: true
 const PH = { 'about.html': 'about', 'parking.html': 'parking', 'venues.html': 'venues', 'services.html': 'services', 'awards.html': 'awards', 'esg.html': 'esg', 'news.html': 'news', 'contact.html': 'contact', 'careers.html': 'careers' };
 const PH_DARK = new Set(['awards']);
 const PH_SHORT = new Set(['parking', 'news']);
-const PH_VIDEO = { parking: { src: 'assets/video/parking.mp4', poster: 'assets/img/ph/parking-poster.jpg' }, venues: { src: 'assets/video/venues.mp4', poster: 'assets/img/ph/venues-poster.jpg', once: true }, esg: { src: 'assets/video/esg.mp4', poster: 'assets/img/ph/esg-poster.jpg', once: true } };
+const PH_VIDEO = {
+  parking: { src: 'assets/video/parking.mp4', poster: 'assets/img/ph/parking-poster.jpg' },
+  venues: { src: 'assets/video/venues.mp4', poster: 'assets/img/ph/venues-poster.jpg' },
+  esg: { src: 'assets/video/esg.mp4', poster: 'assets/img/ph/esg-poster.jpg' },
+  about: { src: 'assets/video/about.mp4', poster: 'assets/img/ph/about-poster.jpg' },
+  services: { src: 'assets/video/services.mp4', poster: 'assets/img/ph/services-poster.jpg' },
+  awards: { src: 'assets/video/awards-ph.mp4', poster: 'assets/img/ph/awards-poster.jpg' },
+};
 for (const [file, p] of Object.entries(pages)) {
   const n = PH[file];
   const vid = PH_VIDEO[n];
-  if (n) p.body = p.body.replace('<section class="ph"><div class="wrap">', `<section class="ph has-img${PH_DARK.has(n) ? ' dark' : ''}${vid ? ' has-vid' : ''}${PH_SHORT.has(n) ? ' short' : ''}"><picture class="phimg"><source media="(max-width:700px)" srcset="assets/img/ph/${n}-m.jpg"><img src="${vid ? vid.poster : `assets/img/ph/${n}.jpg`}" alt="" fetchpriority="high"></picture>${vid ? `<video class="bgv" muted ${vid.once ? 'data-once="1"' : 'loop'} playsinline preload="none" poster="${vid.poster}" data-src="${vid.src}" aria-hidden="true"></video><button class="vtoggle bgtoggle" type="button" aria-label="暫停背景影片" aria-pressed="false"><span aria-hidden="true">❚❚</span></button>` : ''}<div class="wrap">`);
+  if (n) p.body = p.body.replace('<section class="ph"><div class="wrap">', `<section class="ph has-img${PH_DARK.has(n) ? ' dark' : ''}${vid ? ' has-vid' : ''}${PH_SHORT.has(n) ? ' short' : ''}"><picture class="phimg"><source media="(max-width:700px)" srcset="assets/img/ph/${n}-m.jpg"><img src="${vid ? vid.poster : `assets/img/ph/${n}.jpg`}" alt="" fetchpriority="high"></picture>${vid ? `<video class="bgv" muted loop playsinline preload="none" poster="${vid.poster}" data-src="${vid.src}" aria-hidden="true"></video>` : ''}<div class="wrap">`);
   fs.writeFileSync(path.join(OUT, file), layout({ file, ...p }));
 }
 fs.writeFileSync(path.join(OUT, '.nojekyll'), '');
