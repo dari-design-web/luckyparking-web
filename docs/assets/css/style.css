@@ -583,3 +583,39 @@ html:not(.js) .js-only{display:none!important}
   .ph.has-img.dark{background:#080e1c}
   .ph.has-img.dark::before{background:linear-gradient(90deg,#080e1c 0%,rgba(8,14,28,.95) 6%,rgba(8,14,28,.8) 36%,rgba(8,14,28,.2) 62%,rgba(8,14,28,0) 75%)}
 }
+
+/* ===== v0.3 編排與響應式 ===== */
+/* 寬螢幕：內容欄跟著加寬，字級微調 */
+@media (min-width:1600px){:root{--wrap:1320px}body{font-size:17px}}
+@media (min-width:2000px){:root{--wrap:1440px}}
+/* 中文斷行：段落避免最後一行只剩一兩個字 */
+p,li,dd,figcaption{text-wrap:pretty}
+.lead,.head p{line-height:1.85}
+/* 眉標前加品牌橘短線，統一各區塊開頭 */
+.eyebrow{display:inline-flex;align-items:center;gap:10px}
+.eyebrow::before{content:"";width:20px;height:2px;border-radius:2px;background:var(--orange);flex:none}
+.band.dark .eyebrow::before,.ph.has-img.dark .eyebrow::before,.awardband .eyebrow::before,.sunband .eyebrow::before,.ctaband .eyebrow::before{background:#ffb380}
+.tile .eyebrow::before,.pillar .eyebrow::before{display:none}
+/* 數字區：平板起改兩欄，避免四欄擠在一起 */
+@media (max-width:900px){.stats{grid-template-columns:repeat(2,1fr)}}
+@media (max-width:560px){.stats{gap:12px}.stat{padding:20px 16px}.stat .si{width:30px;height:30px;top:14px;right:14px}.stat span{font-size:13px;line-height:1.6}}
+/* 智慧服務五步驟：平板維持左右並排，手機才上下 */
+@media (max-width:860px){.venue{grid-template-columns:1fr 1fr;gap:24px;padding-block:36px}.venue:nth-child(even) .vimg{order:2}.venue h2{font-size:clamp(22px,3.4vw,30px)}}
+@media (max-width:640px){.venue{grid-template-columns:1fr;gap:16px;padding-block:32px}.venue:nth-child(even) .vimg{order:0}}
+/* 多元化經營卡：平板兩欄時，最後一張置中 */
+@media (min-width:641px) and (max-width:980px){.vcards > .vcard:last-child:nth-child(odd){grid-column:1 / -1;width:calc(50% - 10px);justify-self:center}}
+/* 卡片滑過微浮起（只在有滑鼠的裝置） */
+@media (hover:hover) and (prefers-reduced-motion:no-preference){
+  .svc article,.vcard,.site,.ncard,.stat{transition:transform .25s ease,box-shadow .25s ease}
+  .svc article:hover,.vcard:hover,.site:hover,.stat:hover{transform:translateY(-3px);box-shadow:0 14px 34px rgba(18,26,38,.10)}
+}
+/* 底部合作洽詢區：深色底＋右側意象 */
+.ctaband{position:relative;overflow:hidden;color:#fff;background:linear-gradient(90deg,#0b1424 0%,#0b1424 45%,rgba(11,20,36,.55) 75%,rgba(11,20,36,.25) 100%),var(--cta-img,linear-gradient(135deg,#1b4a83,#0f2c52));background-size:cover;background-position:right center;padding-block:clamp(56px,7vw,96px)}
+.ctaband h2{color:#fff}
+.ctaband .head p{color:rgba(255,255,255,.82);max-width:52ch}
+.ctaband .eyebrow{color:#ffb380}
+.ctaband .btn.orange{box-shadow:0 10px 30px rgba(239,120,54,.35)}
+@media (max-width:700px){.ctaband{background:linear-gradient(180deg,#0b1424 0%,#13243f 100%)}}
+/* 標題以詞為單位斷行（建置時插入 <wbr>）；太長時仍可在任意處換行 */
+h1,h2,h3{word-break:keep-all;overflow-wrap:anywhere}
+.ctaband{--cta-img:url(../img/bg-cta.jpg)}

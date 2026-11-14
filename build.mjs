@@ -26,6 +26,24 @@ const NAV = [
 const operating = PARKING.filter(p => p.status === '營運中').length;
 const upcoming = PARKING.length - operating;
 
+
+// 標題斷行：以詞為單位插入 <wbr>，搭配 CSS keep-all，避免「教 / 育館」「商 / 業空間」這類斷在詞中間
+const KEEP = ['商業空間','旅客服務中心','服務中心','東三東四','金擘獎','金停獎','叁肆行','多元化經營','停車場經營','教育館','科學教育館','國家檔案館','鐵道自行車','體驗學習園區','學習園區','地下停車場','立體停車場','平面停車場','停車場','營運移轉案','民間經營團隊','民間團隊','優等獎','設備與服務','智慧生活','生活場域','北北桃基','原住民族','青少年活動中心','流行音樂中心','國際金融中心','親水園區'];
+const SEG = (typeof Intl !== 'undefined' && Intl.Segmenter) ? new Intl.Segmenter('zh-Hant', { granularity: 'word' }) : null;
+const CJK = /[㐀-鿿豈-﫿]/;
+function phraseText(t) {
+  if (!SEG || !CJK.test(t)) return t;
+  const segs = [...SEG.segment(t)].map(x => x.segment);
+  const cuts = new Set(); let pos = 0;
+  segs.forEach((g, i) => { if (i > 0) { const prev = segs[i - 1]; const single = [...g].length === 1 && CJK.test(g) && CJK.test(prev.slice(-1)); if (!single) cuts.add(pos); } pos += g.length; });
+  for (const k of KEEP) { let i = t.indexOf(k); while (i >= 0) { for (let j = i + 1; j < i + k.length; j++) cuts.delete(j); i = t.indexOf(k, i + 1); } }
+  let out = ''; for (let i = 0; i < t.length; i++) { if (cuts.has(i) && CJK.test(t[i - 1] || '') && CJK.test(t[i])) out += '<wbr>'; out += t[i]; }
+  return out;
+}
+function phraseHtml(html) {
+  return html.replace(/(<h[1-3][^>]*>)([\s\S]*?)(<\/h[1-3]>)/g, (m, a, inner, b) => a + inner.split(/(<[^>]+>|&[#a-z0-9]+;)/i).map(part => (part.startsWith('<') || part.startsWith('&')) ? part : phraseText(part)).join('') + b);
+}
+
 function layout({ file, title, desc, body, base, noindex }) {
   const t = title ? `${title}｜大日開發 DARI GROUP` : '大日開發 DARI GROUP｜Lucky Parking 停車場經營';
   const menu = NAV.map(([href, label]) => `<a href="${href}"${href === file ? ' aria-current="page"' : ''}>${label}</a>`).join('');
@@ -106,12 +124,12 @@ const ICON = {
   palette: '<circle cx="12" cy="12" r="9"/><circle cx="8" cy="10" r="1"/><circle cx="12" cy="7.5" r="1"/><circle cx="16" cy="10" r="1"/><path d="M12 21a2.5 2.5 0 0 1 0-5h2"/>'
 };
 const SERVICES = [
-  ['car', '車牌辨識・免取票', '進出場自動辨識車牌，減少排隊與票卡遺失。'],
-  ['pay', '多元支付', '行動支付、電子票證與車牌綁定扣款，依場站提供。'],
+  ['car', '車牌辨識・免取票', '進出場時自動辨識車牌，減少排隊及票卡遺失情形。'],
+  ['pay', '多元支付', '依場站提供行動支付、電子票證與車牌綁定扣款。'],
   ['pin', '車位在席與尋車', '設有空位顯示或尋車設備的場站，可依現場指引查詢。'],
-  ['eye', '智慧巡檢', '電子化巡場與案件管理，問題即時派工處理。'],
+  ['eye', '智慧巡檢', '採電子化巡場與案件管理，發現問題即時派工處理。'],
   ['exit', '智慧逃生引導', '緊急時以燈號與標示引導疏散。'],
-  ['plug', '電動車充電', '依場站條件設置充電格位與管理。'],
+  ['plug', '電動車充電', '依場站條件設置並管理充電格位。'],
   ['heart', '友善停車', '無障礙停車位，以及孕婦及育有六歲以下兒童者停車位，依各場公告與現場標示使用。'],
   ['palette', '主題式場域設計', '連鎖不複製：每座停車場依在地特色設計導引與色彩。']
 ];
@@ -147,7 +165,7 @@ pages['index.html'] = {
   <div class="wrap vtext">
     <p class="eyebrow">${esc(SITE.tagline)}</p>
     <h1>讓停車與到訪，<br>都更順路。</h1>
-    <p class="lead">大日開發經營公有與民間停車場，也經營旅客服務中心、戶外學習園區與觀光遊憩場域。從入口到離場，把導引、繳費與現場協助做好，讓人容易抵達、安心停留。</p>
+    <p class="lead">大日開發經營公有與民間停車場、旅客服務中心、戶外學習園區及觀光遊憩場域。從入口到離場，做好導引、繳費與現場協助，讓民眾順利抵達、安心停留。</p>
     <div class="ctas"><a class="btn primary" href="parking.html">查停車據點</a><a class="btn light" href="venues.html">看多元化經營</a></div>
   </div>
 </section>
@@ -236,9 +254,9 @@ ${sunBand()}
   </div>
 </section>
 
-<section class="band tight">
+<section class="band ctaband">
   <div class="wrap"><div class="head" style="margin:0">
-    <div><h2>想把停車場或商業空間交給我們？</h2><p style="margin-top:8px">停車場委外經營，或商業空間、休閒場域等多元化合作，都歡迎聯繫。</p></div>
+    <div><p class="eyebrow">合作洽詢</p><h2>想把停車場或商業空間交給我們？</h2><p style="margin-top:10px">停車場委外經營，或商業空間、休閒場域等多元化合作，都歡迎聯繫。</p></div>
     <a class="btn orange" href="contact.html">合作洽詢</a>
   </div></div>
 </section>`
@@ -247,7 +265,7 @@ ${sunBand()}
 pages['about.html'] = {
   title: '關於大日', desc: '大日開發成立於民國 88 年，經營停車場與多元化場域。',
   body: `
-<section class="ph"><div class="wrap"><p class="eyebrow">關於大日</p><h1>深入在地，<br>便利停車，智慧生活。</h1><p class="lead">大日開發成立於${esc(SITE.founded)}，資本額${esc(SITE.capital)}，${esc(SITE.employees)}同仁。以停車場經營為基礎，跨足商業空間、旅遊景點與遊憩產業，目標是「創造一個政府、民眾與企業三贏的未來」。</p></div></section>
+<section class="ph"><div class="wrap"><p class="eyebrow">關於大日</p><h1>深入在地，<br>便利停車，智慧生活。</h1><p class="lead">大日開發成立於${esc(SITE.founded)}，資本額為${esc(SITE.capital)}，約有 ${esc(String(SITE.employees).replace(/^約\s*/, ""))}同仁。以停車場經營為基礎，跨足商業空間、旅遊景點與遊憩產業，目標是「創造一個政府、民眾與企業三贏的未來」。</p></div></section>
 <section class="band tight"><div class="wrap">
   <div class="group">
     <article><p class="eyebrow">民國 88 年成立</p><h3 style="margin-top:6px">大日開發有限公司</h3><p>集團核心。經營公有與民間停車場，也在國家檔案館經營附屬商業空間與地下停車場。多元化經營場域包括東三東四旅客服務中心「叁肆行」、桃園青年體驗學習園區、後湖溪親水園區與舟日咖啡，以及深澳鐵道自行車。</p></article>
@@ -297,7 +315,7 @@ const cities = ['全部', ...new Set(PARKING.map(p => p.city))];
 pages['parking.html'] = {
   title: '停車場經營', desc: `大日開發與千斗開發的 ${PARKING.length} 處停車場據點。`,
   body: `
-<section class="ph"><div class="wrap"><p class="eyebrow">停車場經營</p><h1>${PARKING.length} 處停車場，<br>遍及北北桃基。</h1><p class="lead">公有地下停車場、立體與平面停車場的委外經營。瀏覽各地停車據點，點「地圖」查看位置。</p></div></section>
+<section class="ph"><div class="wrap"><p class="eyebrow">停車場經營</p><h1>${PARKING.length} 處停車場，<br>遍及北北桃基。</h1><p class="lead">公有地下、立體與平面停車場的委外經營。瀏覽各地停車據點，點「地圖」查看位置。</p></div></section>
 <section class="band tight" style="padding-top:8px"><div class="wrap">
   <p class="note nojs-note">以下可直接瀏覽 ${PARKING.length} 處停車據點，點「地圖」查看位置。搜尋與篩選功能需要瀏覽器啟用 JavaScript。</p>
   <div class="search pk-ctl"><label for="q" class="sr">搜尋停車場</label><input id="q" type="search" placeholder="搜尋名稱、行政區或路名，例如：中和、榮星" autocomplete="off" aria-describedby="qhint"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4.5 4.5"/></svg></div>
@@ -315,7 +333,7 @@ pages['parking.html'] = {
 pages['venues.html'] = {
   title: '多元化經營', desc: '國家檔案館、叁肆行、桃園青年體驗學習園區、後湖溪親水園區與舟日咖啡、深澳鐵道自行車。',
   body: `
-<section class="ph"><div class="wrap"><p class="eyebrow">多元化經營</p><h1>不只停車，<br>還有值得停留的地方。</h1><p class="lead">把停車場經營的經驗延伸到商業空間、餐飲與休閒遊憩，讓到訪者從停好車開始，就有完整的體驗。</p></div></section>
+<section class="ph"><div class="wrap"><p class="eyebrow">多元化經營</p><h1>不只停車，<br>還有值得停留的地方。</h1><p class="lead">將停車場經營經驗延伸至商業空間、餐飲與休閒遊憩，提供從停好車開始的完整到訪體驗。</p></div></section>
 <section class="band tight" style="padding-top:8px"><div class="wrap"><div class="vcards">
   ${VENUES.map(v => `<article class="vcard" id="${v.id}">
     <div class="vimg">${v.img ? `<img src="${v.img}" srcset="${v.img.replace('.jpg', '-800.jpg')} 800w, ${v.img} 1600w" sizes="(max-width:640px) 100vw, (max-width:980px) 50vw, 400px" alt="${esc(v.name)}（${esc(v.imgNote || '照片')}）" loading="lazy">${v.imgNote ? `<span class="tag">${esc(v.imgNote)}</span>` : ''}` : '<span>照片準備中</span>'}</div>
@@ -341,7 +359,7 @@ pages['venues.html'] = {
 pages['services.html'] = {
   title: '智慧服務', desc: '從入場、導引與找車、付款、離場到現場管理的停車服務。',
   body: `
-<section class="ph"><div class="wrap"><p class="eyebrow">智慧及貼心服務</p><h1>從進場到離場，<br>每一步都有清楚指引。</h1><p class="lead">依各場的空間、設備與車流安排停車服務。實際提供的功能與付款方式，以各場公告為準。</p></div></section>
+<section class="ph"><div class="wrap"><p class="eyebrow">智慧及貼心服務</p><h1>從進場到離場，<br>每一步都有清楚指引。</h1><p class="lead">依各場站的空間、設備與車流安排停車服務。實際提供的功能與付款方式，以各場站公告為準。</p></div></section>
 <section class="band tight" style="padding-top:0"><div class="wrap">
   ${[
     ['01', '入場辨識', '依場站設備採車牌辨識或其他入場方式。遇辨識異常時，依現場指示聯繫服務人員。', 'svc-01'],
@@ -352,7 +370,7 @@ pages['services.html'] = {
   ].map(([n, t, d, img]) => `<div class="venue"><div class="vimg" style="position:relative"><img src="assets/img/svc/${img}.jpg" alt="" loading="lazy"><span class="tag">服務意象</span></div><div><p class="eyebrow num">STEP ${n}</p><h2>${t}</h2><p class="muted" style="margin-top:12px;font-size:18px">${d}</p></div></div>`).join('')}
 </section>
 <section class="band alt"><div class="wrap">
-  <div class="head"><div><h2>依場站條件提供的設備與服務</h2><p style="margin-top:8px">各場實際提供項目不同，請以現場與各場公告為準。</p></div><a class="link" href="parking.html">查各場資訊</a></div>
+  <div class="head"><div><h2>依場站條件提供的設備與服務</h2><p style="margin-top:8px">各場站實際提供的項目不同，請以現場資訊與場站公告為準。</p></div><a class="link" href="parking.html">查各場資訊</a></div>
   <ul class="svlist">${SERVICES.map(x => `<li><i><svg viewBox="0 0 24 24" aria-hidden="true">${ICON[x[0]]}</svg></i><div><b>${x[1]}</b><span>${x[2]}</span></div></li>`).join('')}</ul>
 </div></section>`
 };
@@ -381,7 +399,7 @@ ${sunBand()}
 <section class="ph"><div class="wrap"><p class="eyebrow">永續 ESG</p><h1>取之於社會，<br>用之於社會。</h1><p class="lead">從總公司的溫室氣體盤查開始，掌握自己的排放，再擬定減量做法；同時持續投入在地公益。</p><nav class="anchors" aria-label="本頁導覽"><a href="#report">報告書下載</a><a href="#ghg">環境盤查</a><a href="#footprint">公益足跡</a><a href="#sun-breakfast">太陽早餐計畫</a></nav></div></section>
 <section class="band tight" id="report"><div class="wrap esg">
   ${reportCard()}
-  <div><h2 style="font-size:28px">手機掃描即可開啟</h2><p class="muted" style="margin-top:10px">QR Code 連到報告書線上閱讀頁；「下載 PDF」直接下載同一份檔案（約 6.6 MB）。</p></div>
+  <div><h2 style="font-size:28px">手機掃描即可開啟</h2><p class="muted" style="margin-top:10px">掃描 QR Code 可開啟報告書線上閱讀頁；點選「下載 PDF」可下載同一份檔案（約 6.6 MB）。</p></div>
 </div></section>
 <section class="band alt" id="ghg"><div class="wrap">
   <div class="head"><div><p class="eyebrow">E 環境</p><h2 style="margin-top:8px">2024 年溫室氣體盤查</h2></div><p>依 ISO/CNS 14064-1:2018，自願盤查臺北總公司（基準年 2024）。</p></div>
@@ -405,7 +423,7 @@ ${sunBand()}
 </div></section>
 <section class="band"><div class="wrap">
   <div class="svc three">
-    <article><p class="eyebrow">S 社會</p><h3 style="margin-top:6px">公益與在地</h3><p>2016 年起支持基隆市太陽早餐計畫；每年提撥營餘投入公益：贊助基層球隊、希望工程課後照顧與公益捐血；108 年獲頒華人公益大使。</p></article>
+    <article><p class="eyebrow">S 社會</p><h3 style="margin-top:6px">公益與在地</h3><p>2016 年起支持基隆市太陽早餐計畫。每年提撥營餘投入公益，項目包括贊助基層球隊、希望工程課後照顧與公益捐血。108 年獲頒華人公益大使。</p></article>
     <article><p class="eyebrow">S 社會</p><h3 style="margin-top:6px">${esc(SITE.employees)}同仁</h3><p>總公司與各停車場、場域的服務團隊，部門涵蓋營運、工程、商業開發、資訊與法務。</p></article>
     <article><p class="eyebrow">G 治理</p><h3 style="margin-top:6px">盤查管理程序</h3><p>訂有溫室氣體盤查管理與內部查證程序，報告每年製作一次，紀錄保存 6 年。</p></article>
   </div>
@@ -426,14 +444,14 @@ ${sunBand()}
 pages['careers.html'] = {
   title: '人才招募', desc: '加入大日開發：停車場營運、場域經營、工程、行銷與資訊等職務。',
   body: `
-<section class="ph"><div class="wrap"><p class="eyebrow">人才招募</p><h1>一起把每一處場域，<br>經營得更好。</h1><p class="lead">大日開發${esc(SITE.employees)}同仁，在總公司與北北桃基的停車場、商業空間與遊憩場域工作。我們需要願意在現場解決問題的人。</p><nav class="anchors" aria-label="本頁導覽"><a href="#fields">工作領域</a><a href="#apply">應徵方式</a></nav></div></section>
+<section class="ph"><div class="wrap"><p class="eyebrow">人才招募</p><h1>一起把每一處場域，<br>經營得更好。</h1><p class="lead">大日開發約有 ${esc(String(SITE.employees).replace(/^約\s*/, ""))}同仁，工作地點包括總公司及北北桃基的停車場、商業空間與遊憩場域。我們需要願意在現場解決問題的人。</p><nav class="anchors" aria-label="本頁導覽"><a href="#fields">工作領域</a><a href="#apply">應徵方式</a></nav></div></section>
 <section class="band tight" id="fields"><div class="wrap reorder">
   <div class="intro-img"><img src="assets/img/img-careers.jpg" alt="" loading="lazy"><p>從停車場的每日巡檢、設備維護，到商業空間與遊憩場域的營運，每個職務都在協助民眾順利到訪、安心使用場域。</p></div>
   <div class="head"><h2>工作領域</h2></div>
   <div class="svc three">
     <article><div class="ic"><svg viewBox="0 0 24 24" aria-hidden="true">${ICON.car}</svg></div><h3>停車場營運</h3><p>場站服務、巡場與現場協助，維持停車場每天順暢運作。</p></article>
     <article><div class="ic"><svg viewBox="0 0 24 24" aria-hidden="true">${ICON.heart}</svg></div><h3>場域經營</h3><p>商業空間、咖啡、體驗園區與觀光設施的營運與服務。</p></article>
-    <article><div class="ic"><svg viewBox="0 0 24 24" aria-hidden="true">${ICON.plug}</svg></div><h3>工程與設備</h3><p>停管設備、機電與場站設施的維護、改善與導入。</p></article>
+    <article><div class="ic"><svg viewBox="0 0 24 24" aria-hidden="true">${ICON.plug}</svg></div><h3>工程與設備</h3><p>停管設備、機電與場站設施的導入、維護與改善。</p></article>
     <article><div class="ic"><svg viewBox="0 0 24 24" aria-hidden="true">${ICON.palette}</svg></div><h3>行銷與設計</h3><p>場域活動企劃、廣告設計、社群與品牌經營。</p></article>
     <article><div class="ic"><svg viewBox="0 0 24 24" aria-hidden="true">${ICON.eye}</svg></div><h3>資訊管理</h3><p>停車系統、資料管理與數位服務開發。</p></article>
     <article><div class="ic"><svg viewBox="0 0 24 24" aria-hidden="true">${ICON.shield}</svg></div><h3>行政與管理</h3><p>財務、人資、法務與商業開發。</p></article>
@@ -442,7 +460,7 @@ pages['careers.html'] = {
 <section class="band alt" id="apply"><div class="wrap">
   <div class="head"><div><h2>目前職缺</h2><p style="margin-top:8px">職缺資訊整理中。歡迎來信自我推薦。</p></div></div>
   <div class="coop">
-    <article><p class="eyebrow">怎麼應徵</p><h3>來信附上履歷</h3><ul><li>信件主旨寫「應徵：職務名稱」</li><li>附上履歷與可聯絡時間</li><li>收到後由人資與您聯繫</li></ul><p style="margin-top:16px"><a class="btn primary" href="mailto:${esc(SITE.jobsEmail)}?subject=${encodeURIComponent('應徵：')}">寄送履歷</a></p></article>
+    <article><p class="eyebrow">怎麼應徵</p><h3>來信附上履歷</h3><ul><li>信件主旨寫「應徵：職務名稱」</li><li>附上履歷與可聯絡時間</li><li>收到履歷後，由人資與您聯繫</li></ul><p style="margin-top:16px"><a class="btn primary" href="mailto:${esc(SITE.jobsEmail)}?subject=${encodeURIComponent('應徵：')}">寄送履歷</a></p></article>
     <article><p class="eyebrow">工作地點</p><h3>總公司與各場站</h3><ul><li>總公司：${esc(SITE.address)}</li><li>停車場：臺北、新北、桃園、基隆</li><li>場域：林口、基隆港、桃園新屋、瑞芳</li></ul></article>
   </div>
   <p class="muted" style="margin-top:16px;font-size:14px">履歷僅用於招募聯繫，請勿附身分證件影本。寄送履歷前，請先閱讀<a href="privacy.html">隱私權聲明</a>。</p>
@@ -461,8 +479,8 @@ pages['news.html'] = {
 pages['contact.html'] = {
   title: '合作洽詢', desc: '停車場委外經營與商業空間多元化合作洽詢。',
   body: `
-<section class="ph"><div class="wrap"><p class="eyebrow">合作洽詢</p><h1>兩種合作方式，<br>找到適合您的。</h1><nav class="anchors" aria-label="本頁導覽"><a href="#modes">看合作方式</a><a href="#cform">直接洽詢</a></nav></div></section>
-<section class="band tight" id="modes"><div class="wrap reorder"><div class="intro-img"><img src="assets/img/img-contact.jpg" alt="" loading="lazy"><p>不論是公有停車場委外、民間停車場代管，或商業空間與遊憩場域的整體經營，我們會先了解場域條件與目標，再提出可行的經營規劃。</p></div><div class="coop">
+<section class="ph"><div class="wrap"><p class="eyebrow">合作洽詢</p><h1>兩種合作方式，<br>找到適合您的選擇。</h1><nav class="anchors" aria-label="本頁導覽"><a href="#modes">看合作方式</a><a href="#cform">直接洽詢</a></nav></div></section>
+<section class="band tight" id="modes"><div class="wrap reorder"><div class="intro-img"><img src="assets/img/img-contact.jpg" alt="" loading="lazy"><p>合作項目包括公有停車場委外、民間停車場代管，以及商業空間與遊憩場域的整體經營。我們會先了解場域條件與目標，再提出可行的經營規劃。</p></div><div class="coop">
   <article><p class="eyebrow">PARKING</p><h3>停車場委外經營</h3><ul><li>公有停車場標案與營運移轉</li><li>民間大樓、園區、社宅停車場代管</li><li>智慧停管設備導入與場域改善</li></ul></article>
   <article><p class="eyebrow">BEYOND PARKING</p><h3>商業空間與多元化合作</h3><ul><li>商業空間＋停車場整合經營</li><li>餐飲、休閒遊憩場域營運</li><li>場域規劃與活動合作</li></ul></article>
 </div></div></section>
@@ -486,7 +504,7 @@ pages['contact.html'] = {
     </div>
     <label for="c-type">合作類別<select id="c-type" name="type"><option>停車場委外經營</option><option>商業空間與多元化合作</option><option>場站服務意見</option><option>其他</option></select></label>
     <label for="c-msg">內容<textarea id="c-msg" name="msg" rows="5" required></textarea></label>
-    <p class="note">姓名、電子郵件與洽詢內容供回覆使用；未填寫必要項目，將無法完成草稿或回覆。電話、單位可依需要提供。選擇「開啟郵件草稿」後，請在郵件程式確認內容再寄出；本網站不會儲存表單內容，請勿填寫身分證字號、車牌等非必要資料。詳見<a href="privacy.html">隱私權聲明</a>。</p>
+    <p class="note">姓名、電子郵件與洽詢內容供回覆使用。未填寫必要項目，將無法完成郵件草稿或回覆。電話、單位可依需要提供。選擇「開啟郵件草稿」後，請在郵件程式中確認內容再寄出。本網站不會儲存表單內容，請勿填寫身分證字號、車牌等非必要資料。詳見<a href="privacy.html">隱私權聲明</a>。</p>
     <div style="display:flex;gap:14px;align-items:center;flex-wrap:wrap"><button class="btn primary" type="submit" disabled>開啟郵件草稿</button><span class="status" id="cstatus" role="status"></span></div>
   </form>
 </div></section>`
@@ -495,16 +513,16 @@ pages['contact.html'] = {
 pages['privacy.html'] = {
   title: '隱私權聲明', desc: '大日開發官方網站隱私權聲明。',
   body: `
-<section class="ph"><div class="wrap"><p class="eyebrow">隱私權聲明</p><h1>我們怎麼處理<br>您提供的資料</h1><p class="lead">本網站不設會員、不設線上表單資料庫，也不使用廣告追蹤。</p></div></section>
+<section class="ph"><div class="wrap"><p class="eyebrow">隱私權聲明</p><h1>我們如何處理<br>您提供的資料</h1><p class="lead">本網站不設會員、不設線上表單資料庫，也不使用廣告追蹤。</p></div></section>
 <section class="band tight" style="padding-top:0"><div class="wrap"><div class="prose">
   <h2>一、適用範圍</h2>
   <p>本聲明適用於大日開發有限公司（以下稱本公司）官方網站，以及您透過本網站寄送給本公司的電子郵件。網站中連結的其他網站（例如場域官網、政府網站、Google 雲端硬碟），依各該網站的隱私權政策處理。</p>
   <h2>二、蒐集的資料與目的</h2>
-  <p>本網站不會自動儲存您輸入的內容。「合作洽詢」表單與「寄送履歷」按鈕，是開啟您自己的郵件程式，由您確認後寄到 ${esc(SITE.email)}。本公司只會收到您寄出的郵件內容，例如姓名、單位、電話、電子郵件、洽詢內容或履歷。</p>
+  <p>本網站不會自動儲存您輸入的內容。使用「合作洽詢」表單或「寄送履歷」按鈕，會開啟您的郵件程式，由您確認內容後寄至 ${esc(SITE.email)}。本公司只會收到您寄出的郵件內容，例如姓名、單位、電話、電子郵件、洽詢內容或履歷。</p>
   <ul><li>合作洽詢：用於回覆與聯繫合作事宜。</li><li>應徵：用於招募評估與面試聯繫。</li></ul>
   <p>姓名、電子郵件與洽詢內容是回覆所需；未提供時，本公司將無法回覆。電話、單位可依需要提供。</p>
   <h2>三、利用期間、地區、對象與方式</h2>
-  <p>您寄來的郵件由本公司使用的電子郵件服務收存，並由本公司相關承辦人員為上述目的使用。資料保存至達成目的所需期間，之後依本公司規定刪除或銷毀；除法令另有規定或經您同意外，不作其他用途。利用地區、對象與保存期間的細節，可來信 ${esc(SITE.email)} 查詢。</p>
+  <p>您寄來的郵件由本公司使用的電子郵件服務收存，並由相關承辦人員基於上述目的使用。資料於達成目的所需期間內保存，之後依本公司規定刪除或銷毀。除法令另有規定或經您同意外，不作其他用途。利用地區、對象與保存期間的細節，可來信 ${esc(SITE.email)} 查詢。</p>
   <h2>四、您的權利</h2>
   <p>依個人資料保護法第 3 條，您可以請求查詢、閱覽、製給複製本、補充或更正、停止蒐集、處理或利用，或請求刪除個人資料。請來信 ${esc(SITE.email)}，本公司將於確認身分後處理。</p>
   <h2>五、Cookie 與外部服務</h2>
@@ -541,7 +559,7 @@ for (const [file, p] of Object.entries(pages)) {
   const n = PH[file];
   const vid = PH_VIDEO[n];
   if (n) p.body = p.body.replace('<section class="ph"><div class="wrap">', `<section class="ph has-img${PH_DARK.has(n) ? ' dark' : ''}${vid ? ' has-vid' : ''}${PH_SHORT.has(n) ? ' short' : ''}"><picture class="phimg"><source media="(max-width:700px)" srcset="assets/img/ph/${n}-m.jpg"><img src="${vid ? vid.poster : `assets/img/ph/${n}.jpg`}" alt="" fetchpriority="high"></picture>${vid ? `<video class="bgv" muted loop playsinline preload="none" poster="${vid.poster}" data-src="${vid.src}" aria-hidden="true"></video>` : ''}<div class="wrap">`);
-  fs.writeFileSync(path.join(OUT, file), layout({ file, ...p }));
+  fs.writeFileSync(path.join(OUT, file), phraseHtml(layout({ file, ...p })));
 }
 fs.writeFileSync(path.join(OUT, '.nojekyll'), '');
 const today = new Date().toISOString().slice(0, 10);

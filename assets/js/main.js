@@ -21,6 +21,12 @@
   if(qi) qi.addEventListener('input',function(){ state.q=qi.value.trim(); render(); try{ var u=new URL(location.href); if(state.q) u.searchParams.set('q',state.q); else u.searchParams.delete('q'); history.replaceState(null,'',u); }catch(e){} });
   function norm(t){ t=String(t||''); try{ t=t.normalize('NFKC'); }catch(e){} return t.replace(/台/g,'臺').replace(/\s+/g,'').toLowerCase(); }
   function esc(s){return String(s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
+  var SEG=(window.Intl&&Intl.Segmenter)?new Intl.Segmenter('zh-Hant',{granularity:'word'}):null, CJK=/[\u3400-\u9fff]/;
+  var KEEP=['地下停車場','立體停車場','平面停車場','停車場','教育館','科學教育館','服務中心','原住民族','國際金融中心','青少年活動中心','流行音樂中心','東三東四','親水公園','運動公園'];
+  function ph(t){ if(!SEG||!CJK.test(t)) return esc(t); var segs=[],cuts={},pos=0; for(var it=SEG.segment(t)[Symbol.iterator](),r=it.next();!r.done;r=it.next()) segs.push(r.value.segment);
+    segs.forEach(function(g,i){ if(i>0){ var prev=segs[i-1]; var single=g.length===1&&CJK.test(g)&&CJK.test(prev.slice(-1)); if(!single) cuts[pos]=1; } pos+=g.length; });
+    KEEP.forEach(function(k){ var i=t.indexOf(k); while(i>=0){ for(var j=i+1;j<i+k.length;j++) delete cuts[j]; i=t.indexOf(k,i+1);} });
+    var out=''; for(var i=0;i<t.length;i++){ if(cuts[i]&&CJK.test(t[i-1]||'')&&CJK.test(t[i])) out+='<wbr>'; out+=esc(t[i]); } return out; }
   function card(s){
     var TYPE={'地下':'underground','立體':'multistorey','平面':'surface'};
     var cap='', img='', im;
@@ -31,7 +37,7 @@
     var status=s.status==='營運中'?'<span class="chip g">營運中</span>':(s.status?'<span class="chip o">'+esc(s.status)+'</span>':'');
     var map=s.map?'<a class="map" href="'+esc(s.map)+'" target="_blank" rel="noopener" aria-label="在地圖上查看'+esc(s.name)+(s.mapLabel?'周邊':'')+'">'+esc(s.mapLabel||'地圖')+'</a>':'';
     var loc=(s.address||map)?'<div class="loc">'+(s.address?'<span class="addr">'+esc(s.address)+'</span>':'')+map+'</div>':'';
-    return '<article class="site"><div class="bd"><h3>'+esc(s.name)+'</h3><div class="meta"><span class="chip">'+esc(s.city)+(s.district?' '+esc(s.district):'')+'</span><span class="chip b">'+esc(s.type)+'</span>'+status+'</div><span class="co">'+esc(s.company)+'</span>'+credit+loc+'</div>'+im+'</article>';
+    return '<article class="site"><div class="bd"><h3>'+ph(s.name)+'</h3><div class="meta"><span class="chip">'+esc(s.city)+(s.district?' '+esc(s.district):'')+'</span><span class="chip b">'+esc(s.type)+'</span>'+status+'</div><span class="co">'+esc(s.company)+'</span>'+credit+loc+'</div>'+im+'</article>';
   }
 
   function render(){
