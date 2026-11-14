@@ -68,6 +68,7 @@
 // 合作洽詢：組成電子郵件（不經伺服器）
 (function(){
   var f=document.getElementById('cform'); if(!f) return;
+  var fb=f.querySelector('button[type="submit"]'); if(fb) fb.disabled=false;
   f.addEventListener('submit',function(e){
     e.preventDefault();
     var st=document.getElementById('cstatus');
@@ -140,4 +141,5 @@
   var ds=document.querySelectorAll('details.brands'); if(!ds.length) return;
   document.addEventListener('keydown',function(e){ if(e.key!=='Escape') return; ds.forEach(function(d){ if(d.open){ d.open=false; var s=d.querySelector('summary'); if(s) s.focus(); } }); });
   document.addEventListener('click',function(e){ ds.forEach(function(d){ if(d.open && !d.contains(e.target)) d.open=false; }); });
+  ds.forEach(function(d){ d.addEventListener('toggle',function(){ if(!d.open||window.innerWidth>980) return; var p=d.querySelector('.bpanel')||d; setTimeout(function(){ try{ p.scrollIntoView({block:'nearest',behavior:'smooth'}); }catch(e){ p.scrollIntoView(false); } },30); }); });
 })();

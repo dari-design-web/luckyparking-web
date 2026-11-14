@@ -274,7 +274,7 @@ pages['about.html'] = {
     <div><b class="num">2016</b><p>智慧運輸產業創新獎；開始支持基隆市太陽早餐計畫</p></div>
     <div><b class="num">2017</b><p>金擘獎優等、兩項導航發明專利</p></div>
     <div><b class="num">2018</b><p>金擘獎優等</p></div>
-    <div><b class="num">2019</b><p>臺灣建築獎首獎（基隆東岸停車商場）</p></div>
+    <div><b class="num">2019</b><p>臺灣建築獎首獎（E-square 基隆東岸廣場，過往營運實績）</p></div>
     <div><b class="num">2021</b><p>金擘獎優等（桃園青年體驗學習園區）</p></div>
     <div><b class="num">2024</b><p>叁肆行好食城開幕；依 ISO 14064-1 完成首次溫室氣體盤查</p></div>
     <div><b class="num">2025</b><p>新北市金停獎 3 場特優、12 場優等</p></div>
@@ -448,7 +448,7 @@ pages['careers.html'] = {
     <article><p class="eyebrow">怎麼應徵</p><h3>來信附上履歷</h3><ul><li>信件主旨寫「應徵：職務名稱」</li><li>附上履歷與可聯絡時間</li><li>收到後由人資與您聯繫</li></ul><p style="margin-top:16px"><a class="btn primary" href="mailto:${esc(SITE.jobsEmail)}?subject=${encodeURIComponent('應徵：')}">寄送履歷</a></p></article>
     <article><p class="eyebrow">工作地點</p><h3>總公司與各場站</h3><ul><li>總公司：${esc(SITE.address)}</li><li>停車場：臺北、新北、桃園、基隆</li><li>場域：林口、基隆港、桃園新屋、瑞芳</li></ul></article>
   </div>
-  <p class="muted" style="margin-top:16px;font-size:14px">履歷僅用於招募聯繫，請勿附身分證件影本。</p>
+  <p class="muted" style="margin-top:16px;font-size:14px">履歷僅用於招募聯繫，請勿附身分證件影本。寄送履歷前，請先閱讀<a href="privacy.html">隱私權聲明</a>。</p>
 </div></section>`
 };
 
@@ -476,7 +476,8 @@ pages['contact.html'] = {
     <div><dt>地址</dt><dd>${esc(SITE.address)}</dd></div>
     <div><dt>社群</dt><dd><a href="${esc(SITE.facebook)}" target="_blank" rel="noopener">Facebook 粉絲專頁</a></dd></div>
   </dl>
-  <form class="f" id="cform" aria-describedby="cform-intro" data-to="${esc(SITE.email)}" novalidate>
+  <p class="note nojs-note">目前請直接來信 <a href="mailto:${esc(SITE.email)}">${esc(SITE.email)}</a> 或來電 <a href="tel:${SITE.phone.replace(/[^0-9]/g, '')}">${esc(SITE.phone)}</a> 洽詢（聯絡資訊見本頁）。</p>
+  <form class="f js-only" id="cform" aria-describedby="cform-intro" data-to="${esc(SITE.email)}" novalidate onsubmit="return false">
     <p class="note" id="cform-intro" style="margin:0 0 4px">也可以直接來信 <a href="mailto:${esc(SITE.email)}">${esc(SITE.email)}</a> 或來電 <a href="tel:${SITE.phone.replace(/[^0-9]/g, '')}">${esc(SITE.phone)}</a>。姓名、電子郵件與內容為必填。</p>
     <div class="row">
       <label for="c-name">姓名<input id="c-name" name="name" required autocomplete="name"></label>
@@ -488,8 +489,8 @@ pages['contact.html'] = {
     </div>
     <label for="c-type">合作類別<select id="c-type" name="type"><option>停車場委外經營</option><option>商業空間與多元化合作</option><option>場站服務意見</option><option>其他</option></select></label>
     <label for="c-msg">內容<textarea id="c-msg" name="msg" rows="5" required></textarea></label>
-    <p class="note">選擇「開啟郵件草稿」後，請在郵件程式確認內容再寄出。本網站不會儲存表單內容；請勿填寫身分證字號、車牌等非必要資料。詳見<a href="privacy.html">隱私權聲明</a>。</p>
-    <div style="display:flex;gap:14px;align-items:center;flex-wrap:wrap"><button class="btn primary" type="submit">開啟郵件草稿</button><span class="status" id="cstatus" role="status"></span></div>
+    <p class="note">姓名、電子郵件與洽詢內容供回覆使用；未填寫必要項目，將無法完成草稿或回覆。電話、單位可依需要提供。選擇「開啟郵件草稿」後，請在郵件程式確認內容再寄出；本網站不會儲存表單內容，請勿填寫身分證字號、車牌等非必要資料。詳見<a href="privacy.html">隱私權聲明</a>。</p>
+    <div style="display:flex;gap:14px;align-items:center;flex-wrap:wrap"><button class="btn primary" type="submit" disabled>開啟郵件草稿</button><span class="status" id="cstatus" role="status"></span></div>
   </form>
 </div></section>`
 };
@@ -504,6 +505,7 @@ pages['privacy.html'] = {
   <h2>二、蒐集的資料與目的</h2>
   <p>本網站不會自動儲存您輸入的內容。「合作洽詢」表單與「寄送履歷」按鈕，是開啟您自己的郵件程式，由您確認後寄到 ${esc(SITE.email)}。本公司只會收到您寄出的郵件內容，例如姓名、單位、電話、電子郵件、洽詢內容或履歷。</p>
   <ul><li>合作洽詢：用於回覆與聯繫合作事宜。</li><li>應徵：用於招募評估與面試聯繫。</li></ul>
+  <p>姓名、電子郵件與洽詢內容是回覆所需；未提供時，本公司將無法回覆。電話、單位可依需要提供。</p>
   <h2>三、利用期間、地區、對象與方式</h2>
   <p>資料僅在達成上述目的所需期間內，由本公司相關承辦人員於中華民國境內使用，不提供給第三人，法令另有規定者除外。目的完成後依本公司文件保存規定刪除或銷毀。</p>
   <h2>四、您的權利</h2>
@@ -511,7 +513,7 @@ pages['privacy.html'] = {
   <h2>五、Cookie 與外部服務</h2>
   <p>本網站不使用追蹤型 Cookie。網頁字體由 Google Fonts 提供，影片與圖片由本網站直接提供；連到外部網站時，該網站可能依其政策記錄瀏覽資訊。</p>
   <h2>六、聲明修訂</h2>
-  <p>本聲明如有修訂，將公告於本頁。最後更新：2026 年 11 月 13 日。</p>
+  <p>本聲明如有修訂，將公告於本頁。最後更新：2026 年 11 月 14 日。</p>
   <h2>七、聯絡方式</h2>
   <p>大日開發有限公司｜${esc(SITE.address)}｜<span class="num">${esc(SITE.phone)}</span>｜${esc(SITE.email)}</p>
 </div></div></section>`

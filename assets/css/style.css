@@ -566,3 +566,8 @@ h2.count.quiet:focus-visible{outline:none}
   .site .imcap > span{display:block}
   .site .im.ph-img .imcap{background:#eef2f7}
 }
+
+/* W24：表單只在程式就緒後顯示；手機品牌展開避開底部快捷列 */
+html:not(.js) .js-only{display:none!important}
+.contact .nojs-note{align-self:start}
+@media (max-width:980px){ .brands .bpanel{scroll-margin-bottom:96px} .brands .bpanel a{scroll-margin-bottom:96px} }
