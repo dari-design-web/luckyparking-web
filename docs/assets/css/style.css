@@ -701,3 +701,8 @@ h1,h2,h3{word-break:keep-all;overflow-wrap:anywhere}
   .esgband .ebg video{display:none}
   .esgband .emob{display:block;width:100%;height:100%;object-fit:cover;object-position:right center}
 }
+
+/* 智慧服務：設備與服務分三組 */
+.svgroup + .svgroup{margin-top:36px}
+.svg-h{display:flex;align-items:center;gap:10px;font-size:18px;margin:0 0 4px;padding-bottom:10px;border-bottom:2px solid var(--ink)}
+.svg-h::before{content:"";width:18px;height:2px;background:var(--orange)}
