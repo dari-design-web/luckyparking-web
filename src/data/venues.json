@@ -18,7 +18,8 @@
   ],
   "todo": false,
   "imgNote": "場域意象",
-  "linkLabel": "國家檔案館官網"
+  "linkLabel": "國家檔案館官網",
+  "fb": "https://www.facebook.com/people/%E6%BC%AB%E9%81%8A%E6%AA%94%E6%A1%88%E9%A4%A8%E6%96%87%E5%89%B5-%E5%92%96%E5%95%A1-%E5%81%9C%E8%BB%8A%E5%A4%A7%E6%97%A5%E7%87%9F%E9%81%8B/61579805837170/"
  },
  {
   "id": "sansihang",
@@ -65,7 +66,8 @@
    }
   ],
   "brandsNote": "依基隆市政府觀光旅遊網公開資料整理（2026 年 11 月查詢），實際營業以商場及各店公告為準。",
-  "brandsSrc": "https://travel.klcg.gov.tw/TourContent.aspx?n=8159&s=710"
+  "brandsSrc": "https://travel.klcg.gov.tw/TourContent.aspx?n=8159&s=710",
+  "fb": "https://www.facebook.com/p/%E5%9F%BA%E9%9A%86%E6%B8%AF%E6%9D%B13%E6%9D%B14%E6%97%85%E5%AE%A2%E6%9C%8D%E5%8B%99%E4%B8%AD%E5%BF%83%E5%8F%81%E8%82%86%E8%A1%8C-100083318313417/?locale=zh_TW"
  },
  {
   "id": "tyac",
@@ -86,11 +88,12 @@
   ],
   "todo": false,
   "imgNote": "場域意象",
-  "linkLabel": "TYAC 官網"
+  "linkLabel": "TYAC 官網",
+  "fb": "https://www.facebook.com/taoyuanyouthadventurecamp/?locale=zh_TW"
  },
  {
   "id": "houhu",
-  "name": "後湖溪親水園區｜舟日咖啡",
+  "name": "後湖溪生態園區｜舟日咖啡",
   "kind": "水岸遊憩＋餐飲",
   "city": "桃園市新屋區",
   "address": "舟日咖啡：桃園市新屋區永安里新港路 166 號",
@@ -106,7 +109,8 @@
    "https://travel.tycg.gov.tw/zh-tw/consume/detail/3252"
   ],
   "todo": false,
-  "imgNote": "場域意象"
+  "imgNote": "場域意象",
+  "fb": "https://www.facebook.com/taoyuanriverkayak/?locale=zh_TW"
  },
  {
   "id": "railbike",
@@ -127,6 +131,7 @@
   ],
   "todo": false,
   "imgNote": "依實景參考繪製",
-  "linkLabel": "深澳鐵道自行車官網"
+  "linkLabel": "深澳鐵道自行車官網",
+  "fb": "https://www.facebook.com/railbike.newtaipeicity/?locale=zh_TW"
  }
 ]

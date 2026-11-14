@@ -28,7 +28,7 @@ const upcoming = PARKING.length - operating;
 
 
 // 標題斷行：以詞為單位插入 <wbr>，搭配 CSS keep-all，避免「教 / 育館」「商 / 業空間」這類斷在詞中間
-const KEEP = ['商業空間','旅客服務中心','服務中心','東三東四','金擘獎','金停獎','叁肆行','多元化經營','停車場經營','教育館','科學教育館','國家檔案館','鐵道自行車','體驗學習園區','學習園區','地下停車場','立體停車場','平面停車場','停車場','營運移轉案','民間經營團隊','民間團隊','優等獎','設備與服務','智慧生活','生活場域','北北桃基','原住民族','青少年活動中心','流行音樂中心','國際金融中心','親水園區'];
+const KEEP = ['商業空間','旅客服務中心','服務中心','東三東四','金擘獎','金停獎','叁肆行','多元化經營','停車場經營','教育館','科學教育館','國家檔案館','鐵道自行車','體驗學習園區','學習園區','地下停車場','立體停車場','平面停車場','停車場','營運移轉案','民間經營團隊','民間團隊','優等獎','設備與服務','智慧生活','生活場域','北北桃基','原住民族','青少年活動中心','流行音樂中心','國際金融中心','親水園區','生態園區'];
 const SEG = (typeof Intl !== 'undefined' && Intl.Segmenter) ? new Intl.Segmenter('zh-Hant', { granularity: 'word' }) : null;
 const CJK = /[㐀-鿿豈-﫿]/;
 function phraseText(t) {
@@ -268,7 +268,7 @@ pages['about.html'] = {
 <section class="ph"><div class="wrap"><p class="eyebrow">關於大日</p><h1>深入在地，<br>便利停車，智慧生活。</h1><p class="lead">大日開發成立於${esc(SITE.founded)}，資本額為${esc(SITE.capital)}，約有 ${esc(String(SITE.employees).replace(/^約\s*/, ""))}同仁。以停車場經營為基礎，跨足商業空間、旅遊景點與遊憩產業，目標是「創造一個政府、民眾與企業三贏的未來」。</p></div></section>
 <section class="band tight"><div class="wrap">
   <div class="group">
-    <article><p class="eyebrow">民國 88 年成立</p><h3 style="margin-top:6px">大日開發有限公司</h3><p>集團核心。經營公有與民間停車場，也在國家檔案館經營附屬商業空間與地下停車場。多元化經營場域包括東三東四旅客服務中心「叁肆行」、桃園青年體驗學習園區、後湖溪親水園區與舟日咖啡，以及深澳鐵道自行車。</p></article>
+    <article><p class="eyebrow">民國 88 年成立</p><h3 style="margin-top:6px">大日開發有限公司</h3><p>集團核心。經營公有與民間停車場，也在國家檔案館經營附屬商業空間與地下停車場。多元化經營場域包括東三東四旅客服務中心「叁肆行」、桃園青年體驗學習園區、後湖溪生態園區與舟日咖啡，以及深澳鐵道自行車。</p></article>
     <article><p class="eyebrow">民國 93 年成立</p><h3 style="margin-top:6px">千斗開發有限公司</h3><p>關係企業。承襲大日開發的經營經驗，導入智慧停車管理設備，經營臺北、新北多處公有地下與平面停車場。</p></article>
   </div>
 </div></section>
@@ -331,7 +331,7 @@ pages['parking.html'] = {
 };
 
 pages['venues.html'] = {
-  title: '多元化經營', desc: '國家檔案館、叁肆行、桃園青年體驗學習園區、後湖溪親水園區與舟日咖啡、深澳鐵道自行車。',
+  title: '多元化經營', desc: '國家檔案館、叁肆行、桃園青年體驗學習園區、後湖溪生態園區與舟日咖啡、深澳鐵道自行車。',
   body: `
 <section class="ph"><div class="wrap"><p class="eyebrow">多元化經營</p><h1>不只停車，<br>還有值得停留的地方。</h1><p class="lead">將停車場經營經驗延伸至商業空間、餐飲與休閒遊憩，提供從停好車開始的完整到訪體驗。</p></div></section>
 <section class="band tight" style="padding-top:8px"><div class="wrap"><div class="vcards">
@@ -344,7 +344,7 @@ pages['venues.html'] = {
       <p class="muted">${esc(v.summary)}</p>
       ${v.points.length ? `<ul>${v.points.map(p => `<li>${esc(p)}</li>`).join('')}</ul>` : ''}
       ${v.brands ? `<details class="brands"><summary class="bt">進駐品牌（${v.brands.reduce((a, g) => a + g.items.length, 0)}）</summary><div class="bpanel">${v.brands.map(g => `<p class="bg">${esc(g.group)}</p><div class="pill-list sm">${g.items.map(b => `<span>${esc(b)}</span>`).join('')}</div>`).join('')}${v.brandsNote ? `<p class="bn">${esc(v.brandsNote)}${v.brandsSrc ? ` <a href="${esc(v.brandsSrc)}" target="_blank" rel="noopener">基隆港好食城店家資訊</a>` : ''}</p>` : ''}</div></details>` : ''}
-      <div class="vlinks">${v.link ? `<a class="link" href="${esc(v.link)}" target="_blank" rel="noopener">${esc(v.linkLabel || '前往官網')}</a>` : ''}${v.todo ? '<span class="todo" style="margin-left:0">資料補充中</span>' : ''}</div>
+      <div class="vlinks">${v.link ? `<a class="link" href="${esc(v.link)}" target="_blank" rel="noopener">${esc(v.linkLabel || '前往官網')}</a>` : ''}${v.fb ? `<a class="link fb" href="${esc(v.fb)}" target="_blank" rel="noopener" aria-label="${esc(v.name.split('｜')[0])} Facebook 粉絲專頁（另開新視窗）">Facebook 粉絲專頁</a>` : ''}${v.todo ? '<span class="todo" style="margin-left:0">資料補充中</span>' : ''}</div>
     </div></article>`).join('')}
 </div></div></section>
 <section class="band alt"><div class="wrap">
