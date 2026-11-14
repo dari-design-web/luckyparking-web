@@ -125,13 +125,14 @@
   var vids=document.querySelectorAll('video.bgv'); if(!vids.length) return;
   var mqD=window.matchMedia('(min-width: 701px)'), rm=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   vids.forEach(function(v){
-    var sec=v.closest('section'), b=sec&&sec.querySelector('.bgtoggle'), user=false, vis=false, mobileOk=v.dataset.mobile==='1';
+    var sec=v.closest('section'), b=sec&&sec.querySelector('.bgtoggle'), user=false, vis=false, mobileOk=v.dataset.mobile==='1', once=v.dataset.once==='1', done=false;
     if(rm){ if(b) b.hidden=true; return; }
     function allowed(){ return mobileOk || mqD.matches; }
     function setBtn(paused){ if(!b) return; b.hidden=!allowed(); b.setAttribute('aria-pressed',paused); b.setAttribute('aria-label',paused?'播放背景影片':'暫停背景影片'); }
-    function go(){ if(allowed() && vis && !user){ if(!v.getAttribute('src')){ v.src=v.dataset.src; } var r=v.play(); if(r&&r.catch) r.catch(function(){}); setBtn(false); } else { v.pause(); setBtn(true); } }
-    if(b) b.addEventListener('click',function(){ user=!user; go(); });
-    if('IntersectionObserver' in window){ new IntersectionObserver(function(es){ es.forEach(function(e){ vis=e.isIntersecting; go(); }); },{threshold:.1}).observe(sec||v); } else { vis=true; go(); }
+    if(once) v.addEventListener('ended',function(){ done=true; setBtn(true); });
+    function go(){ if(done){ setBtn(true); return; } if(allowed() && vis && !user){ if(!v.getAttribute('src')){ v.src=v.dataset.src; } var r=v.play(); if(r&&r.catch) r.catch(function(){}); setBtn(false); } else { v.pause(); setBtn(true); } }
+    if(b) b.addEventListener('click',function(){ if(done){ done=false; user=false; try{ v.currentTime=0; }catch(e){} } else { user=!user; } go(); });
+    if('IntersectionObserver' in window){ var th=once?.5:.1; new IntersectionObserver(function(es){ es.forEach(function(e){ vis=e.isIntersecting&&e.intersectionRatio>=th-.01; go(); }); },{threshold:[0,.1,.5]}).observe(sec||v); } else { vis=true; go(); }
     if(mqD.addEventListener) mqD.addEventListener('change',go);
   });
 })();

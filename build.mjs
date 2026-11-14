@@ -144,7 +144,7 @@ pages['index.html'] = {
   title: '', desc: '大日開發（DARI GROUP）經營公有與民間停車場，並跨足商業空間、休閒遊憩等多元化場域。',
   body: `
 <section class="vhero" aria-label="主視覺">
-  <div class="vmedia">${SITE.hero.video ? `<video id="hero-video" class="bgv" data-mobile="1" muted loop playsinline preload="none" poster="${SITE.hero.poster}" data-src="${SITE.hero.video}" aria-hidden="true"></video>` : `<img src="${SITE.hero.poster}" alt="">`}</div>
+  <div class="vmedia">${SITE.hero.video ? `<video id="hero-video" class="bgv" data-mobile="1" muted ${SITE.hero.once ? 'data-once="1"' : 'loop'} playsinline preload="none" poster="${SITE.hero.poster}" data-src="${SITE.hero.video}" aria-hidden="true"></video>` : `<img src="${SITE.hero.poster}" alt="">`}</div>
   <div class="wrap vtext">
     <p class="eyebrow">${esc(SITE.tagline)}</p>
     <h1>讓停車與到訪，<br>都更順路。</h1>
@@ -532,11 +532,11 @@ fs.cpSync(path.join(ROOT, 'assets'), path.join(OUT, 'assets'), { recursive: true
 const PH = { 'about.html': 'about', 'parking.html': 'parking', 'venues.html': 'venues', 'services.html': 'services', 'awards.html': 'awards', 'esg.html': 'esg', 'news.html': 'news', 'contact.html': 'contact', 'careers.html': 'careers' };
 const PH_DARK = new Set(['awards']);
 const PH_SHORT = new Set(['parking', 'news']);
-const PH_VIDEO = { parking: { src: 'assets/video/parking.mp4', poster: 'assets/img/ph/parking-poster.jpg' } };
+const PH_VIDEO = { parking: { src: 'assets/video/parking.mp4', poster: 'assets/img/ph/parking-poster.jpg' }, venues: { src: 'assets/video/venues.mp4', poster: 'assets/img/ph/venues-poster.jpg', once: true }, esg: { src: 'assets/video/esg.mp4', poster: 'assets/img/ph/esg-poster.jpg', once: true } };
 for (const [file, p] of Object.entries(pages)) {
   const n = PH[file];
   const vid = PH_VIDEO[n];
-  if (n) p.body = p.body.replace('<section class="ph"><div class="wrap">', `<section class="ph has-img${PH_DARK.has(n) ? ' dark' : ''}${vid ? ' has-vid' : ''}${PH_SHORT.has(n) ? ' short' : ''}"><picture class="phimg"><source media="(max-width:700px)" srcset="assets/img/ph/${n}-m.jpg"><img src="${vid ? vid.poster : `assets/img/ph/${n}.jpg`}" alt="" fetchpriority="high"></picture>${vid ? `<video class="bgv" muted loop playsinline preload="none" poster="${vid.poster}" data-src="${vid.src}" aria-hidden="true"></video><button class="vtoggle bgtoggle" type="button" aria-label="暫停背景影片" aria-pressed="false"><span aria-hidden="true">❚❚</span></button>` : ''}<div class="wrap">`);
+  if (n) p.body = p.body.replace('<section class="ph"><div class="wrap">', `<section class="ph has-img${PH_DARK.has(n) ? ' dark' : ''}${vid ? ' has-vid' : ''}${PH_SHORT.has(n) ? ' short' : ''}"><picture class="phimg"><source media="(max-width:700px)" srcset="assets/img/ph/${n}-m.jpg"><img src="${vid ? vid.poster : `assets/img/ph/${n}.jpg`}" alt="" fetchpriority="high"></picture>${vid ? `<video class="bgv" muted ${vid.once ? 'data-once="1"' : 'loop'} playsinline preload="none" poster="${vid.poster}" data-src="${vid.src}" aria-hidden="true"></video><button class="vtoggle bgtoggle" type="button" aria-label="暫停背景影片" aria-pressed="false"><span aria-hidden="true">❚❚</span></button>` : ''}<div class="wrap">`);
   fs.writeFileSync(path.join(OUT, file), layout({ file, ...p }));
 }
 fs.writeFileSync(path.join(OUT, '.nojekyll'), '');
