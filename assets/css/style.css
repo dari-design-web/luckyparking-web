@@ -538,8 +538,9 @@ body.menu-open .nav{-webkit-backdrop-filter:none;backdrop-filter:none;background
 .site .loc{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;margin-top:auto;padding-top:4px}
 .site .loc .addr{flex:1;min-width:0}
 .site .loc .map{margin-top:0;flex:none;white-space:nowrap}
-.qhint{display:flex;flex-wrap:wrap;align-items:center;gap:6px 16px;font-size:14px;color:var(--ink);margin:-4px 0 14px}
-.qhint[hidden],.qhint [hidden]{display:none}
+.qhint{display:flex;flex-wrap:wrap;align-items:center;gap:6px 16px;font-size:14px;color:var(--ink);margin:0}
+.qhint.on{margin:-4px 0 14px}
+.qhint [hidden]{display:none}
 .qhint a{font-weight:700;color:var(--blue);text-decoration:none}
 .linkbtn{border:0;background:none;padding:0;font:inherit;font-size:14px;color:var(--ink-2);text-decoration:underline;text-underline-offset:2px;cursor:pointer}
 .nojs-note{font-size:14px;color:var(--ink-2);background:var(--surface-2);border-radius:12px;padding:10px 14px;margin:0 0 14px}
@@ -550,4 +551,18 @@ html:not(.js) .citymap .cm{pointer-events:none;cursor:default}
   .site .imcap{left:4px;right:4px;bottom:4px;max-width:none;font-size:10px;padding:2px 4px;text-align:center}
   .site .loc{gap:8px}
   .site .loc .addr{font-size:12.5px}
+}
+
+/* W22：結果標題可接焦點；手機圖說移到縮圖下方（12px，兩行） */
+h2.count{font-family:var(--text);font-size:14px;font-weight:500;letter-spacing:0;line-height:1.5;color:var(--ink-2);margin:6px 0 22px}
+h2.count:focus{outline:none}
+h2.count:focus-visible{outline:2px solid var(--blue);outline-offset:4px;border-radius:4px}
+h2.count.quiet:focus-visible{outline:none}
+@media (max-width:560px){
+  .site .im,.site .im.ph-img{display:flex;flex-direction:column;justify-content:flex-end}
+  .site .im img{flex:1 1 auto;height:auto;min-height:84px}
+  .site .imcap{position:static;max-width:none;border-radius:0;font-size:12px;line-height:16px;padding:4px 4px 5px;text-align:center;background:#fff6e0}
+  .site .imcap .sep{display:none}
+  .site .imcap > span{display:block}
+  .site .im.ph-img .imcap{background:#eef2f7}
 }

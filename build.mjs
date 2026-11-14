@@ -156,7 +156,7 @@ pages['index.html'] = {
 <section class="band alt tight statband">
   <div class="wrap">
     <div class="stats">
-      <div class="stat"><i class="si"><svg viewBox="0 0 24 24" aria-hidden="true">${ICON.car}</svg></i><b class="num"><span class="cu" data-to="${PARKING.length}">${PARKING.length}</span><sub>處</sub></b><span>經營停車場，遍及臺北、新北、桃園、基隆</span></div>
+      <div class="stat"><i class="si"><svg viewBox="0 0 24 24" aria-hidden="true">${ICON.car}</svg></i><b class="num"><span class="cu" data-to="${PARKING.length}">${PARKING.length}</span><sub>處</sub></b><span>停車場據點，遍及臺北、新北、桃園、基隆</span></div>
       <div class="stat"><i class="si"><svg viewBox="0 0 24 24" aria-hidden="true">${ICON.heart}</svg></i><b class="num"><span class="cu" data-to="${VENUES.length}">${VENUES.length}</span><sub>處</sub></b><span>多元化經營場域</span></div>
       <div class="stat"><i class="si"><svg viewBox="0 0 24 24" aria-hidden="true">${ICON.shield}</svg></i><b class="num"><span class="cu" data-to="3">3</span><sub>座</sub></b><span>財政部金擘獎優等</span></div>
       <div class="stat"><i class="si"><svg viewBox="0 0 24 24" aria-hidden="true">${ICON.pin}</svg></i><b class="num"><span class="cu" data-to="15">15</span><sub>場</sub></b><span>114 年度新北市金停獎（3 特優、12 優等）</span></div>
@@ -290,7 +290,7 @@ const SITE_TYPE = { '地下': 'underground', '立體': 'multistorey', '平面': 
 const siteCard = x => {
   let img, cap = '';
   if (x.img) { img = `<img src="assets/img/sites/${x.img}.jpg" alt="${esc(x.name)}" loading="lazy">`; if (x.imgNote === '暫用') cap = '<span class="imcap">暫用照片</span>'; }
-  else if (SITE_TYPE[x.type]) { img = `<img src="assets/img/sites/type-${SITE_TYPE[x.type]}.jpg" alt="" loading="lazy">`; cap = '<span class="imcap">場型示意｜非現場照片</span>'; }
+  else if (SITE_TYPE[x.type]) { img = `<img src="assets/img/sites/type-${SITE_TYPE[x.type]}.jpg" alt="" loading="lazy">`; cap = '<span class="imcap"><span>場型示意</span><span class="sep">｜</span><span>非現場照片</span></span>'; }
   else img = '';
   const im = img ? `<div class="im">${img}${cap}</div>` : '<div class="im ph-img"><span class="imcap">照片準備中</span></div>';
   const map = x.map ? `<a class="map" href="${esc(x.map)}" target="_blank" rel="noopener" aria-label="在地圖上查看${esc(x.name)}${x.mapLabel ? '周邊' : ''}">${esc(x.mapLabel || '地圖')}</a>` : '';
@@ -298,19 +298,18 @@ const siteCard = x => {
 };
 const cities = ['全部', ...new Set(PARKING.map(p => p.city))];
 pages['parking.html'] = {
-  title: '停車場經營', desc: `大日開發與千斗開發經營的 ${PARKING.length} 處停車場。`,
+  title: '停車場經營', desc: `大日開發與千斗開發的 ${PARKING.length} 處停車場據點。`,
   body: `
-<section class="ph"><div class="wrap"><p class="eyebrow">停車場經營</p><h1>${PARKING.length} 處停車場，<br>遍及北北桃基。</h1><p class="lead">公有地下停車場、立體與平面停車場的委外經營。依縣市或經營公司篩選，點「地圖」查看位置。</p></div></section>
+<section class="ph"><div class="wrap"><p class="eyebrow">停車場經營</p><h1>${PARKING.length} 處停車場，<br>遍及北北桃基。</h1><p class="lead">公有地下停車場、立體與平面停車場的委外經營。瀏覽各地停車據點，點「地圖」查看位置。</p></div></section>
 <section class="band tight" style="padding-top:8px"><div class="wrap">
-  <p class="note nojs-note">以下為完整 ${PARKING.length} 處場站清單，可直接瀏覽並點「地圖」查看位置；搜尋與篩選需啟用 JavaScript。</p>
+  <p class="note nojs-note">以下可直接瀏覽 ${PARKING.length} 處停車據點，點「地圖」查看位置。搜尋與篩選功能需要瀏覽器啟用 JavaScript。</p>
   <div class="search pk-ctl"><label for="q" class="sr">搜尋停車場</label><input id="q" type="search" placeholder="搜尋名稱、行政區或路名，例如：中和、榮星" autocomplete="off" aria-describedby="qhint"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4.5 4.5"/></svg></div>
-  <p class="qhint" id="qhint" hidden><span id="qhint-t"></span><a href="#results" id="qhint-go">看結果 ↓</a><button type="button" class="linkbtn" id="qhint-clear">清除關鍵字</button></p>
+  <div class="qhint pk-ctl" id="qhint"><span id="qhint-t" role="status"></span><a href="#results" id="qhint-go" hidden>看結果 ↓</a><button type="button" class="linkbtn" id="qhint-clear" hidden>清除關鍵字</button></div>
   <div class="citymap" aria-label="依縣市分布">${cities.filter(c => c !== '全部').map(c => `<button type="button" class="cm" data-city="${c}"><b class="num">${PARKING.filter(p => p.city === c).length}</b><span>${c}</span></button>`).join('')}</div>
   <div class="filters pk-ctl" role="group" aria-label="依縣市篩選">${cities.map(c => `<button type="button" data-f="city" data-v="${c}" aria-pressed="${c === '全部'}">${c}</button>`).join('')}</div>
   <div class="filters pk-ctl" role="group" aria-label="依經營公司篩選">${['全部', '大日開發', '千斗開發'].map(c => `<button type="button" data-f="company" data-v="${c}" aria-pressed="${c === '全部'}">${c === '全部' ? '全部公司' : c}</button>`).join('')}</div>
-  <h2 class="sr" id="results">停車場列表</h2>
-  <p class="count" id="count" role="status">共 ${PARKING.length} 處</p>
-  <div class="zero pk-ctl" id="zero" hidden><button type="button" class="btn ghost" id="clear-q">清除關鍵字</button><button type="button" class="btn ghost" id="clear-f">清除篩選</button></div>
+  <h2 class="count" id="results" tabindex="-1">共 ${PARKING.length} 處</h2>
+  <div class="zero pk-ctl" id="zero" hidden><button type="button" class="btn ghost" id="clear-f">清除縣市與公司篩選</button></div>
   <div class="sites" id="sites-grid">${PARKING.map(siteCard).join('')}</div>
   <script type="application/json" id="parking-data">${JSON.stringify(PARKING).replace(/</g, '\\u003c')}</script>
 </div></section>`

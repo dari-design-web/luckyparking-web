@@ -14,7 +14,7 @@
 (function(){
   var data=document.getElementById('parking-data'); if(!data) return;
   var sites=JSON.parse(data.textContent);
-  var grid=document.getElementById('sites-grid'), cnt=document.getElementById('count');
+  var grid=document.getElementById('sites-grid'), cnt=document.getElementById('results');
   var state={city:'全部',company:'全部',q:''};
   var qi=document.getElementById('q');
   try{ var qp=new URLSearchParams(location.search).get('q'); if(qp&&qi){ qi.value=qp; state.q=qp; } }catch(e){}
@@ -25,7 +25,7 @@
     var TYPE={'地下':'underground','立體':'multistorey','平面':'surface'};
     var cap='', img='', im;
     if(s.img){ img='<img src="assets/img/sites/'+s.img+'.jpg" alt="'+esc(s.name)+'" loading="lazy">'; if(s.imgNote==='暫用') cap='<span class="imcap">暫用照片</span>'; }
-    else if(TYPE[s.type]){ img='<img src="assets/img/sites/type-'+TYPE[s.type]+'.jpg" alt="" loading="lazy">'; cap='<span class="imcap">場型示意｜非現場照片</span>'; }
+    else if(TYPE[s.type]){ img='<img src="assets/img/sites/type-'+TYPE[s.type]+'.jpg" alt="" loading="lazy">'; cap='<span class="imcap"><span>場型示意</span><span class="sep">｜</span><span>非現場照片</span></span>'; }
     im=img?'<div class="im">'+img+cap+'</div>':'<div class="im ph-img"><span class="imcap">照片準備中</span></div>';
     var credit=s.imgCredit?'<a class="credit" href="'+esc(s.imgCredit.url)+'" target="_blank" rel="noopener">'+esc(s.imgCredit.label)+'</a>':'';
     var status=s.status==='營運中'?'<span class="chip g">營運中</span>':(s.status?'<span class="chip o">'+esc(s.status)+'</span>':'');
@@ -47,19 +47,22 @@
       return toks.length>0;
     });
     grid.innerHTML=list.map(card).join('');
-    cnt.textContent=list.length?('共 '+list.length+' 處'):'找不到符合的停車場，請換個關鍵字或清除篩選。';
-    var qh=document.getElementById('qhint'), qt=document.getElementById('qhint-t'), qg=document.getElementById('qhint-go');
-    if(qh&&qt){ qh.hidden=!state.q; qt.textContent=list.length?('找到 '+list.length+' 處'):'找不到符合「'+state.q+'」的停車場，請換個關鍵字。'; if(qg) qg.hidden=!list.length; }
-    var z=document.getElementById('zero'); if(z){ z.hidden=!!list.length; var cq=document.getElementById('clear-q'), cf=document.getElementById('clear-f'); if(cq) cq.hidden=!state.q; if(cf) cf.hidden=(state.city==='全部'&&state.company==='全部'); }
+    var filtered=!(state.city==='全部'&&state.company==='全部');
+    cnt.textContent=list.length?('共 '+list.length+' 處'):'沒有符合條件的停車場';
+    var qh=document.getElementById('qhint'), qt=document.getElementById('qhint-t'), qg=document.getElementById('qhint-go'), qc=document.getElementById('qhint-clear');
+    if(qh&&qt){ var msg=state.q?(list.length?('找到 '+list.length+' 處'):('找不到符合「'+state.q+'」的停車場'+(filtered?'，可清除關鍵字或縣市、公司篩選。':'，請換個關鍵字。'))):''; if(qt.textContent!==msg) qt.textContent=msg; qh.classList.toggle('on',!!state.q); if(qg) qg.hidden=!(state.q&&list.length); if(qc) qc.hidden=!state.q; }
+    var z=document.getElementById('zero'); if(z){ z.hidden=!(!list.length&&filtered); }
     document.querySelectorAll('[data-f]').forEach(function(btn){btn.setAttribute('aria-pressed',state[btn.dataset.f]===btn.dataset.v);});
   }
   document.querySelectorAll('[data-f]').forEach(function(btn){btn.addEventListener('click',function(){state[btn.dataset.f]=btn.dataset.v;render();});});
-  var cqb=document.getElementById('clear-q'), cfb=document.getElementById('clear-f');
+  var cqb=document.getElementById('qhint-clear'), cfb=document.getElementById('clear-f');
   if(cqb) cqb.addEventListener('click',function(){ state.q=''; if(qi){ qi.value=''; } try{ var u=new URL(location.href); u.searchParams.delete('q'); history.replaceState(null,'',u);}catch(e){} render(); if(qi) qi.focus(); });
   if(cfb) cfb.addEventListener('click',function(){ state.city='全部'; state.company='全部'; render(); document.querySelectorAll('.citymap .cm').forEach(function(x){ x.setAttribute('aria-pressed','false'); }); });
-  var qhc=document.getElementById('qhint-clear'); if(qhc&&cqb) qhc.addEventListener('click',function(){ cqb.click(); });
+  function toResults(quiet){ try{ cnt.scrollIntoView({block:'start'}); }catch(e){ cnt.scrollIntoView(); } if(quiet) cnt.classList.add('quiet'); try{ cnt.focus({preventScroll:true}); }catch(e){ cnt.focus(); } }
+  cnt.addEventListener('blur',function(){ cnt.classList.remove('quiet'); });
+  var qg0=document.getElementById('qhint-go'); if(qg0) qg0.addEventListener('click',function(e){ e.preventDefault(); toResults(); });
   render();
-  if(state.q){ var tgt=document.getElementById('results')||cnt; requestAnimationFrame(function(){ var r=cnt.getBoundingClientRect(); if(r.top>window.innerHeight*0.6){ try{ tgt.scrollIntoView({block:'start'}); }catch(e){ tgt.scrollIntoView(); } } }); }
+  if(state.q){ requestAnimationFrame(function(){ var r=cnt.getBoundingClientRect(); if(r.top>window.innerHeight*0.6) toResults(true); }); }
 })();
 
 // 合作洽詢：組成電子郵件（不經伺服器）
