@@ -121,6 +121,9 @@ const ICON = {
   exit: '<path d="M10 4H5v16h5M14 8l4 4-4 4M18 12H9"/>',
   plug: '<path d="M9 3v5M15 3v5M7 8h10v4a5 5 0 0 1-10 0zM12 17v4"/>',
   heart: '<path d="M12 20s-7-4.5-7-10a4 4 0 0 1 7-2.5A4 4 0 0 1 19 10c0 5.5-7 10-7 10z"/>',
+  globe: '<circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 2.6 3.8 5.6 3.8 9s-1.3 6.4-3.8 9M12 3c-2.5 2.6-3.8 5.6-3.8 9s1.3 6.4 3.8 9"/>',
+  chat: '<path d="M20 12a8 8 0 0 1-11.6 7.1L4 20l1.1-4.1A8 8 0 1 1 20 12z"/><path d="M8.5 12h.01M12 12h.01M15.5 12h.01"/>',
+  ext: '<path d="M8 16L16 8M9 8h7v7"/>',
   palette: '<circle cx="12" cy="12" r="9"/><circle cx="8" cy="10" r="1"/><circle cx="12" cy="7.5" r="1"/><circle cx="16" cy="10" r="1"/><path d="M12 21a2.5 2.5 0 0 1 0-5h2"/>'
 };
 const SERVICES = [
@@ -242,7 +245,8 @@ pages['index.html'] = {
 
 ${sunBand()}
 
-<section class="band alt">
+<section class="band esgband" aria-label="永續 ESG">
+  <div class="ebg" aria-hidden="true"><video class="bgv" muted loop playsinline preload="none" poster="assets/img/ph/esg-poster.jpg" data-src="assets/video/esg.mp4"></video><img class="emob" src="assets/img/ph/esg-m.jpg" alt="" loading="lazy"></div>
   <div class="wrap esg">
     <div>
       <p class="eyebrow">永續 ESG</p>
@@ -344,7 +348,7 @@ pages['venues.html'] = {
       <p class="muted">${esc(v.summary)}</p>
       ${v.points.length ? `<ul>${v.points.map(p => `<li>${esc(p)}</li>`).join('')}</ul>` : ''}
       ${v.brands ? `<details class="brands"><summary class="bt">進駐品牌（${v.brands.reduce((a, g) => a + g.items.length, 0)}）</summary><div class="bpanel">${v.brands.map(g => `<p class="bg">${esc(g.group)}</p><div class="pill-list sm">${g.items.map(b => `<span>${esc(b)}</span>`).join('')}</div>`).join('')}${v.brandsNote ? `<p class="bn">${esc(v.brandsNote)}${v.brandsSrc ? ` <a href="${esc(v.brandsSrc)}" target="_blank" rel="noopener">基隆港好食城店家資訊</a>` : ''}</p>` : ''}</div></details>` : ''}
-      <div class="vlinks">${v.link ? `<a class="link" href="${esc(v.link)}" target="_blank" rel="noopener">${esc(v.linkLabel || '前往官網')}</a>` : ''}${v.fb ? `<a class="link fb" href="${esc(v.fb)}" target="_blank" rel="noopener" aria-label="${esc(v.name.split('｜')[0])} Facebook 粉絲專頁（另開新視窗）">Facebook 粉絲專頁</a>` : ''}${v.todo ? '<span class="todo" style="margin-left:0">資料補充中</span>' : ''}</div>
+      ${(v.link || v.fb) ? `<div class="vbtns">${v.link ? `<a class="vbtn web" href="${esc(v.link)}" target="_blank" rel="noopener" aria-label="${esc(v.name.split('｜')[0])} 官方網站（另開新視窗）"><svg viewBox="0 0 24 24" aria-hidden="true">${ICON.globe}</svg><span>官方網站</span><svg class="ext" viewBox="0 0 24 24" aria-hidden="true">${ICON.ext}</svg></a>` : ''}${v.fb ? `<a class="vbtn fb" href="${esc(v.fb)}" target="_blank" rel="noopener" aria-label="${esc(v.name.split('｜')[0])} Facebook 粉絲專頁（另開新視窗）"><svg viewBox="0 0 24 24" aria-hidden="true">${ICON.chat}</svg><span>Facebook</span><svg class="ext" viewBox="0 0 24 24" aria-hidden="true">${ICON.ext}</svg></a>` : ''}</div>` : ''}${v.todo ? '<div class="vlinks"><span class="todo" style="margin-left:0">資料補充中</span></div>' : ''}
     </div></article>`).join('')}
 </div></div></section>
 <section class="band alt"><div class="wrap">
