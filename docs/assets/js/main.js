@@ -78,7 +78,7 @@
     var body='姓名：'+v('c-name')+'\n單位：'+v('c-org')+'\n電話：'+v('c-tel')+'\n電子郵件：'+v('c-mail')+'\n類別：'+v('c-type')+'\n\n'+v('c-msg');
     var to=f.dataset.to;
     window.location.href='mailto:'+to+'?subject='+encodeURIComponent(subject)+'&body='+encodeURIComponent(body);
-    st.style.color='';st.textContent='已開啟您的郵件程式，請按「傳送」完成寄出。若沒有開啟，請直接寄信至 '+to+'。';
+    st.style.color='';st.textContent='若已開啟郵件草稿，請在郵件程式確認內容後寄出。若沒有開啟，請直接來信 '+to+(f.dataset.tel?' 或來電 '+f.dataset.tel:'')+'。';
   });
 })();
 

@@ -477,7 +477,7 @@ pages['contact.html'] = {
     <div><dt>社群</dt><dd><a href="${esc(SITE.facebook)}" target="_blank" rel="noopener">Facebook 粉絲專頁</a></dd></div>
   </dl>
   <p class="note nojs-note">目前請直接來信 <a href="mailto:${esc(SITE.email)}">${esc(SITE.email)}</a> 或來電 <a href="tel:${SITE.phone.replace(/[^0-9]/g, '')}">${esc(SITE.phone)}</a> 洽詢（聯絡資訊見本頁）。</p>
-  <form class="f js-only" id="cform" aria-describedby="cform-intro" data-to="${esc(SITE.email)}" novalidate onsubmit="return false">
+  <form class="f js-only" id="cform" aria-describedby="cform-intro" data-to="${esc(SITE.email)}" data-tel="${esc(SITE.phone)}" novalidate onsubmit="return false">
     <p class="note" id="cform-intro" style="margin:0 0 4px">也可以直接來信 <a href="mailto:${esc(SITE.email)}">${esc(SITE.email)}</a> 或來電 <a href="tel:${SITE.phone.replace(/[^0-9]/g, '')}">${esc(SITE.phone)}</a>。姓名、電子郵件與內容為必填。</p>
     <div class="row">
       <label for="c-name">姓名<input id="c-name" name="name" required autocomplete="name"></label>
@@ -507,7 +507,7 @@ pages['privacy.html'] = {
   <ul><li>合作洽詢：用於回覆與聯繫合作事宜。</li><li>應徵：用於招募評估與面試聯繫。</li></ul>
   <p>姓名、電子郵件與洽詢內容是回覆所需；未提供時，本公司將無法回覆。電話、單位可依需要提供。</p>
   <h2>三、利用期間、地區、對象與方式</h2>
-  <p>資料僅在達成上述目的所需期間內，由本公司相關承辦人員於中華民國境內使用，不提供給第三人，法令另有規定者除外。目的完成後依本公司文件保存規定刪除或銷毀。</p>
+  <p>您寄來的郵件由本公司使用的電子郵件服務收存，並由本公司相關承辦人員為上述目的使用。資料保存至達成目的所需期間，之後依本公司規定刪除或銷毀；除法令另有規定或經您同意外，不作其他用途。利用地區、對象與保存期間的細節，可來信 ${esc(SITE.email)} 查詢。</p>
   <h2>四、您的權利</h2>
   <p>依個人資料保護法第 3 條，您可以請求查詢、閱覽、製給複製本、補充或更正、停止蒐集、處理或利用，或請求刪除個人資料。請來信 ${esc(SITE.email)}，本公司將於確認身分後處理。</p>
   <h2>五、Cookie 與外部服務</h2>
