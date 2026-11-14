@@ -619,3 +619,6 @@ p,li,dd,figcaption{text-wrap:pretty}
 /* 標題以詞為單位斷行（建置時插入 <wbr>）；太長時仍可在任意處換行 */
 h1,h2,h3{word-break:keep-all;overflow-wrap:anywhere}
 .ctaband{--cta-img:url(../img/bg-cta.jpg)}
+/* 重要歷程：桌機兩列五欄完整顯示（不再需要橫向捲動）；平板改兩欄直式 */
+@media (min-width:901px){.tl-wrap{overflow:visible}.tl{grid-auto-flow:row;grid-template-columns:repeat(5,1fr);grid-auto-columns:auto;row-gap:40px;min-width:0}}
+@media (min-width:701px) and (max-width:900px){.tl-wrap{overflow:visible}.tl{grid-auto-flow:row;grid-template-columns:repeat(2,1fr);grid-auto-columns:auto;row-gap:28px;column-gap:24px;min-width:0}}
