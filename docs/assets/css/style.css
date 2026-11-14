@@ -442,7 +442,7 @@ body.menu-open .nav{-webkit-backdrop-filter:none;backdrop-filter:none;background
 .awardband .wrap{position:relative;z-index:1}
 .awardband .awards .pic{box-shadow:0 24px 60px rgba(0,0,0,.45)}
 @media (max-width:860px){.awardband::after{background:rgba(7,13,24,.72)}}
-@media (prefers-reduced-motion:reduce){.awardband .abv{display:none}.awardband .abg{background:url(../img/bg-awards.jpg) right center/cover}}
+@media (prefers-reduced-motion:reduce){.awardband .abv{display:none}.awardband .abg{background:url(../img/awards-poster.jpg) right center/cover}}
 .awardband .awards{display:block}
 .awardband .atext{max-width:560px;padding-block:24px}
 .awardband{min-height:clamp(520px,44vw,680px);display:flex;align-items:center}
@@ -478,7 +478,7 @@ body.menu-open .nav{-webkit-backdrop-filter:none;backdrop-filter:none;background
   .ph.has-vid .bgv,.ph .bgtoggle,.awardband .bgtoggle{display:none}
   .ph.has-img.short .phimg img{aspect-ratio:auto;height:190px;max-height:none;object-fit:cover}
   .awardband .abv{display:none}
-  .awardband .abg{background:url(../img/bg-awards.jpg) 70% center/cover}
+  .awardband .abg{background:url(../img/awards-poster.jpg) 70% center/cover}
   .awardband::after{background:linear-gradient(0deg,rgba(7,13,24,.92) 0%,rgba(7,13,24,.82) 100%)}
 }
 .zero{display:flex;gap:8px;flex-wrap:wrap;margin:-4px 0 16px}
