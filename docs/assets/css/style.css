@@ -727,5 +727,5 @@ h1,h2,h3{word-break:keep-all;overflow-wrap:anywhere}
 .vcard .vimg .watch:hover{background:var(--orange);box-shadow:0 8px 20px rgba(239,120,54,.4)}
 @media (hover:hover) and (prefers-reduced-motion:no-preference){.vcard .vimg .watch:hover{transform:translateY(-2px)}}
 .vcard .vimg .watch:focus-visible{outline:3px solid var(--orange);outline-offset:3px}
-/* 導言：依詞語斷行（建置時插入斷點），避免斷在詞中間 */
-p.lead{word-break:keep-all;overflow-wrap:anywhere}
+/* 導言：左右對齊（最後一行靠左），中文逐字均分間距 */
+p.lead{text-align:justify;text-align-last:left;text-justify:inter-character;line-break:strict}

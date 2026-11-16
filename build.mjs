@@ -42,7 +42,7 @@ function phraseText(t) {
 }
 function phraseHtml(html) {
   const fix = (m, a, inner, b) => a + inner.split(/(<[^>]+>|&[#a-z0-9]+;)/i).map(part => (part.startsWith('<') || part.startsWith('&')) ? part : phraseText(part)).join('') + b;
-  return html.replace(/(<h[1-3][^>]*>)([\s\S]*?)(<\/h[1-3]>)/g, fix).replace(/(<p class="lead"[^>]*>)([\s\S]*?)(<\/p>)/g, fix);
+  return html.replace(/(<h[1-3][^>]*>)([\s\S]*?)(<\/h[1-3]>)/g, fix);
 }
 
 function layout({ file, title, desc, body, base, noindex }) {
