@@ -729,3 +729,5 @@ h1,h2,h3{word-break:keep-all;overflow-wrap:anywhere}
 .vcard .vimg .watch:focus-visible{outline:3px solid var(--orange);outline-offset:3px}
 /* 導言：左右對齊（最後一行靠左），中文逐字均分間距 */
 p.lead{text-align:justify;text-align-last:left;text-justify:inter-character;line-break:strict}
+.sr-only{position:absolute!important;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+.btnrow{display:flex;flex-wrap:wrap;gap:10px}

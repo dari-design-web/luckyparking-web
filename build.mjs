@@ -481,12 +481,12 @@ pages['careers.html'] = {
   </div>
 </div></section>
 <section class="band alt" id="apply"><div class="wrap">
-  <div class="head"><div><h2>目前職缺</h2><p style="margin-top:8px">職缺資訊整理中。歡迎來信自我推薦。</p></div></div>
+  <div class="head"><div><h2>目前職缺</h2><p style="margin-top:8px">最新職缺都刊登在 1111 人力銀行，可以直接在上面查看並線上應徵。</p></div><a class="btn orange" href="${esc(SITE.jobs1111)}" target="_blank" rel="noopener">前往 1111 查看職缺 <span aria-hidden="true">↗</span><span class="sr-only">（另開新視窗）</span></a></div>
   <div class="coop">
-    <article><p class="eyebrow">怎麼應徵</p><h3>來信附上履歷</h3><ul><li>信件主旨寫「應徵：職務名稱」</li><li>附上履歷與可聯絡時間</li><li>收到履歷後，由人資與您聯繫</li></ul><p style="margin-top:16px"><a class="btn primary" href="mailto:${esc(SITE.jobsEmail)}?subject=${encodeURIComponent('應徵：')}">寄送履歷</a></p></article>
+    <article><p class="eyebrow">怎麼應徵</p><h3>線上應徵或來信</h3><ul><li>在 1111 人力銀行選擇職缺，直接線上應徵</li><li>或來信附上履歷與可聯絡時間，主旨寫「應徵：職務名稱」</li><li>收到履歷後，由人資與您聯繫</li></ul><p class="btnrow" style="margin-top:16px"><a class="btn primary" href="${esc(SITE.jobs1111)}" target="_blank" rel="noopener">1111 線上應徵 <span aria-hidden="true">↗</span><span class="sr-only">（另開新視窗）</span></a><a class="btn ghost" href="mailto:${esc(SITE.jobsEmail)}?subject=${encodeURIComponent('應徵：')}">寄送履歷</a></p></article>
     <article><p class="eyebrow">工作地點</p><h3>總公司與各場站</h3><ul><li>總公司：${esc(SITE.address)}</li><li>停車場：臺北、新北、桃園、基隆</li><li>場域：林口、基隆港、桃園新屋、瑞芳</li></ul></article>
   </div>
-  <p class="muted" style="margin-top:16px;font-size:14px">履歷僅用於招募聯繫，請勿附身分證件影本。寄送履歷前，請先閱讀<a href="privacy.html">隱私權聲明</a>。</p>
+  <p class="muted" style="margin-top:16px;font-size:14px">來信寄送的履歷僅用於招募聯繫，請勿附身分證件影本；寄送前請先閱讀<a href="privacy.html">隱私權聲明</a>。透過 1111 人力銀行應徵時，資料依該網站的規範處理。</p>
 </div></section>`
 };
 
