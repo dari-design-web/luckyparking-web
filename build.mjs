@@ -516,7 +516,7 @@ pages['contact.html'] = {
     <div><dt>社群</dt><dd><a href="${esc(SITE.facebook)}" target="_blank" rel="noopener">Facebook 粉絲專頁</a></dd></div>
   </dl></div>
   <p class="note nojs-note">目前請直接來信 <a href="mailto:${esc(SITE.email)}">${esc(SITE.email)}</a> 或來電 <a href="tel:${SITE.phone.replace(/[^0-9]/g, '')}">${esc(SITE.phone)}</a> 洽詢（聯絡資訊見本頁）。</p>
-  <form class="f js-only" id="cform" aria-describedby="cform-intro" data-to="${esc(SITE.email)}" data-tel="${esc(SITE.phone)}" novalidate onsubmit="return false">
+  <form class="f js-only" id="cform" aria-describedby="cform-intro" data-to="${esc(SITE.email)}" data-tel="${esc(SITE.phone)}"${SITE.formEndpoint ? ` data-endpoint="${esc(SITE.formEndpoint)}"` : ''} novalidate onsubmit="return false">
     <h2 class="ch">填寫洽詢內容</h2>
     <p class="note" id="cform-intro" style="margin:0 0 4px">也可以直接來信 <a href="mailto:${esc(SITE.email)}">${esc(SITE.email)}</a> 或來電 <a href="tel:${SITE.phone.replace(/[^0-9]/g, '')}">${esc(SITE.phone)}</a>。姓名、電子郵件與內容為必填。</p>
     <div class="row">
@@ -529,8 +529,10 @@ pages['contact.html'] = {
     </div>
     <label for="c-type">合作類別<select id="c-type" name="type"><option>停車場委外經營</option><option>商業空間與多元化合作</option><option>場站服務意見</option><option>其他</option></select></label>
     <label for="c-msg"><span>內容<span class="req">必填</span></span><textarea id="c-msg" name="msg" rows="5" required></textarea></label>
-    <p class="note">姓名、電子郵件與洽詢內容供回覆使用。未填寫必要項目，將無法完成郵件草稿或回覆。電話、單位可依需要提供。選擇「開啟郵件草稿」後，請在郵件程式中確認內容再寄出。本網站不會儲存表單內容，請勿填寫身分證字號、車牌等非必要資料。詳見<a href="privacy.html">隱私權聲明</a>。</p>
-    <div style="display:flex;gap:14px;align-items:center;flex-wrap:wrap"><button class="btn primary" type="submit" disabled>開啟郵件草稿</button><span class="hint">按下後會開啟您的郵件程式，仍需在郵件程式中按「傳送」。</span></div>
+    <div class="hp" aria-hidden="true"><label>請勿填寫此欄<input name="website" tabindex="-1" autocomplete="off"></label></div>
+    ${SITE.formEndpoint ? `<p class="note">姓名、電子郵件與洽詢內容供回覆使用；電話、單位可依需要提供。按下「送出洽詢」後，內容會直接寄到本公司信箱 ${esc(SITE.email)}，本網站不另外儲存。請勿填寫身分證字號、車牌等非必要資料。詳見<a href="privacy.html">隱私權聲明</a>。</p>
+    <div style="display:flex;gap:14px;align-items:center;flex-wrap:wrap"><button class="btn primary" type="submit" disabled>送出洽詢</button><span class="hint">送出後會直接寄到本公司信箱，不需另開郵件程式。</span></div>` : `<p class="note">姓名、電子郵件與洽詢內容供回覆使用。未填寫必要項目，將無法完成郵件草稿或回覆。電話、單位可依需要提供。選擇「開啟郵件草稿」後，請在郵件程式中確認內容再寄出。本網站不會儲存表單內容，請勿填寫身分證字號、車牌等非必要資料。詳見<a href="privacy.html">隱私權聲明</a>。</p>
+    <div style="display:flex;gap:14px;align-items:center;flex-wrap:wrap"><button class="btn primary" type="submit" disabled>開啟郵件草稿</button><span class="hint">按下後會開啟您的郵件程式，仍需在郵件程式中按「傳送」。</span></div>`}
     <span class="status" id="cstatus" role="status"></span>
   </form>
 </div></section>`
@@ -544,7 +546,7 @@ pages['privacy.html'] = {
   <h2>一、適用範圍</h2>
   <p>本聲明適用於大日開發有限公司（以下稱本公司）官方網站，以及您透過本網站寄送給本公司的電子郵件。網站中連結的其他網站（例如場域官網、政府網站、Google 雲端硬碟），依各該網站的隱私權政策處理。</p>
   <h2>二、蒐集的資料與目的</h2>
-  <p>本網站不會自動儲存您輸入的內容。使用「合作洽詢」表單或「寄送履歷」按鈕，會開啟您的郵件程式，由您確認內容後寄至 ${esc(SITE.email)}。本公司只會收到您寄出的郵件內容，例如姓名、單位、電話、電子郵件、洽詢內容或履歷。</p>
+  ${SITE.formEndpoint ? `<p>本網站不設資料庫，不另外儲存您輸入的內容。「合作洽詢」表單送出後，內容會透過本公司 Google 帳號的 Apps Script 服務，直接以電子郵件寄至 ${esc(SITE.email)}。「寄送履歷」按鈕則會開啟您的郵件程式，由您確認內容後寄出。本公司只會收到您送出的內容，例如姓名、單位、電話、電子郵件、洽詢內容或履歷。</p>` : `<p>本網站不會自動儲存您輸入的內容。使用「合作洽詢」表單或「寄送履歷」按鈕，會開啟您的郵件程式，由您確認內容後寄至 ${esc(SITE.email)}。本公司只會收到您寄出的郵件內容，例如姓名、單位、電話、電子郵件、洽詢內容或履歷。</p>`}
   <ul><li>合作洽詢：用於回覆與聯繫合作事宜。</li><li>應徵：用於招募評估與面試聯繫。</li></ul>
   <p>姓名、電子郵件與洽詢內容是回覆所需；未提供時，本公司將無法回覆。電話、單位可依需要提供。</p>
   <h2>三、利用期間、地區、對象與方式</h2>

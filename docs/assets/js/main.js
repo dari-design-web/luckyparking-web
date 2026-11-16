@@ -71,20 +71,31 @@
   if(state.q){ requestAnimationFrame(function(){ var r=cnt.getBoundingClientRect(); if(r.top>window.innerHeight*0.6) toResults(true); }); }
 })();
 
-// 合作洽詢：組成電子郵件（不經伺服器）
+// 合作洽詢：有設定 data-endpoint 時直接寄出（Google Apps Script），否則組成郵件草稿
 (function(){
   var f=document.getElementById('cform'); if(!f) return;
   var fb=f.querySelector('button[type="submit"]'); if(fb) fb.disabled=false;
+  var t0=Date.now(), ep=f.dataset.endpoint, to=f.dataset.to, tel=f.dataset.tel;
+  var fallback=function(){ return '請直接來信 '+to+(tel?' 或來電 '+tel:'')+'。'; };
   f.addEventListener('submit',function(e){
     e.preventDefault();
     var st=document.getElementById('cstatus');
     if(!f.checkValidity()){st.style.color='#b4501a';st.textContent='請填寫姓名、電子郵件與內容。';return;}
     var v=function(id){return document.getElementById(id).value.trim();};
+    if(ep){
+      var data=new URLSearchParams({name:v('c-name'),org:v('c-org'),mail:v('c-mail'),tel:v('c-tel'),type:v('c-type'),msg:v('c-msg'),website:(f.elements.website||{}).value||'',t:String(Date.now()-t0)});
+      fb.disabled=true; var label=fb.textContent; fb.textContent='傳送中…'; st.style.color=''; st.textContent='';
+      fetch(ep,{method:'POST',body:data}).then(function(r){return r.json();}).then(function(j){
+        if(j&&j.ok){ f.reset(); st.style.color='#1d7a46'; st.textContent='已收到您的洽詢，我們會盡快以電子郵件回覆，謝謝。'; }
+        else { st.style.color='#b4501a'; st.textContent=(j&&j.error==='rate'?'剛剛已送出過，請稍候一分鐘再試；':'目前無法送出，')+fallback(); }
+      }).catch(function(){ st.style.color='#b4501a'; st.textContent='目前無法送出，'+fallback(); })
+      .then(function(){ fb.disabled=false; fb.textContent=label; });
+      return;
+    }
     var subject='【官網洽詢】'+v('c-type')+'｜'+(v('c-org')||v('c-name'));
     var body='姓名：'+v('c-name')+'\n單位：'+v('c-org')+'\n電話：'+v('c-tel')+'\n電子郵件：'+v('c-mail')+'\n類別：'+v('c-type')+'\n\n'+v('c-msg');
-    var to=f.dataset.to;
     window.location.href='mailto:'+to+'?subject='+encodeURIComponent(subject)+'&body='+encodeURIComponent(body);
-    st.style.color='';st.textContent='若已開啟郵件草稿，請在郵件程式確認內容後寄出。若沒有開啟，請直接來信 '+to+(f.dataset.tel?' 或來電 '+f.dataset.tel:'')+'。';
+    st.style.color='';st.textContent='若已開啟郵件草稿，請在郵件程式確認內容後寄出。若沒有開啟，'+fallback();
   });
 })();
 

@@ -26,5 +26,6 @@
   "baseUrl": "https://dari-design-web.github.io/luckyparking-web/",
   "basePath": "/luckyparking-web/",
   "_note_domain": "買網域後：baseUrl 改成 https://新網域/，basePath 改成 /，並在 docs/ 加 CNAME",
-  "jobs1111": "https://www.1111.com.tw/corp/71713686/"
+  "jobs1111": "https://www.1111.com.tw/corp/71713686/",
+  "formEndpoint": ""
 }
