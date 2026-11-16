@@ -16,7 +16,7 @@
   {"name": "楓樹腳公園地下停車場", "company": "千斗開發", "city": "新北市", "district": "泰山區", "type": "地下", "status": "營運中", "map": "https://www.google.com/maps/search/?api=1&query=%E6%96%B0%E5%8C%97%E5%B8%82%E6%B3%B0%E5%B1%B1%E5%8D%80%E6%A5%93%E6%B1%9F%E8%B7%AF26%E5%B7%B726%E8%99%9F", "img": "fengshu", "address": "新北市泰山區楓江路 26 巷 26 號", "srcNote": "地址依新北市政府公開資料（GPT W18 整理）"},
   {"name": "國立臺灣科學教育館地下停車場", "company": "千斗開發", "city": "臺北市", "district": null, "type": "地下", "status": "營運中", "map": "https://reurl.cc/6XomNV", "img": "ntsec"},
   {"name": "福和國中地下停車場", "company": "大日開發", "city": "新北市", "district": "永和區", "type": "地下", "status": "營運中", "map": "https://reurl.cc/omk2m5", "img": "fuhe"},
-  {"name": "鷺江立體停車場", "company": "大日開發", "city": "新北市", "district": "蘆洲區", "type": "立體", "status": "營運中", "map": "https://reurl.cc/yWdNXM", "img": null},
+  {"name": "鷺江立體停車場", "company": "大日開發", "city": "新北市", "district": "蘆洲區", "type": "立體", "status": "營運中", "map": "https://reurl.cc/yWdNXM", "img": "lujiang"},
   {"name": "新光國際金融中心地下停車場", "company": "大日開發", "city": "桃園市", "district": null, "type": "地下", "status": "營運中", "map": "https://reurl.cc/EYxla0", "img": null},
   {"name": "瑞芳後火車站平面停車場", "company": "大日開發", "city": "新北市", "district": "瑞芳區", "type": "平面", "status": "營運中", "map": "https://reurl.cc/yWdNa8", "img": "ruifang-back"},
   {"name": "濱江國中地下停車場", "company": "大日開發", "city": "臺北市", "district": null, "type": "地下", "status": "營運中", "map": "https://reurl.cc/aEOmjQ", "img": "binjiang"},
