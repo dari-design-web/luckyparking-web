@@ -722,3 +722,8 @@ h1,h2,h3{word-break:keep-all;overflow-wrap:anywhere}
 .venueband .head .link{color:#fff}
 .venueband .vtiles .tile{box-shadow:0 18px 40px rgba(0,0,0,.35);outline:1px solid rgba(255,255,255,.12)}
 @media (max-width:700px){.venueband{padding-top:88px}.venueband::before{background:linear-gradient(180deg,rgba(8,14,28,.55) 0%,rgba(8,14,28,.75) 45%,rgba(8,14,28,.92) 100%)}}
+/* 場域卡片：觀看完整影片（有聲） */
+.vcard .vimg .watch{position:absolute;right:12px;bottom:12px;z-index:2;display:inline-flex;align-items:center;gap:6px;border:0;border-radius:999px;padding:8px 14px;font:inherit;font-size:13px;font-weight:700;color:#fff;background:rgba(11,20,36,.72);backdrop-filter:blur(4px);cursor:pointer;transition:background-color .2s ease,transform .2s ease,box-shadow .2s ease}
+.vcard .vimg .watch:hover{background:var(--orange);box-shadow:0 8px 20px rgba(239,120,54,.4)}
+@media (hover:hover) and (prefers-reduced-motion:no-preference){.vcard .vimg .watch:hover{transform:translateY(-2px)}}
+.vcard .vimg .watch:focus-visible{outline:3px solid var(--orange);outline-offset:3px}

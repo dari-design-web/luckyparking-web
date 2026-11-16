@@ -98,7 +98,7 @@
   "fb": "https://www.facebook.com/taoyuanyouthadventurecamp/?locale=zh_TW",
   "video": "assets/video/v-tyac.mp4",
   "poster": "assets/img/venues/v-tyac-poster.jpg",
-  "videoNote": "園區實景"
+  "videoNote": "實景影片"
  },
  {
   "id": "houhu",
@@ -142,8 +142,16 @@
    "https://www.railbike.com.tw/tw"
   ],
   "todo": false,
-  "imgNote": "依實景參考繪製",
+  "imgNote": "實景",
   "linkLabel": "深澳鐵道自行車官網",
-  "fb": "https://www.facebook.com/railbike.newtaipeicity/?locale=zh_TW"
+  "fb": "https://www.facebook.com/railbike.newtaipeicity/?locale=zh_TW",
+  "video": "assets/video/v-railbike.mp4",
+  "poster": "assets/img/venues/v-railbike-poster.jpg",
+  "videoNote": "實景影片",
+  "watch": {
+   "src": "assets/video/railbike-full.mp4",
+   "title": "深澳鐵道自行車｜宣傳影片",
+   "label": "觀看影片（有聲・2 分 35 秒）"
+  }
  }
 ]

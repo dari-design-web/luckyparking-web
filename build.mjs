@@ -169,7 +169,7 @@ const sunBand = () => `<section class="sunband" id="sun-breakfast" aria-label="�
     <p class="eyebrow">公益計畫</p>
     <h2>太陽早餐計畫<span class="yr num">2016–2026</span></h2>
     <p class="sub">一份早餐・十年陪伴・持續前行</p>
-    <p class="lead">我們想做的很簡單：讓孩子吃飽，再去上學。大日開發自 2016 年起支持基隆市太陽早餐計畫。</p>
+    <p class="lead">我們想做的事很簡單：讓基隆需要幫助的孩子吃飽早餐，再安心去上學。就為了這件事，我們從 2016 年一路堅持了十年。</p>
     <button class="btn light" type="button" data-video="assets/video/sun-full.mp4" data-title="太陽早餐計畫｜有人記得你"><span aria-hidden="true">▶</span> 觀看影片（有聲・65 秒）</button>
   </div>
 </section>`;
@@ -358,7 +358,7 @@ pages['venues.html'] = {
 <section class="ph"><div class="wrap"><p class="eyebrow">多元化經營</p><h1>不只停車，<br>還有值得停留的地方。</h1><p class="lead">除了停車，我們更將經營經驗延伸至商業空間、餐飲與休閒遊憩，提供從停車開始的完整到訪體驗。</p></div></section>
 <section class="band tight" style="padding-top:8px"><div class="wrap"><div class="vcards">
   ${VENUES.map(v => `<article class="vcard" id="${v.id}">
-    <div class="vimg">${v.video ? `<video class="bgv" data-mobile="1" data-obs="self" muted loop playsinline preload="none" poster="${v.poster}" data-src="${v.video}" aria-hidden="true"></video><span class="tag">${esc(v.videoNote || v.imgNote || '場域意象')}</span>` : v.img ? `<img src="${v.img}" srcset="${v.img.replace('.jpg', '-800.jpg')} 800w, ${v.img} 1600w" sizes="(max-width:640px) 100vw, (max-width:980px) 50vw, 400px" alt="${esc(v.name)}（${esc(v.imgNote || '照片')}）" loading="lazy">${v.imgNote ? `<span class="tag">${esc(v.imgNote)}</span>` : ''}` : '<span>照片準備中</span>'}</div>
+    <div class="vimg">${v.video ? `<video class="bgv" data-mobile="1" data-obs="self" muted loop playsinline preload="none" poster="${v.poster}" data-src="${v.video}" aria-hidden="true"></video><span class="tag">${esc(v.videoNote || v.imgNote || '場域意象')}</span>${v.watch ? `<button class="watch" type="button" data-video="${esc(v.watch.src)}" data-title="${esc(v.watch.title)}"><span aria-hidden="true">▶</span> ${esc(v.watch.label)}</button>` : ''}` : v.img ? `<img src="${v.img}" srcset="${v.img.replace('.jpg', '-800.jpg')} 800w, ${v.img} 1600w" sizes="(max-width:640px) 100vw, (max-width:980px) 50vw, 400px" alt="${esc(v.name)}（${esc(v.imgNote || '照片')}）" loading="lazy">${v.imgNote ? `<span class="tag">${esc(v.imgNote)}</span>` : ''}` : '<span>照片準備中</span>'}</div>
     <div class="vb">
       <p class="eyebrow">${esc(v.kind)}</p>
       <h2>${esc(v.name)}</h2>
