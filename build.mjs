@@ -28,7 +28,7 @@ const upcoming = PARKING.length - operating;
 
 
 // 標題斷行：以詞為單位插入 <wbr>，搭配 CSS keep-all，避免「教 / 育館」「商 / 業空間」這類斷在詞中間
-const KEEP = ['跨足','目標','服務生態','休閒遊憩','二十餘年','經營經驗','溫室氣體','完整到訪','到訪體驗','商業空間','旅客服務中心','服務中心','東三東四','金擘獎','金停獎','叁肆行','多元化經營','停車場經營','教育館','科學教育館','國家檔案館','鐵道自行車','體驗學習園區','學習園區','地下停車場','立體停車場','平面停車場','停車場','營運移轉案','民間經營團隊','民間團隊','優等獎','設備與服務','智慧生活','生活場域','北北桃基','原住民族','青少年活動中心','流行音樂中心','國際金融中心','親水園區','生態園區'];
+const KEEP = ['智慧設備','貼心服務','導引標示','停得順','找得到','跨足','目標','服務生態','休閒遊憩','二十餘年','經營經驗','溫室氣體','完整到訪','到訪體驗','商業空間','旅客服務中心','服務中心','東三東四','金擘獎','金停獎','叁肆行','多元化經營','停車場經營','教育館','科學教育館','國家檔案館','鐵道自行車','體驗學習園區','學習園區','地下停車場','立體停車場','平面停車場','停車場','營運移轉案','民間經營團隊','民間團隊','優等獎','設備與服務','智慧生活','生活場域','北北桃基','原住民族','青少年活動中心','流行音樂中心','國際金融中心','親水園區','生態園區'];
 const SEG = (typeof Intl !== 'undefined' && Intl.Segmenter) ? new Intl.Segmenter('zh-Hant', { granularity: 'word' }) : null;
 const CJK = /[㐀-鿿豈-﫿]/;
 function phraseText(t) {
@@ -236,7 +236,7 @@ pages['index.html'] = {
 
 <section class="band">
   <div class="wrap">
-    <div class="head"><div><p class="eyebrow">智慧及貼心服務</p><h2 style="margin-top:8px">從辨識、導引到繳費，<br>讓停車更順暢。</h2></div><a class="link" href="services.html">了解服務</a></div>
+    <div class="head"><div><p class="eyebrow">智慧及貼心服務</p><h2 style="margin-top:8px">從辨識、導引到繳費，<br>讓停車更順暢。</h2><p style="margin-top:12px">從入場到離場，以完善的設備、貼心的服務與清楚的指引，陪您完成每一次停車。</p></div><a class="link" href="services.html">了解服務</a></div>
     <div class="svc">${SERVICES.slice(0, 4).map(svc).join('')}</div>
   </div>
 </section>
@@ -382,7 +382,7 @@ pages['venues.html'] = {
 pages['services.html'] = {
   title: '智慧服務', desc: '從入場、導引與尋車、付款、離場到現場管理的停車服務，以及各場站的智慧設備、安全守護與友善措施。',
   body: `
-<section class="ph"><div class="wrap"><p class="eyebrow">智慧及貼心服務</p><h1>從進場到離場，<br>每一步都有清楚指引。</h1><p class="lead">依各場站的空間、設備與車流安排停車服務。實際提供的功能與付款方式，以各場站公告為準。</p></div></section>
+<section class="ph"><div class="wrap"><p class="eyebrow">智慧及貼心服務</p><h1>從進場到離場，<br>每一步都有清楚指引。</h1><p class="lead">我們整合完善的智慧設備與貼心服務，搭配清楚易懂的導引標示，讓您停得順、找得到、走得安心。</p></div></section>
 <section class="band tight" style="padding-top:0"><div class="wrap">
   ${[
     ['01', '入場辨識', '汽機車及重型機車車牌辨識，搭配車牌光能感應照明系統，精準度達 95% 以上。', 'svc-01'],
