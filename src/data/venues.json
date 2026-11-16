@@ -98,7 +98,12 @@
   "fb": "https://www.facebook.com/taoyuanyouthadventurecamp/?locale=zh_TW",
   "video": "assets/video/v-tyac.mp4",
   "poster": "assets/img/venues/v-tyac-poster.jpg",
-  "videoNote": "實景影片"
+  "videoNote": "實景影片",
+  "watch": {
+   "src": "assets/video/tyac-full.mp4",
+   "title": "桃園青年體驗學習園區｜介紹影片",
+   "label": "觀看影片（有聲・3 分 15 秒）"
+  }
  },
  {
   "id": "houhu",
