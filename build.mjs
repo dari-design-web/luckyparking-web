@@ -229,7 +229,7 @@ pages['index.html'] = {
   <div class="wrap">
     <div class="head"><div><p class="eyebrow">多元化經營</p><h2 style="margin-top:8px">從停車入口，<br>走進不同的場域。</h2></div><a class="link" href="venues.html">所有場域</a></div>
     <div class="vtiles">
-      ${VENUES.map((v, i) => `<a class="tile photo" href="venues.html#${v.id}"><img src="${v.img.replace('.jpg', '-800.jpg')}" alt="" loading="lazy"><span class="tag">${esc(v.imgNote || '場域意象')}</span><h3>${esc(v.name.split('｜')[0])}</h3><p>${esc(v.kind)}・${esc(v.city)}</p></a>`).join('')}
+      ${VENUES.map((v, i) => `<a class="tile photo" href="venues.html#${v.id}"><img src="${v.img.replace('.jpg', '-800.jpg')}" alt="" loading="lazy"><h3>${esc(v.name.split('｜')[0])}</h3><p>${esc(v.kind)}・${esc(v.city)}</p></a>`).join('')}
     </div>
   </div>
 </section>
@@ -359,7 +359,7 @@ pages['venues.html'] = {
 <section class="ph"><div class="wrap"><p class="eyebrow">多元化經營</p><h1>不只停車，<br>還有值得停留的地方。</h1><p class="lead">除了停車，我們更將經營經驗延伸至商業空間、餐飲與休閒遊憩，提供從停車開始的完整到訪體驗。</p></div></section>
 <section class="band tight" style="padding-top:8px"><div class="wrap"><div class="vcards">
   ${VENUES.map(v => `<article class="vcard" id="${v.id}">
-    <div class="vimg">${v.video ? `<video class="bgv" data-mobile="1" data-obs="self" muted loop playsinline preload="none" poster="${v.poster}" data-src="${v.video}" aria-hidden="true"></video><span class="tag">${esc(v.videoNote || v.imgNote || '場域意象')}</span>${v.watch ? `<button class="watch" type="button" data-video="${esc(v.watch.src)}" data-title="${esc(v.watch.title)}"><span aria-hidden="true">▶</span> ${esc(v.watch.label)}</button>` : ''}` : v.img ? `<img src="${v.img}" srcset="${v.img.replace('.jpg', '-800.jpg')} 800w, ${v.img} 1600w" sizes="(max-width:640px) 100vw, (max-width:980px) 50vw, 400px" alt="${esc(v.name)}（${esc(v.imgNote || '照片')}）" loading="lazy">${v.imgNote ? `<span class="tag">${esc(v.imgNote)}</span>` : ''}` : '<span>照片準備中</span>'}</div>
+    <div class="vimg">${v.video ? `<video class="bgv" data-mobile="1" data-obs="self" muted loop playsinline preload="none" poster="${v.poster}" data-src="${v.video}" aria-hidden="true"></video>${v.watch ? `<button class="watch" type="button" data-video="${esc(v.watch.src)}" data-title="${esc(v.watch.title)}"><span aria-hidden="true">▶</span> ${esc(v.watch.label)}</button>` : ''}` : v.img ? `<img src="${v.img}" srcset="${v.img.replace('.jpg', '-800.jpg')} 800w, ${v.img} 1600w" sizes="(max-width:640px) 100vw, (max-width:980px) 50vw, 400px" alt="${esc(v.name)}（${esc(v.imgNote || '照片')}）" loading="lazy">${v.imgNote ? `<span class="tag">${esc(v.imgNote)}</span>` : ''}` : '<span>照片準備中</span>'}</div>
     <div class="vb">
       <p class="eyebrow">${esc(v.kind)}</p>
       <h2>${esc(v.name)}</h2>
@@ -390,7 +390,7 @@ pages['services.html'] = {
     ['03', '付款', '支援現金、悠遊卡、信用卡、行動支付，可利用繳費機或手機線上繳費，付款無負擔。', 'svc-03'],
     ['04', '離場', '支援 eTag、車麻吉等支付扣款系統，讓您免下車繳費、直接離場。', 'svc-04'],
     ['05', '現場管理', '透過巡檢、設備維護與事件通報處理異常，並採取線上管理方式增加經營效率。', 'svc-05']
-  ].map(([n, t, d, img]) => `<div class="venue"><div class="vimg" style="position:relative"><img src="assets/img/svc/${img}.jpg" alt="" loading="lazy"><span class="tag">服務意象</span></div><div><p class="eyebrow num">STEP ${n}</p><h2>${t}</h2><p class="muted" style="margin-top:12px;font-size:18px">${d}</p></div></div>`).join('')}
+  ].map(([n, t, d, img]) => `<div class="venue"><div class="vimg" style="position:relative"><img src="assets/img/svc/${img}.jpg" alt="" loading="lazy"></div><div><p class="eyebrow num">STEP ${n}</p><h2>${t}</h2><p class="muted" style="margin-top:12px;font-size:18px">${d}</p></div></div>`).join('')}
 </section>
 <section class="band alt"><div class="wrap">
   <div class="head"><div><h2>依場站條件提供的設備與服務</h2><p style="margin-top:8px">各場站實際提供的項目不同，請以現場資訊與場站公告為準。</p></div><a class="link" href="parking.html">查各場資訊</a></div>
@@ -481,12 +481,12 @@ pages['careers.html'] = {
   </div>
 </div></section>
 <section class="band alt" id="apply"><div class="wrap">
-  <div class="head"><div><h2>目前職缺</h2><p style="margin-top:8px">最新職缺都刊登在 1111 人力銀行，可以直接在上面查看並線上應徵。</p></div><a class="btn orange" href="${esc(SITE.jobs1111)}" target="_blank" rel="noopener">前往 1111 查看職缺 <span aria-hidden="true">↗</span><span class="sr-only">（另開新視窗）</span></a></div>
-  <div class="coop">
-    <article><p class="eyebrow">怎麼應徵</p><h3>線上應徵或來信</h3><ul><li>在 1111 人力銀行選擇職缺，直接線上應徵</li><li>或來信附上履歷與可聯絡時間，主旨寫「應徵：職務名稱」</li><li>收到履歷後，由人資與您聯繫</li></ul><p class="btnrow" style="margin-top:16px"><a class="btn primary" href="${esc(SITE.jobs1111)}" target="_blank" rel="noopener">1111 線上應徵 <span aria-hidden="true">↗</span><span class="sr-only">（另開新視窗）</span></a><a class="btn ghost" href="mailto:${esc(SITE.jobsEmail)}?subject=${encodeURIComponent('應徵：')}">寄送履歷</a></p></article>
+  <div class="head"><div><h2>目前職缺</h2><p style="margin-top:8px">所有職缺都刊登在 1111 人力銀行，請直接在上面查看與應徵。</p></div></div>
+  <div class="coop jobs">
+    <article class="apply1111"><p class="eyebrow">線上應徵</p><h3>到 1111 人力銀行查看職缺</h3><ol class="steps"><li>按下方按鈕，前往大日開發在 1111 的職缺頁</li><li>選擇想應徵的職務，直接線上投遞履歷</li><li>人資收到後，會與您聯繫安排面試</li></ol><p style="margin-top:20px"><a class="btn orange big" href="${esc(SITE.jobs1111)}" target="_blank" rel="noopener">前往 1111 查看職缺 <span aria-hidden="true">↗</span><span class="sr-only">（另開新視窗）</span></a></p></article>
     <article><p class="eyebrow">工作地點</p><h3>總公司與各場站</h3><ul><li>總公司：${esc(SITE.address)}</li><li>停車場：臺北、新北、桃園、基隆</li><li>場域：林口、基隆港、桃園新屋、瑞芳</li></ul></article>
   </div>
-  <p class="muted" style="margin-top:16px;font-size:14px">來信寄送的履歷僅用於招募聯繫，請勿附身分證件影本；寄送前請先閱讀<a href="privacy.html">隱私權聲明</a>。透過 1111 人力銀行應徵時，資料依該網站的規範處理。</p>
+  <p class="muted" style="margin-top:16px;font-size:14px">透過 1111 人力銀行應徵時，履歷與個人資料依 1111 人力銀行的隱私權政策處理。</p>
 </div></section>`
 };
 
@@ -518,20 +518,20 @@ pages['contact.html'] = {
   <p class="note nojs-note">目前請直接來信 <a href="mailto:${esc(SITE.email)}">${esc(SITE.email)}</a> 或來電 <a href="tel:${SITE.phone.replace(/[^0-9]/g, '')}">${esc(SITE.phone)}</a> 洽詢（聯絡資訊見本頁）。</p>
   <form class="f js-only" id="cform" aria-describedby="cform-intro" data-to="${esc(SITE.email)}" data-tel="${esc(SITE.phone)}"${SITE.formEndpoint ? ` data-endpoint="${esc(SITE.formEndpoint)}"` : ''} novalidate onsubmit="return false">
     <h2 class="ch">填寫洽詢內容</h2>
-    <p class="note" id="cform-intro" style="margin:0 0 4px">也可以直接來信 <a href="mailto:${esc(SITE.email)}">${esc(SITE.email)}</a> 或來電 <a href="tel:${SITE.phone.replace(/[^0-9]/g, '')}">${esc(SITE.phone)}</a>。姓名、電子郵件與內容為必填。</p>
+    <p class="note" id="cform-intro" style="margin:0 0 4px">也可以直接來信 <a href="mailto:${esc(SITE.email)}">${esc(SITE.email)}</a> 或來電 <a href="tel:${SITE.phone.replace(/[^0-9]/g, '')}">${esc(SITE.phone)}</a>。姓名、手機號碼與內容為必填。</p>
     <div class="row">
       <label for="c-name"><span>姓名<span class="req">必填</span></span><input id="c-name" name="name" required autocomplete="name"></label>
       <label for="c-org">單位<input id="c-org" name="org" autocomplete="organization"></label>
     </div>
     <div class="row">
-      <label for="c-mail"><span>電子郵件<span class="req">必填</span></span><input id="c-mail" name="mail" type="email" required autocomplete="email"></label>
-      <label for="c-tel">電話<input id="c-tel" name="tel" type="tel" autocomplete="tel"></label>
+      <label for="c-tel"><span>手機號碼<span class="req">必填</span></span><input id="c-tel" name="tel" type="tel" inputmode="tel" required autocomplete="tel" placeholder="09xx-xxx-xxx"></label>
+      <label for="c-mail">電子郵件<input id="c-mail" name="mail" type="email" autocomplete="email"></label>
     </div>
     <label for="c-type">合作類別<select id="c-type" name="type"><option>停車場委外經營</option><option>商業空間與多元化合作</option><option>場站服務意見</option><option>其他</option></select></label>
     <label for="c-msg"><span>內容<span class="req">必填</span></span><textarea id="c-msg" name="msg" rows="5" required></textarea></label>
     <div class="hp" aria-hidden="true"><label>請勿填寫此欄<input name="website" tabindex="-1" autocomplete="off"></label></div>
-    ${SITE.formEndpoint ? `<p class="note">姓名、電子郵件與洽詢內容供回覆使用；電話、單位可依需要提供。按下「送出洽詢」後，內容會直接寄到本公司信箱 ${esc(SITE.email)}，本網站不另外儲存。請勿填寫身分證字號、車牌等非必要資料。詳見<a href="privacy.html">隱私權聲明</a>。</p>
-    <div style="display:flex;gap:14px;align-items:center;flex-wrap:wrap"><button class="btn primary" type="submit" disabled>送出洽詢</button><span class="hint">送出後會直接寄到本公司信箱，不需另開郵件程式。</span></div>` : `<p class="note">姓名、電子郵件與洽詢內容供回覆使用。未填寫必要項目，將無法完成郵件草稿或回覆。電話、單位可依需要提供。選擇「開啟郵件草稿」後，請在郵件程式中確認內容再寄出。本網站不會儲存表單內容，請勿填寫身分證字號、車牌等非必要資料。詳見<a href="privacy.html">隱私權聲明</a>。</p>
+    ${SITE.formEndpoint ? `<p class="note">姓名、手機號碼與洽詢內容供回覆使用；電子郵件、單位可依需要提供。按下「送出洽詢」後，內容會直接寄到本公司信箱 ${esc(SITE.email)}，本網站不另外儲存。請勿填寫身分證字號、車牌等非必要資料。詳見<a href="privacy.html">隱私權聲明</a>。</p>
+    <div style="display:flex;gap:14px;align-items:center;flex-wrap:wrap"><button class="btn primary" type="submit" disabled>送出洽詢</button><span class="hint">送出後會直接寄到本公司信箱，不需另開郵件程式。</span></div>` : `<p class="note">姓名、手機號碼與洽詢內容供回覆使用。未填寫必要項目，將無法完成郵件草稿或回覆。電子郵件、單位可依需要提供。選擇「開啟郵件草稿」後，請在郵件程式中確認內容再寄出。本網站不會儲存表單內容，請勿填寫身分證字號、車牌等非必要資料。詳見<a href="privacy.html">隱私權聲明</a>。</p>
     <div style="display:flex;gap:14px;align-items:center;flex-wrap:wrap"><button class="btn primary" type="submit" disabled>開啟郵件草稿</button><span class="hint">按下後會開啟您的郵件程式，仍需在郵件程式中按「傳送」。</span></div>`}
     <span class="status" id="cstatus" role="status"></span>
   </form>
@@ -544,19 +544,20 @@ pages['privacy.html'] = {
 <section class="ph"><div class="wrap"><p class="eyebrow">隱私權聲明</p><h1>我們如何處理<br>您提供的資料</h1><p class="lead">本網站不設會員、不設線上表單資料庫，也不使用廣告追蹤。</p></div></section>
 <section class="band tight" style="padding-top:0"><div class="wrap"><div class="prose">
   <h2>一、適用範圍</h2>
-  <p>本聲明適用於大日開發有限公司（以下稱本公司）官方網站，以及您透過本網站寄送給本公司的電子郵件。網站中連結的其他網站（例如場域官網、政府網站、Google 雲端硬碟），依各該網站的隱私權政策處理。</p>
+  <p>本聲明適用於大日開發有限公司（以下稱本公司）官方網站，以及您透過本網站「合作洽詢」表單送出的資料。網站中連結的其他網站（例如場域官網、政府網站、1111 人力銀行、Google 雲端硬碟），依各該網站的隱私權政策處理。</p>
   <h2>二、蒐集的資料與目的</h2>
-  ${SITE.formEndpoint ? `<p>本網站不設資料庫，不另外儲存您輸入的內容。「合作洽詢」表單送出後，內容會透過本公司 Google 帳號的 Apps Script 服務，直接以電子郵件寄至 ${esc(SITE.email)}。「寄送履歷」按鈕則會開啟您的郵件程式，由您確認內容後寄出。本公司只會收到您送出的內容，例如姓名、單位、電話、電子郵件、洽詢內容或履歷。</p>` : `<p>本網站不會自動儲存您輸入的內容。使用「合作洽詢」表單或「寄送履歷」按鈕，會開啟您的郵件程式，由您確認內容後寄至 ${esc(SITE.email)}。本公司只會收到您寄出的郵件內容，例如姓名、單位、電話、電子郵件、洽詢內容或履歷。</p>`}
-  <ul><li>合作洽詢：用於回覆與聯繫合作事宜。</li><li>應徵：用於招募評估與面試聯繫。</li></ul>
-  <p>姓名、電子郵件與洽詢內容是回覆所需；未提供時，本公司將無法回覆。電話、單位可依需要提供。</p>
+  ${SITE.formEndpoint ? `<p>本網站不設資料庫，不另外儲存您輸入的內容。「合作洽詢」表單送出後，內容會透過本公司 Google 帳號的 Apps Script 服務，直接以電子郵件寄至 ${esc(SITE.email)}。本公司只會收到您送出的內容：姓名、手機號碼、合作類別、洽詢內容，以及您選擇提供的單位與電子郵件。</p>` : `<p>本網站不會自動儲存您輸入的內容。使用「合作洽詢」表單，會開啟您的郵件程式，由您確認內容後寄至 ${esc(SITE.email)}。本公司只會收到您寄出的郵件內容，例如姓名、手機號碼、單位、電子郵件與洽詢內容。</p>`}
+  <ul><li>合作洽詢：用於回覆與聯繫合作事宜。</li></ul>
+  <p>姓名、手機號碼與洽詢內容是回覆所需；未提供時，本公司將無法回覆。電子郵件、單位可依需要提供。</p>
+  <p>應徵職缺請透過 1111 人力銀行，您在 1111 提供的履歷與資料，依 1111 人力銀行的隱私權政策處理。</p>
   <h2>三、利用期間、地區、對象與方式</h2>
-  <p>您寄來的郵件由本公司使用的電子郵件服務收存，並由相關承辦人員基於上述目的使用。資料於達成目的所需期間內保存，之後依本公司規定刪除或銷毀。除法令另有規定或經您同意外，不作其他用途。利用地區、對象與保存期間的細節，可來信 ${esc(SITE.email)} 查詢。</p>
+  <p>洽詢內容寄至本公司信箱後，由本公司使用的電子郵件服務收存，並由相關承辦人員基於上述目的使用。資料於達成目的所需期間內保存，之後依本公司規定刪除或銷毀。除法令另有規定或經您同意外，不作其他用途。利用地區、對象與保存期間的細節，可來信 ${esc(SITE.email)} 查詢。</p>
   <h2>四、您的權利</h2>
   <p>依個人資料保護法第 3 條，您可以請求查詢、閱覽、製給複製本、補充或更正、停止蒐集、處理或利用，或請求刪除個人資料。請來信 ${esc(SITE.email)}，本公司將於確認身分後處理。</p>
   <h2>五、Cookie 與外部服務</h2>
-  <p>本網站不使用追蹤型 Cookie。網頁字體由 Google Fonts 提供，影片與圖片由本網站直接提供；連到外部網站時，該網站可能依其政策記錄瀏覽資訊。</p>
+  <p>本網站不使用追蹤型 Cookie。網頁字體由 Google Fonts 提供，影片與圖片由本網站直接提供。送出「合作洽詢」表單時，內容會傳送至 Google 的 Apps Script 服務處理並寄出。連到外部網站時，該網站可能依其政策記錄瀏覽資訊。</p>
   <h2>六、聲明修訂</h2>
-  <p>本聲明如有修訂，將公告於本頁。最後更新：2026 年 11 月 14 日。</p>
+  <p>本聲明如有修訂，將公告於本頁。最後更新：2026 年 11 月 16 日。</p>
   <h2>七、聯絡方式</h2>
   <p>大日開發有限公司｜${esc(SITE.address)}｜<span class="num">${esc(SITE.phone)}</span>｜${esc(SITE.email)}</p>
 </div></div></section>`

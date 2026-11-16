@@ -80,20 +80,23 @@
   f.addEventListener('submit',function(e){
     e.preventDefault();
     var st=document.getElementById('cstatus');
-    if(!f.checkValidity()){st.style.color='#b4501a';st.textContent='請填寫姓名、電子郵件與內容。';return;}
     var v=function(id){return document.getElementById(id).value.trim();};
+    var telOk=/^(\+?886|0)9\d{8}$/.test(v('c-tel').replace(/[\s\-()]/g,''));
+    if(!v('c-name')||!v('c-msg')||!v('c-tel')){st.style.color='#b4501a';st.textContent='請填寫姓名、手機號碼與內容。';return;}
+    if(!telOk){st.style.color='#b4501a';st.textContent='手機號碼格式不正確，請輸入 09 開頭的 10 碼號碼。';document.getElementById('c-tel').focus();return;}
+    if(!f.checkValidity()){st.style.color='#b4501a';st.textContent='電子郵件格式不正確，或請留空。';document.getElementById('c-mail').focus();return;}
     if(ep){
       var data=new URLSearchParams({name:v('c-name'),org:v('c-org'),mail:v('c-mail'),tel:v('c-tel'),type:v('c-type'),msg:v('c-msg'),website:(f.elements.website||{}).value||'',t:String(Date.now()-t0)});
       fb.disabled=true; var label=fb.textContent; fb.textContent='傳送中…'; st.style.color=''; st.textContent='';
       fetch(ep,{method:'POST',body:data}).then(function(r){return r.json();}).then(function(j){
-        if(j&&j.ok){ f.reset(); st.style.color='#1d7a46'; st.textContent='已收到您的洽詢，我們會盡快以電子郵件回覆，謝謝。'; }
+        if(j&&j.ok){ f.reset(); st.style.color='#1d7a46'; st.textContent='已收到您的洽詢，我們會盡快與您聯繫，謝謝。'; }
         else { st.style.color='#b4501a'; st.textContent=(j&&j.error==='rate'?'剛剛已送出過，請稍候一分鐘再試；':'目前無法送出，')+fallback(); }
       }).catch(function(){ st.style.color='#b4501a'; st.textContent='目前無法送出，'+fallback(); })
       .then(function(){ fb.disabled=false; fb.textContent=label; });
       return;
     }
     var subject='【官網洽詢】'+v('c-type')+'｜'+(v('c-org')||v('c-name'));
-    var body='姓名：'+v('c-name')+'\n單位：'+v('c-org')+'\n電話：'+v('c-tel')+'\n電子郵件：'+v('c-mail')+'\n類別：'+v('c-type')+'\n\n'+v('c-msg');
+    var body='姓名：'+v('c-name')+'\n單位：'+v('c-org')+'\n手機號碼：'+v('c-tel')+'\n電子郵件：'+v('c-mail')+'\n類別：'+v('c-type')+'\n\n'+v('c-msg');
     window.location.href='mailto:'+to+'?subject='+encodeURIComponent(subject)+'&body='+encodeURIComponent(body);
     st.style.color='';st.textContent='若已開啟郵件草稿，請在郵件程式確認內容後寄出。若沒有開啟，'+fallback();
   });

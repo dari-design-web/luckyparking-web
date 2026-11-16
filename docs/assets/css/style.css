@@ -733,3 +733,8 @@ p.lead{text-align:justify;text-align-last:left;text-justify:inter-character;line
 .btnrow{display:flex;flex-wrap:wrap;gap:10px}
 /* 合作洽詢：防垃圾留言的隱藏欄位 */
 .f .hp{position:absolute!important;left:-9999px;width:1px;height:1px;overflow:hidden}
+/* 人才招募：1111 線上應徵卡 */
+.coop.jobs .apply1111{border-top:4px solid var(--orange)}
+.coop.jobs ol.steps{margin:12px 0 0;padding-left:1.4em;display:grid;gap:8px}
+.coop.jobs ol.steps li::marker{color:var(--orange);font-weight:800}
+.btn.big{padding:16px 28px;font-size:17px}
