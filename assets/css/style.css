@@ -706,3 +706,19 @@ h1,h2,h3{word-break:keep-all;overflow-wrap:anywhere}
 .svgroup + .svgroup{margin-top:36px}
 .svg-h{display:flex;align-items:center;gap:10px;font-size:18px;margin:0 0 4px;padding-bottom:10px;border-bottom:2px solid var(--ink)}
 .svg-h::before{content:"";width:18px;height:2px;background:var(--orange)}
+
+/* ===== v0.3.2：場域影片 ===== */
+/* 多元化經營卡片：循環影片（進入畫面才播；減少動態時只顯示海報） */
+.vcard .vimg video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;background:#0b1424}
+/* 首頁多元化經營：東三東四影片當底 */
+.venueband{position:relative;overflow:hidden;color:#fff;background:#0b1424;padding-top:clamp(96px,11vw,170px)}
+.venueband .vbbg{position:absolute;inset:0;z-index:0}
+.venueband .vbbg video{width:100%;height:100%;object-fit:cover;object-position:center 40%;display:block}
+.venueband::before{content:"";position:absolute;inset:0;z-index:1;background:linear-gradient(180deg,rgba(8,14,28,.62) 0%,rgba(8,14,28,.30) 30%,rgba(8,14,28,.55) 58%,rgba(8,14,28,.88) 100%)}
+.venueband .wrap{position:relative;z-index:2}
+.venueband h2{color:#fff}
+.venueband .eyebrow{color:#ffb380}
+.venueband .eyebrow::before{background:#ffb380}
+.venueband .head .link{color:#fff}
+.venueband .vtiles .tile{box-shadow:0 18px 40px rgba(0,0,0,.35);outline:1px solid rgba(255,255,255,.12)}
+@media (max-width:700px){.venueband{padding-top:88px}.venueband::before{background:linear-gradient(180deg,rgba(8,14,28,.55) 0%,rgba(8,14,28,.75) 45%,rgba(8,14,28,.92) 100%)}}

@@ -223,9 +223,10 @@ pages['index.html'] = {
   </div>
 </section>
 
-<section class="band">
+<section class="band venueband">
+  <div class="vbbg" aria-hidden="true"><video class="bgv" muted loop playsinline preload="none" poster="assets/img/venues-band-poster.jpg" data-src="assets/video/venues-band.mp4"></video></div>
   <div class="wrap">
-    <div class="head"><div><p class="eyebrow">多元化經營</p><h2 style="margin-top:8px">從停車入口，<br>走進不同的場域。</h2></div><a class="link" href="venues.html">五個場域</a></div>
+    <div class="head"><div><p class="eyebrow">多元化經營</p><h2 style="margin-top:8px">從停車入口，<br>走進不同的場域。</h2></div><a class="link" href="venues.html">所有場域</a></div>
     <div class="vtiles">
       ${VENUES.map((v, i) => `<a class="tile photo" href="venues.html#${v.id}"><img src="${v.img.replace('.jpg', '-800.jpg')}" alt="" loading="lazy"><span class="tag">${esc(v.imgNote || '場域意象')}</span><h3>${esc(v.name.split('｜')[0])}</h3><p>${esc(v.kind)}・${esc(v.city)}</p></a>`).join('')}
     </div>
@@ -354,10 +355,10 @@ pages['parking.html'] = {
 pages['venues.html'] = {
   title: '多元化經營', desc: '國家檔案館、叁肆行、桃園青年體驗學習園區、後湖溪生態園區與舟日咖啡、深澳鐵道自行車。',
   body: `
-<section class="ph"><div class="wrap"><p class="eyebrow">多元化經營</p><h1>不只停車，<br>還有值得停留的地方。</h1><p class="lead">將停車場經營經驗延伸至商業空間、餐飲與休閒遊憩，提供從停好車開始的完整到訪體驗。</p></div></section>
+<section class="ph"><div class="wrap"><p class="eyebrow">多元化經營</p><h1>不只停車，<br>還有值得停留的地方。</h1><p class="lead">除了停車，我們更將經營經驗延伸至商業空間、餐飲與休閒遊憩，提供從停車開始的完整到訪體驗。</p></div></section>
 <section class="band tight" style="padding-top:8px"><div class="wrap"><div class="vcards">
   ${VENUES.map(v => `<article class="vcard" id="${v.id}">
-    <div class="vimg">${v.img ? `<img src="${v.img}" srcset="${v.img.replace('.jpg', '-800.jpg')} 800w, ${v.img} 1600w" sizes="(max-width:640px) 100vw, (max-width:980px) 50vw, 400px" alt="${esc(v.name)}（${esc(v.imgNote || '照片')}）" loading="lazy">${v.imgNote ? `<span class="tag">${esc(v.imgNote)}</span>` : ''}` : '<span>照片準備中</span>'}</div>
+    <div class="vimg">${v.video ? `<video class="bgv" data-mobile="1" data-obs="self" muted loop playsinline preload="none" poster="${v.poster}" data-src="${v.video}" aria-hidden="true"></video><span class="tag">${esc(v.videoNote || v.imgNote || '場域意象')}</span>` : v.img ? `<img src="${v.img}" srcset="${v.img.replace('.jpg', '-800.jpg')} 800w, ${v.img} 1600w" sizes="(max-width:640px) 100vw, (max-width:980px) 50vw, 400px" alt="${esc(v.name)}（${esc(v.imgNote || '照片')}）" loading="lazy">${v.imgNote ? `<span class="tag">${esc(v.imgNote)}</span>` : ''}` : '<span>照片準備中</span>'}</div>
     <div class="vb">
       <p class="eyebrow">${esc(v.kind)}</p>
       <h2>${esc(v.name)}</h2>
@@ -569,7 +570,7 @@ fs.rmSync(OUT, { recursive: true, force: true });
 fs.mkdirSync(OUT, { recursive: true });
 fs.cpSync(path.join(ROOT, 'assets'), path.join(OUT, 'assets'), { recursive: true });
 const PH = { 'about.html': 'about', 'parking.html': 'parking', 'venues.html': 'venues', 'services.html': 'services', 'awards.html': 'awards', 'esg.html': 'esg', 'news.html': 'news', 'contact.html': 'contact', 'careers.html': 'careers' };
-const PH_DARK = new Set(['awards']);
+const PH_DARK = new Set(['awards', 'venues']);
 const PH_SHORT = new Set(['parking', 'news']);
 const PH_VIDEO = {
   parking: { src: 'assets/video/parking.mp4', poster: 'assets/img/ph/parking-poster.jpg' },

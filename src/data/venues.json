@@ -5,7 +5,7 @@
   "kind": "商業空間＋停車場",
   "city": "新北市林口區",
   "address": "新北市林口區檔案館路 1 號",
-  "summary": "國家檔案館的附屬商業空間與停車場由大日招商經營。參觀檔案展覽的民眾可逛逛館內文創商店，或在 WALK IN 咖啡坐下來喝杯咖啡。",
+  "summary": "我們將停車空間、餐飲空間、文創空間三者合而為一，招商經營檔案館文創商店、WALK IN 咖啡，並開發檔案館文創商品。",
   "points": [
    "館內文創商店",
    "WALK IN 咖啡",
@@ -17,9 +17,12 @@
    "https://www.nownews.com/news/6726071"
   ],
   "todo": false,
-  "imgNote": "場域意象",
+  "imgNote": "依實景照片製作",
   "linkLabel": "國家檔案館官網",
-  "fb": "https://www.facebook.com/people/%E6%BC%AB%E9%81%8A%E6%AA%94%E6%A1%88%E9%A4%A8%E6%96%87%E5%89%B5-%E5%92%96%E5%95%A1-%E5%81%9C%E8%BB%8A%E5%A4%A7%E6%97%A5%E7%87%9F%E9%81%8B/61579805837170/"
+  "fb": "https://www.facebook.com/people/%E6%BC%AB%E9%81%8A%E6%AA%94%E6%A1%88%E9%A4%A8%E6%96%87%E5%89%B5-%E5%92%96%E5%95%A1-%E5%81%9C%E8%BB%8A%E5%A4%A7%E6%97%A5%E7%87%9F%E9%81%8B/61579805837170/",
+  "video": "assets/video/v-archives.mp4",
+  "poster": "assets/img/venues/v-archives-poster.jpg",
+  "videoNote": "依實景照片製作"
  },
  {
   "id": "sansihang",
@@ -27,7 +30,7 @@
   "kind": "商業空間＋停車場",
   "city": "基隆市中正區",
   "address": "基隆市中正區中正路 3 號 1、2 樓",
-  "summary": "基隆港東岸旅客服務中心 1、2 樓的商業空間「叁肆行」由大日招商經營，總面積約 3,650 坪。好食城集結臺灣小吃、異國料理與人氣餐廳，另有藥局與伴手禮店，座位面向基隆港與郵輪。",
+  "summary": "叁肆行 × 好食城合作經營，集結各式品牌餐飲、異國料理與人氣餐廳，創造海景式景觀餐飲空間。",
   "points": [
    "好食城：臺灣小吃、異國料理、人氣餐廳",
    "藥局與伴手禮店",
@@ -41,7 +44,7 @@
    "https://travel.klcg.gov.tw/TourContent.aspx?n=8159&s=710"
   ],
   "todo": false,
-  "imgNote": "依實景參考繪製",
+  "imgNote": "依實景照片製作",
   "brands": [
    {
     "group": "餐飲・咖啡",
@@ -67,7 +70,10 @@
   ],
   "brandsNote": "依基隆市政府觀光旅遊網公開資料整理（2026 年 11 月查詢），實際營業以商場及各店公告為準。",
   "brandsSrc": "https://travel.klcg.gov.tw/TourContent.aspx?n=8159&s=710",
-  "fb": "https://www.facebook.com/p/%E5%9F%BA%E9%9A%86%E6%B8%AF%E6%9D%B13%E6%9D%B14%E6%97%85%E5%AE%A2%E6%9C%8D%E5%8B%99%E4%B8%AD%E5%BF%83%E5%8F%81%E8%82%86%E8%A1%8C-100083318313417/?locale=zh_TW"
+  "fb": "https://www.facebook.com/p/%E5%9F%BA%E9%9A%86%E6%B8%AF%E6%9D%B13%E6%9D%B14%E6%97%85%E5%AE%A2%E6%9C%8D%E5%8B%99%E4%B8%AD%E5%BF%83%E5%8F%81%E8%82%86%E8%A1%8C-100083318313417/?locale=zh_TW",
+  "video": "assets/video/v-sansihang.mp4",
+  "poster": "assets/img/venues/v-sansihang-poster.jpg",
+  "videoNote": "依實景照片製作"
  },
  {
   "id": "tyac",
@@ -89,7 +95,10 @@
   "todo": false,
   "imgNote": "場域意象",
   "linkLabel": "TYAC 官網",
-  "fb": "https://www.facebook.com/taoyuanyouthadventurecamp/?locale=zh_TW"
+  "fb": "https://www.facebook.com/taoyuanyouthadventurecamp/?locale=zh_TW",
+  "video": "assets/video/v-tyac.mp4",
+  "poster": "assets/img/venues/v-tyac-poster.jpg",
+  "videoNote": "園區實景"
  },
  {
   "id": "houhu",
@@ -109,8 +118,11 @@
    "https://travel.tycg.gov.tw/zh-tw/consume/detail/3252"
   ],
   "todo": false,
-  "imgNote": "場域意象",
-  "fb": "https://www.facebook.com/taoyuanriverkayak/?locale=zh_TW"
+  "imgNote": "依實景照片製作",
+  "fb": "https://www.facebook.com/taoyuanriverkayak/?locale=zh_TW",
+  "video": "assets/video/v-houhu.mp4",
+  "poster": "assets/img/venues/v-houhu-poster.jpg",
+  "videoNote": "依實景照片製作"
  },
  {
   "id": "railbike",

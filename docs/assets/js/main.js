@@ -138,7 +138,7 @@
     if(once) v.addEventListener('ended',function(){ done=true; setBtn(true); });
     function go(){ if(done){ setBtn(true); return; } if(allowed() && vis && !user){ if(!v.getAttribute('src')){ v.src=v.dataset.src; } var r=v.play(); if(r&&r.catch) r.catch(function(){}); setBtn(false); } else { v.pause(); setBtn(true); } }
     if(b) b.addEventListener('click',function(){ if(done){ done=false; user=false; try{ v.currentTime=0; }catch(e){} } else { user=!user; } go(); });
-    if('IntersectionObserver' in window){ var th=once?.5:.1; new IntersectionObserver(function(es){ es.forEach(function(e){ vis=e.isIntersecting&&e.intersectionRatio>=th-.01; go(); }); },{threshold:[0,.1,.5]}).observe(sec||v); } else { vis=true; go(); }
+    if('IntersectionObserver' in window){ var th=once?.5:.1; new IntersectionObserver(function(es){ es.forEach(function(e){ vis=e.isIntersecting&&e.intersectionRatio>=th-.01; go(); }); },{threshold:[0,.1,.5]}).observe(v.dataset.obs==='self'?v:(sec||v)); } else { vis=true; go(); }
     if(mqD.addEventListener) mqD.addEventListener('change',go);
   });
 })();
