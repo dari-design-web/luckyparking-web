@@ -28,7 +28,7 @@ const upcoming = PARKING.length - operating;
 
 
 // 標題斷行：以詞為單位插入 <wbr>，搭配 CSS keep-all，避免「教 / 育館」「商 / 業空間」這類斷在詞中間
-const KEEP = ['商業空間','旅客服務中心','服務中心','東三東四','金擘獎','金停獎','叁肆行','多元化經營','停車場經營','教育館','科學教育館','國家檔案館','鐵道自行車','體驗學習園區','學習園區','地下停車場','立體停車場','平面停車場','停車場','營運移轉案','民間經營團隊','民間團隊','優等獎','設備與服務','智慧生活','生活場域','北北桃基','原住民族','青少年活動中心','流行音樂中心','國際金融中心','親水園區','生態園區'];
+const KEEP = ['跨足','目標','服務生態','休閒遊憩','二十餘年','經營經驗','溫室氣體','完整到訪','到訪體驗','商業空間','旅客服務中心','服務中心','東三東四','金擘獎','金停獎','叁肆行','多元化經營','停車場經營','教育館','科學教育館','國家檔案館','鐵道自行車','體驗學習園區','學習園區','地下停車場','立體停車場','平面停車場','停車場','營運移轉案','民間經營團隊','民間團隊','優等獎','設備與服務','智慧生活','生活場域','北北桃基','原住民族','青少年活動中心','流行音樂中心','國際金融中心','親水園區','生態園區'];
 const SEG = (typeof Intl !== 'undefined' && Intl.Segmenter) ? new Intl.Segmenter('zh-Hant', { granularity: 'word' }) : null;
 const CJK = /[㐀-鿿豈-﫿]/;
 function phraseText(t) {
@@ -41,7 +41,8 @@ function phraseText(t) {
   return out;
 }
 function phraseHtml(html) {
-  return html.replace(/(<h[1-3][^>]*>)([\s\S]*?)(<\/h[1-3]>)/g, (m, a, inner, b) => a + inner.split(/(<[^>]+>|&[#a-z0-9]+;)/i).map(part => (part.startsWith('<') || part.startsWith('&')) ? part : phraseText(part)).join('') + b);
+  const fix = (m, a, inner, b) => a + inner.split(/(<[^>]+>|&[#a-z0-9]+;)/i).map(part => (part.startsWith('<') || part.startsWith('&')) ? part : phraseText(part)).join('') + b;
+  return html.replace(/(<h[1-3][^>]*>)([\s\S]*?)(<\/h[1-3]>)/g, fix).replace(/(<p class="lead"[^>]*>)([\s\S]*?)(<\/p>)/g, fix);
 }
 
 function layout({ file, title, desc, body, base, noindex }) {
