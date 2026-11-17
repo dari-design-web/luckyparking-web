@@ -69,12 +69,13 @@
     ]
    }
   ],
-  "brandsNote": "依基隆市政府觀光旅遊網公開資料與現場資訊整理（2026 年 11 月），實際營業以商場及各店公告為準。",
-  "brandsSrc": "https://travel.klcg.gov.tw/TourContent.aspx?n=8159&s=710",
   "fb": "https://www.facebook.com/p/%E5%9F%BA%E9%9A%86%E6%B8%AF%E6%9D%B13%E6%9D%B14%E6%97%85%E5%AE%A2%E6%9C%8D%E5%8B%99%E4%B8%AD%E5%BF%83%E5%8F%81%E8%82%86%E8%A1%8C-100083318313417/?locale=zh_TW",
   "video": "assets/video/v-sansihang.mp4",
   "poster": "assets/img/venues/v-sansihang-poster.jpg",
-  "videoNote": "依實景照片製作"
+  "videoNote": "依實景照片製作",
+  "fbLabel": "叁肆行",
+  "fb2": "https://www.facebook.com/greatfoodtownkeelung/?locale=zh_TW",
+  "fb2Label": "基隆好食城"
  },
  {
   "id": "tyac",
