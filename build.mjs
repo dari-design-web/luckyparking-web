@@ -215,12 +215,10 @@ pages['index.html'] = {
   <div class="wrap">
     <div class="head"><div><p class="eyebrow">連鎖不複製</p><h2 style="margin-top:8px">每一座停車場，<br>都有自己的主題。</h2></div><a class="link" href="parking.html">全部停車場</a></div>
     <div class="bento">
-      <a class="tile photo c4 tall" href="parking.html?q=科學教育館"><img src="assets/img/sites/ntsec.jpg" alt="" loading="lazy"><h3>國立臺灣科學教育館</h3><p>「科學之森・友善 START」，讓停車成為科學互動的第一步。</p></a>
-      <a class="tile photo c2 tall" href="parking.html?q=秀朗"><img src="assets/img/sites/xiulang.jpg" alt="" loading="lazy"><h3>永和秀朗國小</h3><p>Show Long 行歸處。</p></a>
-      <a class="tile photo c2" href="parking.html?q=檔案館"><img src="assets/img/sites/archives.jpg" alt="" loading="lazy"><h3>國家檔案館</h3><p>停車、餐飲與文創空間，三者合而為一。</p></a>
+      <a class="tile photo c4 tall" href="parking.html?q=裕生"><img src="assets/img/sites/tucheng-yusheng.jpg" alt="" loading="lazy"><h3>土城裕生立體停車場</h3><p>以「友善空間」為主題的入口牆面。</p></a>
+      <a class="tile photo c2 tall" href="parking.html?q=檔案館"><img src="assets/img/sites/archives.jpg" alt="" loading="lazy"><h3>國家檔案館</h3><p>停車、餐飲與文創空間，三者合而為一。</p></a>
+      <a class="tile photo c2" href="parking.html?q=民權公園"><img src="assets/img/sites/minquan.jpg" alt="" loading="lazy"><h3>民權公園</h3><p>紅磚入口建築，屋頂覆滿綠意。</p></a>
       <a class="tile photo c4" href="parking.html?q=延吉"><img src="assets/img/sites/tucheng-yanji.jpg" alt="" loading="lazy"><h3>土城延吉立體停車場</h3><p>「守護之路，新北同行」主題牆面。</p></a>
-      <a class="tile photo c3" href="parking.html?q=裕生"><img src="assets/img/sites/tucheng-yusheng.jpg" alt="" loading="lazy"><h3>土城裕生立體停車場</h3><p>以「友善空間」為主題的入口牆面。</p></a>
-      <a class="tile photo c3" href="parking.html?q=楓樹腳"><img src="assets/img/sites/fengshu.jpg" alt="" loading="lazy"><h3>泰山楓樹腳公園</h3><p>多年新北評鑑特優。</p></a>
     </div>
   </div>
 </section>
