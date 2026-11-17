@@ -2,6 +2,9 @@
 // 用法：node build.mjs  → 輸出到 docs/（GitHub Pages 從 main 分支的 /docs 發布）
 import fs from 'node:fs';
 import path from 'node:path';
+import crypto from 'node:crypto';
+const VER = f => crypto.createHash('sha1').update(fs.readFileSync(f)).digest('hex').slice(0, 8);
+const CSSV = VER('assets/css/style.css'), JSV = VER('assets/js/main.js');
 
 const ROOT = path.dirname(new URL(import.meta.url).pathname);
 const OUT = path.join(ROOT, 'docs');
@@ -69,7 +72,7 @@ ${noindex ? '<meta name="robots" content="noindex">' : `<link rel="canonical" hr
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@500;600;700;800&family=Noto+Sans+TC:wght@400;500;700;900&display=swap">
-<link rel="stylesheet" href="assets/css/style.css">
+<link rel="stylesheet" href="assets/css/style.css?v=${CSSV}">
 <script>document.documentElement.classList.add('js')</script>
 </head>
 <body>
@@ -107,7 +110,7 @@ ${body}
   </div>
 </footer>
 <dialog class="vdialog" id="vdialog" aria-label="影片播放"><button class="vclose" type="button" aria-label="關閉影片">✕</button><video controls playsinline preload="none"></video></dialog>
-<script src="assets/js/main.js" defer onerror="document.documentElement.classList.remove('js')"></script>
+<script src="assets/js/main.js?v=${JSV}" defer onerror="document.documentElement.classList.remove('js')"></script>
 </body>
 </html>
 `;
@@ -366,7 +369,7 @@ pages['venues.html'] = {
       <p class="muted">${esc(v.summary)}</p>
       ${v.points.length ? `<ul>${v.points.map(p => `<li>${esc(p)}</li>`).join('')}</ul>` : ''}
       ${v.brands ? `<details class="brands"><summary class="bt">進駐品牌（${v.brands.reduce((a, g) => a + g.items.length, 0)}）</summary><div class="bpanel">${v.brands.map(g => `<p class="bg">${esc(g.group)}</p><div class="pill-list sm">${g.items.map(b => `<span>${esc(b)}</span>`).join('')}</div>`).join('')}${v.brandsNote ? `<p class="bn">${esc(v.brandsNote)}${v.brandsSrc ? ` <a href="${esc(v.brandsSrc)}" target="_blank" rel="noopener">基隆港好食城店家資訊</a>` : ''}</p>` : ''}</div></details>` : ''}
-      ${(v.link || v.fb) ? `<div class="vbtns${v.fb2 ? ' stack' : ''}">${v.link ? `<a class="vbtn web" href="${esc(v.link)}" target="_blank" rel="noopener" aria-label="${esc(v.name.split('｜')[0])} 官方網站（另開新視窗）"><svg viewBox="0 0 24 24" aria-hidden="true">${ICON.globe}</svg><span>官方網站</span><svg class="ext" viewBox="0 0 24 24" aria-hidden="true">${ICON.ext}</svg></a>` : ''}${[[v.fb, v.fbLabel], [v.fb2, v.fb2Label]].filter(f => f[0]).map(([url, lb]) => `<a class="vbtn fb" href="${esc(url)}" target="_blank" rel="noopener" aria-label="${esc(lb || v.name.split('｜')[0])} Facebook 粉絲專頁（另開新視窗）"><svg viewBox="0 0 24 24" aria-hidden="true">${ICON.chat}</svg><span>${lb ? `<em>${esc(lb)}</em> ` : ''}Facebook</span><svg class="ext" viewBox="0 0 24 24" aria-hidden="true">${ICON.ext}</svg></a>`).join('')}</div>` : ''}${v.todo ? '<div class="vlinks"><span class="todo" style="margin-left:0">資料補充中</span></div>' : ''}
+      ${(v.link || v.fb) ? `<div class="vbtns">${v.link ? `<a class="vbtn web" href="${esc(v.link)}" target="_blank" rel="noopener" aria-label="${esc(v.name.split('｜')[0])} 官方網站（另開新視窗）"><svg viewBox="0 0 24 24" aria-hidden="true">${ICON.globe}</svg><span>官方網站</span><svg class="ext" viewBox="0 0 24 24" aria-hidden="true">${ICON.ext}</svg></a>` : ''}${[[v.fb, v.fbLabel, v.fb2 ? 'web' : 'fb'], [v.fb2, v.fb2Label, 'fb']].filter(f => f[0]).map(([url, lb, cls]) => `<a class="vbtn ${cls}${lb ? ' named' : ''}" href="${esc(url)}" target="_blank" rel="noopener" aria-label="${esc(lb || v.name.split('｜')[0])} Facebook 粉絲專頁（另開新視窗）"><svg viewBox="0 0 24 24" aria-hidden="true">${ICON.chat}</svg><span>${esc(lb || 'Facebook')}</span><svg class="ext" viewBox="0 0 24 24" aria-hidden="true">${ICON.ext}</svg></a>`).join('')}</div>` : ''}${v.todo ? '<div class="vlinks"><span class="todo" style="margin-left:0">資料補充中</span></div>' : ''}
     </div></article>`).join('')}
 </div></div></section>
 <section class="band alt"><div class="wrap">

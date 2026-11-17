@@ -737,6 +737,5 @@ p.lead{text-align:justify;text-align-last:left;text-justify:inter-character;line
 .coop.jobs ol.steps{margin:12px 0 0;padding-left:1.4em;display:grid;gap:8px}
 .coop.jobs ol.steps li::marker{color:var(--orange);font-weight:800}
 .btn.big{padding:16px 28px;font-size:17px}
-/* 叁肆行：兩個 Facebook 按鈕上下排，前面加名稱 */
-.vcard .vbtns.stack{grid-template-columns:1fr}
-.vbtn.fb span em{font-style:normal;letter-spacing:0;margin-right:2px}
+/* 叁肆行：兩個 Facebook 按鈕只寫名稱（叁肆行藍底、基隆好食城白底） */
+.vbtn.named span{text-transform:none;letter-spacing:.02em}
