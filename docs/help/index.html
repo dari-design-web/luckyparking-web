@@ -54,8 +54,9 @@ textarea:focus-visible,select:focus-visible,input:focus-visible{outline:2px soli
 .emerg{position:sticky;bottom:0;background:var(--warn);color:var(--warnink);font-size:15px;line-height:1.5;padding:12px 20px calc(12px + env(safe-area-inset-bottom));display:flex;gap:10px;align-items:flex-start;z-index:5}
 .emerg .wrap{display:flex;gap:10px;padding:0}
 /* 對談 */
-.casehead{padding:14px 0 6px}
-.casehead b{color:var(--navy)}
+.casehead{font-size:17px;font-weight:400;line-height:1.5;margin:0;padding:14px 0 6px}
+.casehead b{color:var(--navy);font-weight:700}
+.casehead span:not(:empty)::before{content:"｜";color:var(--line)}
 .steps{display:grid;grid-template-columns:repeat(4,1fr);gap:4px;margin:10px 0 14px;padding:0;list-style:none;counter-reset:s}
 .steps li{display:flex;flex-direction:column;align-items:center;gap:4px;font-size:14px;color:var(--ink2);position:relative}
 .steps li::before{counter-increment:s;content:counter(s);display:grid;place-items:center;width:30px;height:30px;border-radius:50%;border:1.5px solid var(--line);background:#fff;font-weight:700;color:var(--ink2);z-index:1}
@@ -79,17 +80,25 @@ textarea:focus-visible,select:focus-visible,input:focus-visible{outline:2px soli
 .msg.them{align-self:flex-start;background:var(--info);border-bottom-left-radius:6px}
 .msg.sys{align-self:center;background:none;color:var(--ink2);font-size:14px;padding:2px 8px}
 .msg.fail{background:var(--errbg);color:var(--err)}
-.msg .retry{display:inline-flex;min-height:36px;align-items:center;margin-top:4px;background:none;border:0;color:var(--err);font:inherit;font-weight:700;text-decoration:underline;cursor:pointer;padding:0}
-.newmsg{position:sticky;bottom:calc(var(--emh,0px) + 96px);margin:0 auto;display:block;border:0;border-radius:999px;background:var(--navy);color:#fff;font:inherit;font-size:15px;padding:8px 16px;min-height:40px;cursor:pointer}
+.msg .retry{display:inline-flex;min-height:44px;align-items:center;margin-top:4px;background:none;border:0;color:var(--err);font:inherit;font-weight:700;text-decoration:underline;cursor:pointer;padding:0}
+.newmsg{position:sticky;bottom:calc(var(--emh,0px) + 116px);margin:0 auto;display:block;border:0;border-radius:999px;background:var(--navy);color:#fff;font:inherit;font-size:15px;padding:8px 18px;min-height:44px;cursor:pointer;z-index:7}
+.pend:empty{display:none}
+.pend{padding-top:0}
+.msg:focus{outline:2px solid var(--blue);outline-offset:3px}
 .composer{position:sticky;bottom:var(--emh,0px);background:#fff;border-top:1px solid var(--rule);padding:10px 0 calc(10px + env(safe-area-inset-bottom));z-index:6}
 .composer .row{display:flex;gap:10px;align-items:flex-end}
 .composer textarea{min-height:48px;max-height:140px;padding:11px 14px}
 .send{flex:none;width:52px;height:48px;border:0;border-radius:14px;background:var(--blue);color:#fff;cursor:pointer;display:grid;place-items:center}
 .send[disabled]{background:#E3E8EF;color:var(--ink2)}
 .quick{display:flex;gap:8px;margin:8px 0 0;overflow-x:auto}
-.quick button{flex:none;min-height:40px;padding:0 14px;border:1.5px solid var(--line);border-radius:999px;background:#fff;font:inherit;font-size:15px;cursor:pointer}
+.quick button{flex:none;min-height:44px;padding:0 14px;border:1.5px solid var(--line);border-radius:999px;background:#fff;font:inherit;font-size:15px;cursor:pointer}
 .card{border:1.5px solid var(--blue);border-radius:18px;padding:18px;margin:14px 0}
 .card .big{font-size:24px;font-weight:700;color:var(--navy);line-height:1.4;margin:0}
+.card .big2{margin:6px 0 0;font-size:18px;color:var(--navy)}
+.cardd{margin:6px 0 4px}
+.cardd summary{display:flex;align-items:center;min-height:44px;color:var(--blue);font-weight:500;cursor:pointer;text-decoration:underline;text-underline-offset:3px}
+.cardd summary:focus-visible{outline:2px solid var(--blue);outline-offset:3px}
+body.kb .emerg{display:none}
 .done{text-align:center;padding:12px 0}
 .done .okc{width:88px;height:88px;border-radius:50%;background:var(--okbg);display:grid;place-items:center;margin:18px auto 14px}
 .casebox{background:var(--info);border-radius:16px;padding:14px 18px;text-align:left;margin:16px 0}
@@ -142,20 +151,26 @@ textarea:focus-visible,select:focus-visible,input:focus-visible{outline:2px soli
 
 <!-- 對談 -->
 <section class="wrap" id="v-chat" hidden>
-  <div class="casehead"><b id="c-site"></b> <span id="c-dev"></span></div>
+  <h1 class="casehead" id="c-head" tabindex="-1"><b id="c-site"></b><span id="c-dev"></span></h1>
   <ol class="steps" id="steps" aria-label="處理進度">
     <li>已送出</li><li>已接手</li><li>處理中</li><li>已完成</li>
   </ol>
-  <div class="status" id="st" role="status" aria-live="polite"><p class="t" id="st-t"></p><p id="st-p"></p></div>
+  <div class="status" id="st" role="status"><p class="t" id="st-t"></p><p id="st-p"></p></div>
   <p class="note" id="keep">請保持此頁開啟，回覆會顯示在這裡。<button type="button" class="linkbtn" id="vib" hidden>開啟震動提醒</button></p>
 
   <div id="escal" hidden>
     <h2 style="font-size:20px;margin:16px 0 6px">也可以直接找現場人員</h2>
     <p class="note">請使用現場實體求助，或依指標前往管理室；不方便說話可出示下方文字。</p>
-    <div class="card"><p class="big">我需要停車協助。</p><p style="margin:6px 0 0;font-size:18px;color:var(--navy)">請用文字或筆談與我溝通。</p></div>
+    <div class="card"><p class="big">我需要停車協助。</p><p class="big2">請用文字或筆談與我溝通。</p></div>
   </div>
+  <details class="cardd" id="cardd" hidden>
+    <summary>不想等？出示筆談卡給現場人員</summary>
+    <p class="note">請依指標前往管理室，或把這張卡給現場人員看。</p>
+    <div class="card"><p class="big">我需要停車協助。</p><p class="big2">請用文字或筆談與我溝通。</p></div>
+  </details>
 
-  <div class="log" id="log" role="log" aria-label="對談內容" aria-live="polite"></div>
+  <div class="log" id="log" role="log" aria-label="對談內容"></div>
+  <div class="log pend" id="pend"></div>
   <button type="button" class="newmsg" id="newmsg" hidden>有新訊息 ↓</button>
 
   <div id="done" class="done" hidden>
@@ -164,6 +179,7 @@ textarea:focus-visible,select:focus-visible,input:focus-visible{outline:2px soli
     <p id="done-result" style="margin:0;color:var(--ink2)"></p>
     <div class="casebox"><span>案件編號</span><strong id="done-code"></strong></div>
     <button class="ghost" id="again" type="button">仍需要協助</button>
+    <p class="err" id="e-again" role="alert"></p>
     <p class="note" style="margin-top:12px">問題還沒解決？按「仍需要協助」，會通知管理室在同一案件繼續處理。</p>
   </div>
 
@@ -171,9 +187,9 @@ textarea:focus-visible,select:focus-visible,input:focus-visible{outline:2px soli
     <div class="row">
       <label class="hp" for="draft">輸入訊息</label>
       <textarea id="draft" rows="1" maxlength="500" placeholder="輸入訊息…"></textarea>
-      <button class="send" id="send" type="button" aria-label="送出訊息"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M4 12l16-8-6 16-3-7z"/></svg></button>
+      <button class="send" id="send" type="button" aria-label="送出訊息"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M4 12l16-8-6 16-3-7z"/></svg></button>
     </div>
-    <div class="quick" id="quick" aria-label="常用回覆（點選後放入輸入框）"></div>
+    <div class="quick" id="quick" role="group" aria-label="常用回覆（點選後放入輸入框）"></div>
   </div>
 </section>
 </main>
@@ -195,21 +211,26 @@ textarea:focus-visible,select:focus-visible,input:focus-visible{outline:2px soli
     ['其他', '<circle cx="6" cy="12" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="18" cy="12" r="1"/>']
   ];
   var QUICK = ['好', '我在車上', '我在繳費機旁', '我在出口柵欄前'];
-  if (API.mode === 'demo') $('demo-bar').hidden = false;
+  var DEMO = API.mode === 'demo';
+  if (DEMO) $('demo-bar').hidden = false;
+  function rid(){ var a = new Uint8Array(8); crypto.getRandomValues(a); return Array.prototype.map.call(a, function(b){ return ('0' + b.toString(16)).slice(-2); }).join(''); }
+  function store(k, v){ try { if (v == null) localStorage.removeItem(k); else localStorage.setItem(k, v); } catch (e) {} }
+  function read(k){ try { return localStorage.getItem(k); } catch (e) { return null; } }
 
   // 場站與位置（QR：?s=場站代碼&d=設備位置）
   var q = new URLSearchParams(location.search);
   var siteObj = SITES.filter(function(s){ return s.id === q.get('s'); })[0] || null;
-  var device = (q.get('d') || '').slice(0, 30);
-  var groups = {};
+  var device = (q.get('d') || '').trim().slice(0, 30);
+  var groups = Object.create(null);
   SITES.forEach(function(s){ (groups[s.city] = groups[s.city] || []).push(s); });
   Object.keys(groups).forEach(function(c){ var o = document.createElement('option'); o.value = c; o.textContent = c; $('city').appendChild(o); });
   function fillSites(c){ var sel = $('site'); sel.length = 1; sel.disabled = !c; (groups[c] || []).forEach(function(s){ var o = document.createElement('option'); o.value = s.id; o.textContent = s.name; sel.appendChild(o); }); }
-  $('city').onchange = function(){ fillSites(this.value); };
+  // 換縣市：場站與原位置一起清掉，避免送到上一場
+  $('city').onchange = function(){ fillSites(this.value); siteObj = null; device = ''; $('dev').value = ''; showWhere(); };
   $('site').onchange = function(){ siteObj = SITES.filter(function(s){ return s.id === $('site').value; })[0] || null; showWhere(); };
-  $('dev').oninput = function(){ device = this.value.trim(); showWhere(); };
+  $('dev').oninput = function(){ device = this.value.trim().slice(0, 30); showWhere(); };
   function showWhere(){
-    $('w-site').textContent = siteObj ? siteObj.name : '尚未選擇場站';
+    $('w-site').textContent = siteObj ? siteObj.name : (q.get('s') ? '無法辨識這個場站，請重新選擇' : '尚未選擇場站');
     $('w-dev').textContent = device ? '位置：' + device : '';
   }
   showWhere();
@@ -227,116 +248,154 @@ textarea:focus-visible,select:focus-visible,input:focus-visible{outline:2px soli
     l.appendChild(i); l.appendChild(sp); $('cats').appendChild(l);
   });
 
-  var caseId = null, current = null, unsub = null, startCid = null;
-  function rid(){ var a = new Uint8Array(8); crypto.getRandomValues(a); return Array.prototype.map.call(a, function(b){ return ('0' + b.toString(16)).slice(-2); }).join(''); }
-
+  // 開始求助：同一次操作（同場站、同內容）重按只建立一件；改了場站或內容就是新的一次
+  var op = null;
   $('start').onclick = function(){
     $('e-start').textContent = '';
     var text = $('first').value.trim();
     if (!siteObj) { $('e-start').textContent = '請先選擇所在的場站。'; $('pick').hidden = false; $('city').focus(); return; }
     if (text.length < 2) { $('e-start').textContent = '請選一個狀況，或輸入您的狀況。'; $('first').focus(); return; }
+    var sig = siteObj.id + '\n' + device + '\n' + text;
+    if (!op || op.sig !== sig) { op = { sig: sig, cid: rid() }; store('dari-help-op', JSON.stringify(op)); }
     var btn = this; btn.disabled = true; btn.firstChild.textContent = '送出中… ';
-    startCid = startCid || rid();   // 同一次求助重按，不會重複建立案件
-    API.createCase({ site: siteObj.id, siteName: siteObj.name, device: device, category: cat || '其他', text: text, clientId: startCid })
-      .then(function(c){ try { localStorage.setItem('dari-help-case', c.id); } catch (e) {} openCase(c.id); })
+    API.createCase({ site: siteObj.id, siteName: siteObj.name, device: device, category: cat || '其他', text: text, clientId: op.cid })
+      .then(function(c){ store('dari-help-case', c.id); store('dari-help-op', null); op = null; openCase(c.id); })
       .catch(function(){ $('e-start').textContent = '連線中斷，尚未送出；請再按一次，或使用現場求助。'; })
       .then(function(){ btn.disabled = false; btn.firstChild.textContent = '開始文字求助 '; });
   };
+  try { op = JSON.parse(read('dari-help-op')); } catch (e) {}
 
   // 對談
-  var pending = {};   // 傳送中／失敗的訊息
+  var caseId = null, current = null, unsub = null, shown = {}, pending = {};
+  var vibOn = false, lastTheirs = -1, lastStatus = '', lastSt = '';
   function openCase(id){
-    caseId = id; $('v-start').hidden = true; $('v-chat').hidden = false;
+    caseId = id; current = null; shown = {}; pending = {}; $('log').innerHTML = ''; $('pend').innerHTML = '';
+    lastTheirs = -1; lastStatus = ''; lastSt = ''; delete $('done').dataset.focused;
+    $('v-start').hidden = true; $('v-chat').hidden = false;
     if (unsub) unsub();
     unsub = API.watchCase(id, render);
-    setTimeout(function(){ $('draft').focus(); }, 50);
+    setTimeout(function(){ $('c-head').focus(); }, 50);
     if ('vibrate' in navigator) $('vib').hidden = false;
   }
-  var vibOn = false, lastCount = 0, lastStatus = '';
   $('vib').onclick = function(){ vibOn = true; try { navigator.vibrate(120); } catch (e) {} this.textContent = '震動提醒已開啟'; this.disabled = true; };
 
   function fmt(t){ var d = new Date(t); return ('0' + d.getHours()).slice(-2) + ':' + ('0' + d.getMinutes()).slice(-2); }
   function render(c){
-    if (!c) { try { localStorage.removeItem('dari-help-case'); } catch (e) {} $('v-chat').hidden = true; $('v-start').hidden = false; return; }
+    if (!c) { store('dari-help-case', null); if (unsub) unsub(); unsub = null; $('v-chat').hidden = true; $('v-start').hidden = false; return; }
     current = c;
-    $('c-site').textContent = c.siteName; $('c-dev').textContent = c.device ? '｜' + c.device : '';
-    var idx = { new: 0, accepted: 1, working: 2, closed: 3 }[c.status];
+    $('c-site').textContent = c.siteName; $('c-dev').textContent = c.device || '';
+    var idx = { new: 0, accepted: 1, working: 2, closed: 4 }[c.status];
     Array.prototype.forEach.call($('steps').children, function(li, i){ li.className = i < idx ? 'done' : i === idx ? 'now' : ''; if (i === idx) li.setAttribute('aria-current', 'step'); else li.removeAttribute('aria-current'); });
-    if (c.status === 'closed') { var all = $('steps').children; all[3].className = 'done'; }
-    var st = $('st'), t = '', p = '案件 ' + c.code, cls = 'status';
-    if (c.status === 'new' && c.escalated) { t = '已通知備援人員'; p += '　尚未代表備援已接手。'; cls += ' warn'; }
+    var t = '', p = '案件 ' + c.code, cls = 'status';
+    if (c.status === 'new' && c.escalated) { t = '已通知備援人員' + (DEMO ? '（試用版模擬）' : ''); p += '　尚未代表備援已接手。'; cls += ' warn'; }
     else if (c.status === 'new' && c.escalateFailed) { t = '暫時無法通知備援'; p += '　請使用現場求助，或依指標前往管理室。'; cls += ' warn'; }
-    else if (c.status === 'new') { t = '已收到，尚待人員接手'; }
+    else if (c.status === 'new') { t = c.cycle > 1 ? '已再次通知管理室，尚待人員接手' : '已收到，尚待人員接手'; }
     else if (c.status === 'accepted') { t = '管理員已接手'; cls += ' ok'; }
     else if (c.status === 'working') { t = '管理員已接手・正在處理'; cls += ' ok'; }
-    else { t = '本次協助已完成'; cls += ' ok'; }
-    st.className = cls; $('st-t').textContent = t; $('st-p').textContent = p;
-    $('escal').hidden = !(c.status === 'new' && (c.escalated || c.escalateFailed));
+    var st = $('st');
+    // 狀態框只在內容真的改變時更新，避免螢幕閱讀器重複朗讀
+    if (t + p !== lastSt) { st.className = cls; $('st-t').textContent = t; $('st-p').textContent = p; lastSt = t + p; }
+    st.hidden = c.status === 'closed'; $('keep').hidden = c.status === 'closed';
+    var waiting = c.status === 'new';
+    $('escal').hidden = !(waiting && (c.escalated || c.escalateFailed));
+    $('cardd').hidden = !(waiting && !c.escalated && !c.escalateFailed);
     $('done').hidden = c.status !== 'closed'; $('composer').hidden = c.status === 'closed';
-    $('keep').hidden = c.status === 'closed'; st.hidden = c.status === 'closed';
     if (c.status === 'closed') { $('done-result').textContent = c.result ? '管理室：' + c.result : ''; $('done-code').textContent = c.code; }
     drawLog(c);
-    var theirs = c.messages.filter(function(m){ return m.from !== 'customer'; }).length;
-    if ((theirs > lastCount && lastCount) || (lastStatus && lastStatus !== c.status)) { if (vibOn) try { navigator.vibrate([120, 80, 120]); } catch (e) {} if (document.hidden) document.title = '（新回覆）文字求助'; }
-    lastCount = theirs; lastStatus = c.status;
+    var theirs = c.messages.filter(function(m){ return m.from === 'staff'; }).length;
+    if ((lastTheirs >= 0 && theirs > lastTheirs) || (lastStatus && lastStatus !== c.status)) {
+      if (vibOn) try { navigator.vibrate([120, 80, 120]); } catch (e) {}
+      if (document.hidden) document.title = '（新回覆）文字求助';
+    }
+    lastTheirs = theirs; lastStatus = c.status;
     if (c.status === 'closed' && !$('done').dataset.focused) { $('done').dataset.focused = 1; $('done-title').focus(); }
+    if (c.status !== 'closed') delete $('done').dataset.focused;
   }
   document.addEventListener('visibilitychange', function(){ if (!document.hidden) document.title = '文字求助｜大日開發 Lucky Parking'; });
 
-  function atBottom(){ return window.innerHeight + window.scrollY >= document.body.scrollHeight - 80; }
-  function drawLog(c){
-    var stick = atBottom(), log = $('log'), before = log.children.length;
-    log.innerHTML = '';
-    c.messages.forEach(function(m){
-      var d = document.createElement('div');
-      d.className = 'msg ' + (m.from === 'customer' ? 'me' : m.from === 'staff' ? 'them' : 'sys');
-      if (m.from !== 'system') { var s = document.createElement('small'); s.textContent = (m.from === 'customer' ? '我' : '管理室') + '　' + fmt(m.at); d.appendChild(s); }
-      d.appendChild(document.createTextNode(m.text));
-      log.appendChild(d);
-    });
-    Object.keys(pending).forEach(function(k){
-      var p = pending[k]; if (c.messages.some(function(m){ return m.clientMsgId === k; })) { delete pending[k]; return; }
-      var d = document.createElement('div'); d.className = 'msg me' + (p.fail ? ' fail' : '');
-      var s = document.createElement('small'); s.textContent = p.fail ? '尚未送出' : '傳送中…'; d.appendChild(s);
-      d.appendChild(document.createTextNode(p.text));
-      if (p.fail) { var b = document.createElement('button'); b.className = 'retry'; b.type = 'button'; b.textContent = '重新傳送'; b.onclick = function(){ send(p.text, k); }; d.appendChild(document.createElement('br')); d.appendChild(b); }
-      log.appendChild(d);
-    });
-    if (stick || before === 0) { window.scrollTo(0, document.body.scrollHeight); $('newmsg').hidden = true; }
-    else if (log.children.length > before) $('newmsg').hidden = false;
+  function atBottom(){ return window.innerHeight + window.scrollY >= document.body.scrollHeight - 120; }
+  function bubble(cls, head, text){
+    var d = document.createElement('div'); d.className = 'msg ' + cls;
+    if (head) { var s = document.createElement('small'); s.textContent = head; d.appendChild(s); }
+    d.appendChild(document.createTextNode(text)); return d;
   }
-  $('newmsg').onclick = function(){ window.scrollTo(0, document.body.scrollHeight); this.hidden = true; };
+  // 對談只追加新訊息，不重畫舊訊息（避免螢幕閱讀器整串重念）
+  function drawLog(c){
+    var stick = atBottom(), log = $('log'), added = null;
+    c.messages.forEach(function(m){
+      if (shown[m.id]) return; shown[m.id] = 1;
+      var d = m.from === 'system' ? bubble('sys', '', m.text) : bubble(m.from === 'customer' ? 'me' : 'them', (m.from === 'customer' ? '我' : '管理室') + '　' + fmt(m.at), m.text);
+      d.dataset.id = m.id; log.appendChild(d); added = d;
+      if (m.clientMsgId && pending[m.clientMsgId]) { delete pending[m.clientMsgId]; }
+    });
+    drawPending();
+    if (added) {
+      if (stick) { window.scrollTo(0, document.body.scrollHeight); $('newmsg').hidden = true; }
+      else $('newmsg').hidden = false;
+    }
+  }
+  function drawPending(){
+    var box = $('pend'); box.innerHTML = '';
+    Object.keys(pending).forEach(function(k){
+      var p = pending[k];
+      var d = bubble('me' + (p.state ? ' fail' : ''), p.state === 'closed' ? '案件已結束，尚未送出' : p.state ? '尚未送出' : '傳送中…', p.text);
+      if (p.state) {
+        var b = document.createElement('button'); b.className = 'retry'; b.type = 'button';
+        b.textContent = p.state === 'closed' ? '以這則訊息重新求助' : '重新傳送';
+        b.onclick = function(){ p.state === 'closed' ? reopenWith(p.text, k) : send(p.text, k); };
+        d.appendChild(document.createElement('br')); d.appendChild(b);
+      }
+      box.appendChild(d);
+    });
+  }
+  $('newmsg').onclick = function(){ window.scrollTo(0, document.body.scrollHeight); this.hidden = true; var last = $('log').lastElementChild; if (last) { last.tabIndex = -1; last.focus(); } };
   window.addEventListener('scroll', function(){ if (atBottom()) $('newmsg').hidden = true; });
 
   function send(text, k){
-    k = k || rid(); pending[k] = { text: text, fail: false }; if (current) drawLog(current);
-    API.sendMessage(caseId, 'customer', text, k).catch(function(){ pending[k].fail = true; if (current) drawLog(current); });
+    var id = caseId; k = k || rid(); pending[k] = { text: text, state: '' }; drawPending();
+    API.sendMessage(id, 'customer', text, k).catch(function(e){ if (!pending[k] || id !== caseId) return; pending[k].state = e && e.code === 'closed' ? 'closed' : 'fail'; drawPending(); });
+  }
+  function reopenWith(text, k){
+    var id = caseId; if (pending[k]) { pending[k].state = ''; drawPending(); }
+    API.reopen(id, text, current && current.cycle, k).then(function(){ delete pending[k]; drawPending(); }).catch(function(){ if (pending[k]) { pending[k].state = 'fail'; drawPending(); } });
   }
   function grow(){ var t = $('draft'); t.style.height = 'auto'; t.style.height = Math.min(140, t.scrollHeight + 2) + 'px'; }
   $('draft').addEventListener('input', grow);
-  $('send').onclick = function(){ var t = $('draft'), v = t.value.trim(); if (!v || !caseId) return; send(v); t.value = ''; grow(); t.focus(); };
+  $('send').onclick = function(){ var t = $('draft'), v = t.value.trim(); if (!v || !caseId) { t.focus(); return; } send(v); t.value = ''; grow(); t.focus(); };
   $('draft').addEventListener('keydown', function(e){ if (e.key === 'Enter' && !e.shiftKey && !e.isComposing) { e.preventDefault(); $('send').click(); } });
   QUICK.forEach(function(w){ var b = document.createElement('button'); b.type = 'button'; b.textContent = w; b.onclick = function(){ $('draft').value = w; grow(); $('draft').focus(); }; $('quick').appendChild(b); });
 
-  $('again').onclick = function(){ API.reopen(caseId, '我仍需要協助').then(function(){ $('done').dataset.focused = ''; $('draft').focus(); }); };
+  $('again').onclick = function(){
+    var btn = this; btn.disabled = true; $('e-again').textContent = '';
+    API.reopen(caseId, '我仍需要協助', current && current.cycle, rid())
+      .then(function(){ $('c-head').focus(); })
+      .catch(function(){ $('e-again').textContent = '連線中斷，尚未送出；請再按一次，或使用現場求助。'; })
+      .then(function(){ btn.disabled = false; });
+  };
 
-  // 試用版：開頁 3 分鐘仍沒人接手，模擬「已通知備援」（正式版由伺服器排程判斷）
-  setInterval(function(){ if (API.mode === 'demo' && current && current.status === 'new' && !current.escalated && Date.now() - current.createdAt > 3 * 60 * 1000) API.markEscalated(current.id); }, 15000);
+  // 試用版：本輪排隊 3 分鐘仍沒人接手，模擬「已通知備援」（正式版由伺服器排程判斷，不靠這個頁面）
+  if (DEMO) setInterval(function(){ if (current && current.status === 'new' && !current.escalated && Date.now() - current.queuedAt > 3 * 60 * 1000) API.markEscalated(current.id, current.cycle).catch(function(){}); }, 15000);
 
-  // 底部緊急提示的高度，給輸入框留位置
+  // 底部緊急提示的高度，給輸入框留位置；手機鍵盤打開時暫時收起緊急提示，讓輸入框有空間
   var em = document.querySelector('.emerg');
-  function emh(){ document.documentElement.style.setProperty('--emh', em.offsetHeight + 'px'); }
+  function emh(){
+    var vv = window.visualViewport;
+    document.body.classList.toggle('kb', !!(vv && vv.height < window.innerHeight * 0.75 && document.activeElement && document.activeElement.tagName === 'TEXTAREA'));
+    document.documentElement.style.setProperty('--emh', (document.body.classList.contains('kb') ? 0 : em.offsetHeight) + 'px');
+  }
   emh(); window.addEventListener('resize', emh);
+  if (window.visualViewport) window.visualViewport.addEventListener('resize', emh);
+  document.addEventListener('focusin', emh); document.addEventListener('focusout', function(){ setTimeout(emh, 50); });
 
   // 重新整理後接續原案件：同一場站、且未結案或結案未滿 30 分鐘才自動接續；
   // 掃了別場的 QR，則在開始頁上方提供「回到先前的求助」
-  var saved = null; try { saved = localStorage.getItem('dari-help-case'); } catch (e) {}
+  var saved = read('dari-help-case');
   if (saved) {
     var off = API.watchCase(saved, function(c){
       setTimeout(function(){ off(); }, 0);
-      if (!c) { try { localStorage.removeItem('dari-help-case'); } catch (e) {} return; }
+      if (!c) { store('dari-help-case', null); return; }
       var stale = c.status === 'closed' && Date.now() - c.closedAt > 30 * 60 * 1000;
-      if (stale) { try { localStorage.removeItem('dari-help-case'); } catch (e) {} return; }
+      if (stale) { store('dari-help-case', null); return; }
       if (!q.get('s') || q.get('s') === c.site) { openCase(c.id); return; }
       $('resume').hidden = false; $('resume-t').textContent = '您在「' + c.siteName + '」有一則' + (c.status === 'closed' ? '剛結束' : '進行中') + '的求助。';
       $('resume-b').onclick = function(){ openCase(c.id); };

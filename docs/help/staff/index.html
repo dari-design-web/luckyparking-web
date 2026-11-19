@@ -19,6 +19,7 @@ body{margin:0;background:var(--soft);color:var(--ink);font:16px/1.6 "Noto Sans T
 .top .in{max-width:1180px;margin:0 auto;display:flex;align-items:center;gap:12px;min-height:60px;padding:6px 20px}
 .top b{font-size:18px}
 .top .scope{font-size:14px;color:#D6E3F3}
+.top :focus-visible{outline-color:#fff}
 .top .out{margin-left:auto;min-height:44px;padding:0 14px;border:1.5px solid #9DB6D6;border-radius:12px;background:none;color:#fff;font:inherit;cursor:pointer}
 .demo{background:#FFF6DD;color:#6B4E00;font-size:14px;padding:8px 20px;text-align:center}
 .page{max-width:1180px;margin:0 auto;padding:16px 20px 40px}
@@ -85,7 +86,7 @@ textarea{resize:none;display:block}
 .msg.me small{color:#DCE8F7}
 .msg.sys{align-self:center;color:var(--ink2);font-size:14px;padding:2px 8px}
 .msg.fail{background:var(--errbg);color:var(--err)}
-.msg .retry{display:inline-flex;min-height:36px;align-items:center;background:none;border:0;color:var(--err);font:inherit;font-weight:700;text-decoration:underline;cursor:pointer;padding:0}
+.msg .retry{display:inline-flex;min-height:44px;align-items:center;background:none;border:0;color:var(--err);font:inherit;font-weight:700;text-decoration:underline;cursor:pointer;padding:0}
 .gate{background:var(--newbg);border-radius:16px;padding:16px;margin:12px 0}
 .gate p{margin:0 0 10px;color:var(--newink);font-weight:500}
 .tpl{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0 8px}
@@ -103,6 +104,7 @@ dialog::backdrop{background:rgba(18,26,38,.45)}
 .acts{display:flex;gap:10px;margin-top:16px}
 .acts .btn{flex:1}
 .reset{display:inline-flex;min-height:44px;align-items:center;background:none;border:0;color:var(--ink2);font:inherit;font-size:14px;text-decoration:underline;cursor:pointer;padding:0}
+.vh{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 [hidden]{display:none!important}
 @media (min-width:960px){
   .cols{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.5fr);gap:20px;align-items:start}
@@ -113,6 +115,7 @@ dialog::backdrop{background:rgba(18,26,38,.45)}
 </style>
 </head>
 <body>
+<div class="vh" id="live" role="status"></div>
 <div class="top"><div class="in"><b>管理室</b><span class="scope" id="scope">文字求助</span><button type="button" class="out" id="logout" hidden>登出</button></div></div>
 <div class="demo" id="demo-bar" hidden>試用版：資料只存在這台裝置，不需密碼。請在同一個瀏覽器另開客人端分頁一起測試。</div>
 
@@ -163,22 +166,23 @@ dialog::backdrop{background:rgba(18,26,38,.45)}
         <dt>狀況</dt><dd id="d-cat"></dd>
         <dt>送出</dt><dd id="d-time"></dd>
       </dl>
-      <div class="log" id="d-log" role="log" aria-label="對談內容" aria-live="polite"></div>
+      <div class="log" id="d-log" role="log" aria-label="對談內容"><div id="d-msgs" style="display:contents"></div><div id="d-pend" style="display:contents"></div></div>
 
       <div class="gate" id="d-gate" hidden>
         <p>接手後才能回覆。接手後，客人會看到「管理員已接手」。</p>
         <button class="btn wide big" type="button" id="d-accept">接手此案件</button>
-        <p class="err" id="e-accept" role="alert" style="margin-top:8px"></p>
+        <p class="err" id="e-accept" style="margin-top:8px"></p>
       </div>
       <div class="taken" id="d-taken" hidden><span id="d-taken-t"></span><div><button type="button" class="lnk" id="d-over">原接手人員無法處理？改由我接手</button></div></div>
 
       <div id="d-reply" hidden>
         <div class="tpl" id="d-tpl" aria-label="常用回覆（點選後放入輸入框，可修改再送出）"></div>
         <div class="compose">
-          <label class="hp" for="d-draft" style="position:absolute;left:-9999px">回覆內容</label>
+          <label class="vh" for="d-draft">回覆內容</label>
           <textarea id="d-draft" rows="2" maxlength="500" placeholder="輸入回覆…"></textarea>
           <button class="btn" type="button" id="d-send">送出</button>
         </div>
+        <p class="err" id="e-reply"></p>
         <div class="closebar"><button class="btn line wide" type="button" id="d-close">結案並確認處理結果</button></div>
       </div>
       <p class="muted small" id="d-closed-note" hidden></p>
@@ -190,7 +194,7 @@ dialog::backdrop{background:rgba(18,26,38,.45)}
 <dialog id="dlg" aria-labelledby="dlg-t">
   <h2 id="dlg-t">確認處理結果</h2>
   <p class="muted small" style="margin:0">結案後，客人會看到「本次協助已完成」與下方結果。</p>
-  <div class="radios" id="dlg-r"></div>
+  <div class="radios" id="dlg-r" role="radiogroup" aria-labelledby="dlg-t"></div>
   <label class="f" for="dlg-note" style="margin-top:6px">補充說明（選填，客人看得到）</label>
   <input type="text" id="dlg-note" maxlength="60">
   <p class="err" id="e-dlg" role="alert"></p>
@@ -208,45 +212,65 @@ dialog::backdrop{background:rgba(18,26,38,.45)}
   var TPL_GATE = '請稍候，我將依權限協助處理柵欄。';
   var RESULTS = ['已協助處理，可正常離場', '已到現場協助', '已請客人至管理室處理', '客人已自行解決或離開'];
   var STATUS = { new: ['new', '新案件・尚未接手'], accepted: ['acc', '已接手'], working: ['work', '處理中'], closed: ['closed', '已結案'] };
-  if (API.mode === 'demo') { $('demo-bar').hidden = false; $('reset').hidden = false; }
+  var DEMO = API.mode === 'demo';
+  if (DEMO) { $('demo-bar').hidden = false; $('reset').hidden = false; }
+  // 持續存在的狀態播報區：只在有意義的變化時更新
+  function say(t){ var l = $('live'); l.textContent = ''; setTimeout(function(){ l.textContent = t; }, 60); }
 
-  // 登入（試用版：選場站即可；正式版：各場帳號密碼，由後端限定只能讀本場）
-  var groups = {};
+  // 登入（試用版：選場站即可；正式版：個人帳號密碼，由後端限定只能讀本場）
+  var groups = Object.create(null);
   SITES.forEach(function(s){ (groups[s.city] = groups[s.city] || []).push(s); });
   Object.keys(groups).forEach(function(c){ var o = document.createElement('option'); o.value = c; o.textContent = c; $('city').appendChild(o); });
   function fillSites(c){ var sel = $('site'); sel.length = 1; sel.disabled = !c; (groups[c] || []).forEach(function(s){ var o = document.createElement('option'); o.value = s.id; o.textContent = s.name; sel.appendChild(o); }); }
   $('city').onchange = function(){ fillSites(this.value); };
   var me = null; try { me = JSON.parse(localStorage.getItem('dari-help-staff')); } catch (e) {}
-  var DEV = null; try { DEV = localStorage.getItem('dari-help-dev'); if (!DEV) { DEV = rid(); localStorage.setItem('dari-help-dev', DEV); } } catch (e) { DEV = rid(); }
+  // 這個分頁（裝置）的代號：用來分辨是誰接手；每個分頁各自一個
+  var DEV = null; try { DEV = sessionStorage.getItem('dari-help-dev'); if (!DEV) { DEV = rid(); sessionStorage.setItem('dari-help-dev', DEV); } } catch (e) { DEV = rid(); }
   $('login').onclick = function(){
     var s = SITES.filter(function(x){ return x.id === $('site').value; })[0];
     $('e-login').textContent = '';
     if (!s) { $('e-login').textContent = '請選擇場站。'; ($('city').value ? $('site') : $('city')).focus(); return; }
     API.staffLogin(s.id, $('who').value.trim()).then(function(u){ me = { site: s.id, siteName: s.name, name: u.name }; try { localStorage.setItem('dari-help-staff', JSON.stringify(me)); } catch (e) {} start(); });
   };
-  $('logout').onclick = function(){ try { localStorage.removeItem('dari-help-staff'); } catch (e) {} location.reload(); };
+  $('logout').onclick = function(){ try { localStorage.removeItem('dari-help-staff'); } catch (e) {} drafts = {}; location.reload(); };
 
   // 提醒：聲音、震動、系統通知（皆需使用者先按一次按鈕才能啟用）
   var ac = null, alertsOn = false, wake = null;
   function beep(){
-    if (!ac) return;
-    try { ac.resume(); var t = ac.currentTime; [0, 0.32, 0.64].forEach(function(d){ var o = ac.createOscillator(), g = ac.createGain(); o.type = 'sine'; o.frequency.value = 1046; g.gain.setValueAtTime(0.0001, t + d); g.gain.exponentialRampToValueAtTime(0.4, t + d + 0.02); g.gain.exponentialRampToValueAtTime(0.0001, t + d + 0.24); o.connect(g); g.connect(ac.destination); o.start(t + d); o.stop(t + d + 0.26); }); } catch (e) {}
+    if (!ac) return Promise.resolve(false);
+    return Promise.resolve(ac.resume()).then(function(){
+      var t = ac.currentTime;
+      [0, 0.32, 0.64].forEach(function(d){ var o = ac.createOscillator(), g = ac.createGain(); o.type = 'sine'; o.frequency.value = 1046; g.gain.setValueAtTime(0.0001, t + d); g.gain.exponentialRampToValueAtTime(0.4, t + d + 0.02); g.gain.exponentialRampToValueAtTime(0.0001, t + d + 0.24); o.connect(g); g.connect(ac.destination); o.start(t + d); o.stop(t + d + 0.26); });
+      return ac.state === 'running';
+    }).catch(function(){ return false; });
   }
-  function buzz(){ try { navigator.vibrate && navigator.vibrate([200, 100, 200, 100, 200]); } catch (e) {} }
-  function sysNote(title, body){ try { if (window.Notification && Notification.permission === 'granted' && document.hidden) new Notification(title, { body: body, tag: 'dari-help', renotify: true }); } catch (e) {} }
-  function holdScreen(){ try { if (navigator.wakeLock && !document.hidden) navigator.wakeLock.request('screen').then(function(w){ wake = w; }).catch(function(){}); } catch (e) {} }
-  document.addEventListener('visibilitychange', function(){ if (!document.hidden) { document.title = '管理室｜文字求助'; if (alertsOn && !wake) holdScreen(); } else wake = null; });
+  function buzz(){ try { return !!(navigator.vibrate && navigator.vibrate([200, 100, 200, 100, 200])); } catch (e) { return false; } }
+  // 鎖屏通知只放通用文字，不顯示位置或對話內容
+  function sysNote(title){ try { if (window.Notification && Notification.permission === 'granted' && document.hidden) new Notification(title, { body: '請開啟管理室頁面查看。', tag: 'dari-help', renotify: true }); } catch (e) {} }
+  function holdScreen(){
+    if (!navigator.wakeLock || document.hidden || wake) return Promise.resolve(!!wake);
+    return navigator.wakeLock.request('screen').then(function(w){ wake = w; w.addEventListener('release', function(){ wake = null; }); return true; }).catch(function(){ return false; });
+  }
+  document.addEventListener('visibilitychange', function(){ if (!document.hidden) { document.title = '管理室｜文字求助'; if (alertsOn) holdScreen(); } });
   $('al-btn').onclick = function(){
     try { ac = ac || new (window.AudioContext || window.webkitAudioContext)(); } catch (e) {}
-    alertsOn = true; beep(); buzz(); holdScreen();
-    var done = function(){
+    alertsOn = true;
+    var vib = buzz();
+    var perm = window.Notification && Notification.permission === 'default' ? Notification.requestPermission().catch(function(){}) : Promise.resolve();
+    Promise.all([beep(), holdScreen(), perm]).then(function(r){
+      var sound = r[0], screen = r[1], note = window.Notification ? Notification.permission : 'unsupported';
+      var lines = [
+        sound ? '提示音：已播放（沒聽到請調高音量）' : '提示音：此裝置無法播放，請改看畫面',
+        vib ? '震動：已測試' : '震動：此裝置不支援（iPhone 網頁無法震動）',
+        note === 'granted' ? '系統通知：已允許' : '系統通知：未允許，切到其他 App 時不會跳通知',
+        screen ? '螢幕：此頁開著時會保持亮著' : '螢幕：無法保持常亮，請調長自動鎖定時間'
+      ];
       $('alertset').className = 'alertset on';
       $('al-t').textContent = '接案提醒已開啟';
-      var perm = window.Notification ? Notification.permission : 'unsupported';
-      $('al-p').textContent = '剛才應有聽到提示音' + ('vibrate' in navigator ? '並感到震動' : '') + '。' + (perm === 'granted' ? '切到其他畫面時也會跳出通知。' : '此裝置未允許系統通知，請保持此頁在最前面。') + '若沒聽到，請調高音量後再按一次。';
+      $('al-p').textContent = lines.join('；') + '。手機鎖定或切到其他 App 時，網頁可能無法發出聲音，請盡量讓此頁保持在前景。';
       $('al-btn').textContent = '再測試一次';
-    };
-    if (window.Notification && Notification.permission === 'default') Notification.requestPermission().then(done, done); else done();
+      say('接案提醒已開啟。' + lines.join('，'));
+    });
   };
 
   var cases = [], sel = null, filter = 'open', seen = null, seenMsg = {}, unsub = null;
@@ -258,21 +282,25 @@ dialog::backdrop{background:rgba(18,26,38,.45)}
   }
   function onCases(list){
     cases = list;
-    // 新案件、客人新訊息提醒（第一次載入不提醒）
-    if (seen) {
+    if (!seen) {
+      // 第一次載入（或交班重開）：不響鈴，但明確告知目前待接手件數
+      var waiting = list.filter(function(c){ return c.status === 'new'; });
+      if (waiting.length) { var oldest = Math.min.apply(null, waiting.map(function(c){ return c.queuedAt; })); say('目前有 ' + waiting.length + ' 件待接手，最久已等 ' + ago(oldest).replace('前', '') + '。'); }
+    } else {
       list.forEach(function(c){
         var cust = c.messages.filter(function(m){ return m.from === 'customer'; }).length;
-        if (!seen[c.id] && c.status === 'new') ring('新的文字求助', c.device || c.category, c);
-        else if (seen[c.id] && c.status === 'new' && seen[c.id] !== 'new') ring('客人再次求助', c.device || c.category, c);
-        else if (seenMsg[c.id] != null && cust > seenMsg[c.id] && c.status !== 'new') ring('客人有新訊息', c.messages[c.messages.length - 1].text, c);
+        if (!seen[c.id] && c.status === 'new') ring('新的文字求助', (c.device || '未填位置') + '｜' + c.category);
+        else if (seen[c.id] && c.status === 'new' && seen[c.id] !== 'new') ring('客人再次求助', (c.device || '未填位置'));
+        else if (seenMsg[c.id] != null && cust > seenMsg[c.id] && c.status !== 'new' && c.acceptedDev === DEV) ring('客人有新訊息', c.device || '');
       });
     }
     seen = {}; list.forEach(function(c){ seen[c.id] = c.status; seenMsg[c.id] = c.messages.filter(function(m){ return m.from === 'customer'; }).length; });
     drawList(); if (sel) drawDetail();
   }
-  function ring(title, body, c){
+  function ring(title, where){
     if (alertsOn) { beep(); buzz(); }
-    sysNote(title + '｜' + me.siteName, body);
+    sysNote(title);
+    say(title + '：' + where);
     if (document.hidden) document.title = '（' + title + '）管理室';
   }
 
@@ -280,110 +308,163 @@ dialog::backdrop{background:rgba(18,26,38,.45)}
   function hm(t){ var d = new Date(t); return ('0' + d.getHours()).slice(-2) + ':' + ('0' + d.getMinutes()).slice(-2); }
   function isToday(t){ var a = new Date(t), b = new Date(); return a.toDateString() === b.toDateString(); }
   var ORDER = { new: 0, accepted: 1, working: 1, closed: 2 };
+  // 案件清單：重畫後把鍵盤焦點放回原本那一件
   function drawList(){
     $('n-new').textContent = cases.filter(function(c){ return c.status === 'new'; }).length;
     $('n-work').textContent = cases.filter(function(c){ return c.status === 'accepted' || c.status === 'working'; }).length;
     $('n-closed').textContent = cases.filter(function(c){ return c.status === 'closed' && isToday(c.closedAt); }).length;
     var show = cases.filter(function(c){ return filter === 'closed' ? c.status === 'closed' : c.status !== 'closed'; });
-    show.sort(function(a, b){ return filter === 'closed' ? b.closedAt - a.closedAt : (ORDER[a.status] - ORDER[b.status]) || (a.createdAt - b.createdAt); });
-    var ul = $('list'); ul.innerHTML = '';
+    show.sort(function(a, b){ return filter === 'closed' ? b.closedAt - a.closedAt : (ORDER[a.status] - ORDER[b.status]) || (a.queuedAt - b.queuedAt); });
+    var ul = $('list'), fa = document.activeElement, focusId = fa && fa.classList && fa.classList.contains('case') ? fa.dataset.id : null;
+    ul.innerHTML = '';
     $('empty').hidden = show.length > 0;
     $('empty').textContent = filter === 'closed' ? '還沒有已結案的案件。' : '目前沒有進行中的案件。';
     show.forEach(function(c){
       var li = document.createElement('li'), b = document.createElement('button');
-      b.type = 'button'; b.className = 'case' + (c.status === 'new' ? ' new' : ''); b.setAttribute('aria-current', sel === c.id ? 'true' : 'false');
+      b.type = 'button'; b.className = 'case' + (c.status === 'new' ? ' new' : ''); b.dataset.id = c.id; b.setAttribute('aria-current', sel === c.id ? 'true' : 'false');
       var row = document.createElement('div'); row.className = 'row';
       var chip = document.createElement('span'); chip.className = 'chip ' + STATUS[c.status][0]; chip.textContent = STATUS[c.status][1]; row.appendChild(chip);
       if (c.status === 'new' && c.escalated) { var e = document.createElement('span'); e.className = 'chip esc'; e.textContent = '已逾時・已通知備援'; row.appendChild(e); }
-      if (c.reopened && c.status === 'new') { var r = document.createElement('span'); r.className = 'chip esc'; r.textContent = '客人再次求助'; row.appendChild(r); }
-      var age = document.createElement('span'); age.className = 'age'; age.textContent = ago(c.status === 'closed' ? c.closedAt : c.createdAt); row.appendChild(age);
+      if (c.cycle > 1 && c.status === 'new') { var r = document.createElement('span'); r.className = 'chip esc'; r.textContent = '客人再次求助'; row.appendChild(r); }
+      var age = document.createElement('span'); age.className = 'age'; age.dataset.t = c.status === 'closed' ? c.closedAt : c.queuedAt; age.textContent = ago(+age.dataset.t); row.appendChild(age);
       var dev = document.createElement('p'); dev.className = 'dev'; dev.textContent = (c.device || '未填位置') + '｜' + c.category;
       var last = c.messages.filter(function(m){ return m.from === 'customer'; }).slice(-1)[0];
       var pre = document.createElement('p'); pre.className = 'pre'; pre.textContent = last ? last.text : '';
       b.appendChild(row); b.appendChild(dev); b.appendChild(pre);
       b.onclick = function(){ open(c.id); };
       li.appendChild(b); ul.appendChild(li);
+      if (focusId === c.id) b.focus();
     });
   }
   Array.prototype.forEach.call(document.querySelectorAll('.filter button'), function(b){
     b.onclick = function(){ filter = b.dataset.f; Array.prototype.forEach.call(document.querySelectorAll('.filter button'), function(x){ x.setAttribute('aria-pressed', x === b ? 'true' : 'false'); }); drawList(); };
   });
-  setInterval(function(){ if (cases.length) drawList(); }, 30000);
+  // 每 30 秒只更新「幾分鐘前」，不重建清單
+  setInterval(function(){ Array.prototype.forEach.call(document.querySelectorAll('.case .age'), function(a){ a.textContent = ago(+a.dataset.t); }); }, 30000);
 
   // 案件詳細
-  var pending = {};
+  var pending = {}, drafts = {}, shown = {}, overArm = '';
   function open(id){
+    if (sel && sel !== id) drafts[sel] = $('d-draft').value;
+    if (sel !== id) { $('d-msgs').innerHTML = ''; shown = {}; overArm = ''; resetOver(); $('e-accept').textContent = ''; $('e-reply').textContent = ''; }
     sel = id; $('v-detail').hidden = false;
+    $('d-draft').value = drafts[id] || '';
     if (!matchMedia('(min-width:960px)').matches) $('v-list').hidden = true;
     drawList(); drawDetail(true);
     $('d-title').focus();
   }
-  $('back').onclick = function(){ var id = sel; sel = null; $('v-detail').hidden = true; $('v-list').hidden = false; drawList(); var b = document.querySelector('.case[aria-current=true]') || document.querySelector('.case'); if (b) b.focus(); };
+  $('back').onclick = function(){
+    var id = sel; if (id) drafts[id] = $('d-draft').value;
+    sel = null; $('v-detail').hidden = true; $('v-list').hidden = false; drawList();
+    var b = document.querySelector('.case[data-id="' + id + '"]') || document.querySelector('.case'); if (b) b.focus(); else $('list-title').focus();
+  };
+  function bubble(cls, head, text){
+    var d = document.createElement('div'); d.className = 'msg ' + cls;
+    if (head) { var s = document.createElement('small'); s.textContent = head; d.appendChild(s); }
+    d.appendChild(document.createTextNode(text)); return d;
+  }
+  var lastState = {};
   function drawDetail(first){
     var c = cases.filter(function(x){ return x.id === sel; })[0];
-    if (!c) { $('v-detail').hidden = true; $('v-list').hidden = false; sel = null; return; }
+    if (!c) { $('v-detail').hidden = true; $('v-list').hidden = false; sel = null; if ($('dlg').open) $('dlg').close(); return; }
     $('d-title').textContent = c.code;
     $('d-chip').className = 'chip ' + STATUS[c.status][0]; $('d-chip').textContent = STATUS[c.status][1];
     $('d-dev').textContent = c.device || '未填位置';
     $('d-cat').textContent = c.category;
-    $('d-time').textContent = hm(c.createdAt) + '（' + ago(c.createdAt) + '）';
+    $('d-time').textContent = hm(c.queuedAt) + '（' + ago(c.queuedAt) + '）' + (c.cycle > 1 ? '・第 ' + c.cycle + ' 次求助' : '');
+    // 對談只追加新訊息
     var log = $('d-log'), stick = log.scrollHeight - log.scrollTop - log.clientHeight < 60 || first;
-    log.innerHTML = '';
     c.messages.forEach(function(m){
-      var d = document.createElement('div');
-      d.className = 'msg ' + (m.from === 'customer' ? 'cust' : m.from === 'staff' ? 'me' : 'sys');
-      if (m.from !== 'system') { var s = document.createElement('small'); s.textContent = (m.from === 'customer' ? '客人' : '管理室') + '　' + hm(m.at); d.appendChild(s); }
-      d.appendChild(document.createTextNode(m.text)); log.appendChild(d);
+      if (shown[m.id]) return; shown[m.id] = 1;
+      var d = m.from === 'system' ? bubble('sys', '', m.text) : bubble(m.from === 'customer' ? 'cust' : 'me', (m.from === 'customer' ? '客人' : '管理室') + '　' + hm(m.at), m.text);
+      $('d-msgs').appendChild(d);
+      if (m.clientMsgId && pending[m.clientMsgId]) delete pending[m.clientMsgId];
     });
-    Object.keys(pending).forEach(function(k){
-      var p = pending[k]; if (p.id !== c.id) return;
-      if (c.messages.some(function(m){ return m.clientMsgId === k; })) { delete pending[k]; return; }
-      var d = document.createElement('div'); d.className = 'msg me' + (p.fail ? ' fail' : '');
-      var s = document.createElement('small'); s.textContent = p.fail ? '尚未送出' : '傳送中…'; d.appendChild(s);
-      d.appendChild(document.createTextNode(p.text));
-      if (p.fail) { var b = document.createElement('button'); b.type = 'button'; b.className = 'retry'; b.textContent = '重新傳送'; b.onclick = function(){ reply(p.text, k); }; d.appendChild(document.createElement('br')); d.appendChild(b); }
-      log.appendChild(d);
-    });
+    drawPending(c);
     if (stick) log.scrollTop = log.scrollHeight;
     var isMine = !!c.acceptedDev && c.acceptedDev === DEV;
+    var activeCase = c.status === 'accepted' || c.status === 'working';
     $('d-gate').hidden = c.status !== 'new';
-    $('d-taken').hidden = !(c.status !== 'new' && c.status !== 'closed' && !isMine);
+    $('d-taken').hidden = !(activeCase && !isMine);
     $('d-taken-t').textContent = '此案件已由「' + (c.acceptedBy || '其他人員') + '」接手。';
-    $('d-reply').hidden = !(isMine && c.status !== 'closed');
+    $('d-reply').hidden = !(isMine && activeCase);
     $('d-closed-note').hidden = c.status !== 'closed';
     $('d-closed-note').textContent = c.status === 'closed' ? '已於 ' + hm(c.closedAt) + ' 結案：' + (c.result || '') : '';
+    // 接手狀態改變時播報一次（例如被別人改由他接手）
+    var k = c.status + '|' + c.assignVer + '|' + isMine;
+    if (lastState[c.id] && lastState[c.id] !== k) {
+      if (activeCase && !isMine && lastState[c.id].split('|')[2] === 'true') say('此案件已改由「' + c.acceptedBy + '」接手，你無法再回覆。');
+    }
+    lastState[c.id] = k;
+    // 結案視窗開著時，若案件已不是我的或已結束，關閉視窗並說明
+    if ($('dlg').open && dlgFor && (dlgFor.id !== c.id || dlgFor.ver !== c.assignVer || !isMine || !activeCase)) {
+      $('dlg').close(); $('e-reply').textContent = '案件狀態已變更，結案視窗已關閉。';
+    }
     // 範本：柵欄、繳費類才顯示「依權限協助處理柵欄」
     var tpl = TPL.slice(); if (c.category === '柵欄沒開' || c.category === '繳費失敗') tpl.splice(1, 0, TPL_GATE);
     var box = $('d-tpl'); if (box.dataset.k !== c.id + c.category) { box.dataset.k = c.id + c.category; box.innerHTML = ''; tpl.forEach(function(t){ var b = document.createElement('button'); b.type = 'button'; b.textContent = t; b.onclick = function(){ $('d-draft').value = t; $('d-draft').focus(); }; box.appendChild(b); }); }
   }
-  $('d-accept').onclick = function(){
-    var btn = this, id = sel; btn.disabled = true; $('e-accept').textContent = '';
-    API.accept(id, me.name, DEV).then(function(r){
-      if (r.ok) { drawDetail(); $('d-draft').focus(); }
-      else { $('e-accept').textContent = '已由「' + (r.by || '其他人員') + '」接手，無法重複接手。'; }
-    }).catch(function(){ $('e-accept').textContent = '連線中斷，尚未接手；請再按一次。'; }).then(function(){ btn.disabled = false; });
-  };
-  $('d-over').onclick = function(){
-    if (!this.dataset.armed) { this.dataset.armed = 1; this.textContent = '再按一次，確認改由我接手'; return; }
-    var btn = this; btn.dataset.armed = ''; btn.textContent = '原接手人員無法處理？改由我接手';
-    API.takeover(sel, me.name, DEV).then(function(r){ if (r.ok) { drawDetail(); $('d-draft').focus(); } });
-  };
-  function reply(text, k){
-    var id = sel; k = k || rid(); pending[k] = { id: id, text: text, fail: false }; drawDetail();
-    API.sendMessage(id, 'staff', text, k).catch(function(){ pending[k].fail = true; drawDetail(); });
+  function drawPending(c){
+    var box = $('d-pend'); box.innerHTML = '';
+    Object.keys(pending).forEach(function(k){
+      var p = pending[k]; if (p.id !== c.id) return;
+      var d = bubble('me' + (p.state ? ' fail' : ''), p.state ? '尚未送出' : '傳送中…', p.text);
+      if (p.state === 'fail') { var b = document.createElement('button'); b.type = 'button'; b.className = 'retry'; b.textContent = '重新傳送'; b.onclick = function(){ reply(p.id, p.text, k); }; d.appendChild(document.createElement('br')); d.appendChild(b); }
+      box.appendChild(d);
+    });
   }
-  $('d-send').onclick = function(){ var t = $('d-draft'), v = t.value.trim(); if (!v) { t.focus(); return; } reply(v); t.value = ''; t.focus(); };
+  $('d-accept').onclick = function(){
+    var btn = this, id = sel; btn.disabled = true; btn.textContent = '接手中，等待確認…'; $('e-accept').textContent = '';
+    API.accept(id, me.name, DEV).then(function(r){
+      if (r.ok) { say('已接手 ' + $('d-title').textContent + '，可以回覆了。'); if (sel === id) $('d-draft').focus(); }
+      else { $('e-accept').textContent = '已由「' + (r.by || '其他人員') + '」接手，無法重複接手。'; say($('e-accept').textContent); }
+    }).catch(function(){ $('e-accept').textContent = '連線中斷，尚未接手；請再按一次。'; say($('e-accept').textContent); })
+      .then(function(){ btn.disabled = false; btn.textContent = '接手此案件'; });
+  };
+  function resetOver(){ var b = $('d-over'); b.textContent = '原接手人員無法處理？改由我接手'; }
+  $('d-over').onclick = function(){
+    var c = cases.filter(function(x){ return x.id === sel; })[0]; if (!c) return;
+    if (overArm !== c.id + '|' + c.assignVer) { overArm = c.id + '|' + c.assignVer; this.textContent = '再按一次，確認改由我接手'; return; }
+    overArm = ''; resetOver();
+    API.takeover(c.id, me.name, DEV, c.assignVer).then(function(r){
+      if (r.ok) { say('已改由你接手。'); if (sel === c.id) $('d-draft').focus(); }
+      else { say('接手狀態已變更，請重新確認。'); }
+    });
+  };
+  function reply(id, text, k){
+    k = k || rid(); pending[k] = { id: id, text: text, state: '' }; drawDetail();
+    API.sendMessage(id, 'staff', text, k, DEV).catch(function(e){
+      if (!pending[k]) return;
+      if (e && (e.code === 'closed' || e.code === 'not_assignee')) {
+        delete pending[k]; drafts[id] = text; if (sel === id) $('d-draft').value = text;
+        $('e-reply').textContent = e.code === 'closed' ? '案件已結案，訊息未送出（已放回輸入框）。' : '你已不是此案件的接手人員，訊息未送出（已放回輸入框）。';
+        say($('e-reply').textContent);
+      } else pending[k].state = 'fail';
+      drawDetail();
+    });
+  }
+  $('d-send').onclick = function(){ var t = $('d-draft'), v = t.value.trim(); $('e-reply').textContent = ''; if (!v) { t.focus(); return; } reply(sel, v); t.value = ''; drafts[sel] = ''; t.focus(); };
   $('d-draft').addEventListener('keydown', function(e){ if (e.key === 'Enter' && (e.ctrlKey || e.metaKey) && !e.isComposing) { e.preventDefault(); $('d-send').click(); } });
 
-  // 結案
-  RESULTS.forEach(function(r, i){ var l = document.createElement('label'), i2 = document.createElement('input'); i2.type = 'radio'; i2.name = 'res'; i2.value = r; l.appendChild(i2); l.appendChild(document.createTextNode(r)); $('dlg-r').appendChild(l); });
-  $('d-close').onclick = function(){ $('e-dlg').textContent = ''; $('dlg-note').value = ''; Array.prototype.forEach.call(document.querySelectorAll('[name=res]'), function(x){ x.checked = false; }); $('dlg').showModal(); };
-  $('dlg-cancel').onclick = function(){ $('dlg').close(); $('d-close').focus(); };
+  // 結案：視窗綁定開啟當下的案件與接手版本
+  var dlgFor = null;
+  RESULTS.forEach(function(r){ var l = document.createElement('label'), i2 = document.createElement('input'); i2.type = 'radio'; i2.name = 'res'; i2.value = r; l.appendChild(i2); l.appendChild(document.createTextNode(r)); $('dlg-r').appendChild(l); });
+  $('d-close').onclick = function(){
+    var c = cases.filter(function(x){ return x.id === sel; })[0]; if (!c) return;
+    dlgFor = { id: c.id, ver: c.assignVer };
+    $('e-dlg').textContent = ''; $('dlg-note').value = ''; Array.prototype.forEach.call(document.querySelectorAll('[name=res]'), function(x){ x.checked = false; });
+    $('dlg').showModal(); document.querySelector('[name=res]').focus();
+  };
+  $('dlg').addEventListener('close', function(){ var c = cases.filter(function(x){ return x.id === sel; })[0]; if (c && c.status !== 'closed' && !$('d-reply').hidden) $('d-close').focus(); else $('d-title').focus(); });
+  $('dlg-cancel').onclick = function(){ $('dlg').close(); };
   $('dlg-ok').onclick = function(){
     var r = document.querySelector('[name=res]:checked');
     if (!r) { $('e-dlg').textContent = '請選擇處理結果。'; document.querySelector('[name=res]').focus(); return; }
     var note = $('dlg-note').value.trim(), btn = this; btn.disabled = true;
-    API.close(sel, r.value + (note ? '（' + note + '）' : '')).then(function(){ $('dlg').close(); $('d-title').focus(); }).catch(function(){ $('e-dlg').textContent = '連線中斷，尚未結案；請再按一次。'; }).then(function(){ btn.disabled = false; });
+    API.close(dlgFor.id, r.value + (note ? '（' + note + '）' : ''), DEV, dlgFor.ver)
+      .then(function(){ $('dlg').close(); say('已結案。'); })
+      .catch(function(e){ $('e-dlg').textContent = e && e.code === 'not_assignee' ? '你已不是此案件的接手人員，無法結案。' : e && e.code === 'closed' ? '此案件已結案。' : '連線中斷，尚未結案；請再按一次。'; })
+      .then(function(){ btn.disabled = false; });
   };
 
   // 試用資料清除（按兩次確認）
