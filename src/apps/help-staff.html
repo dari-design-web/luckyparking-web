@@ -132,6 +132,7 @@ table.sites tr[aria-selected=true] td{box-shadow:inset 0 -2px 0 var(--blue)}
 .ro{background:var(--info);color:var(--navy);border-radius:14px;padding:12px 14px;margin:12px 0;font-weight:500}
 .case .site{display:block;font-size:14px;color:var(--navy);font-weight:700;margin-top:6px}
 :focus-visible{outline:3px solid var(--navy)!important;outline-offset:3px}
+[tabindex="-1"]:focus{outline:none!important}
 .top :focus-visible{outline-color:#fff!important}
 .msg small{font-size:14px!important}
 [hidden]{display:none!important}
@@ -161,14 +162,14 @@ table.sites tr[aria-selected=true] td{box-shadow:inset 0 -2px 0 var(--blue)}
 <div class="page" id="v-login">
   <div class="box" style="max-width:520px;margin:12px auto">
     <h1 id="login-title" tabindex="-1">管理室登入</h1>
-    <p class="muted" style="margin:0">輸入帳號與密碼，登入後自動進入該帳號的場站。</p>
+    <p class="muted" style="margin:0" id="login-p">輸入帳號與密碼，登入後自動進入該帳號的場站。</p>
     <form id="login-form" onsubmit="return false">
     <div id="login-demo" hidden>
       <label class="f" for="city">縣市</label>
       <select id="city"><option value="">選縣市</option></select>
       <label class="f" for="site">場站</label>
       <select id="site" disabled><option value="">選場站</option></select>
-      <p class="muted small" style="margin:8px 0 0">試用版不需密碼；縣市選「管理員（各場總覽）」可試用管理員畫面。</p>
+      <p class="muted small" style="margin:8px 0 0">縣市選「管理員（各場總覽）」可試用管理員畫面。</p>
     </div>
     <div id="login-fb" hidden>
       <label class="f" for="email">帳號</label>
@@ -622,6 +623,7 @@ table.sites tr[aria-selected=true] td{box-shadow:inset 0 -2px 0 var(--blue)}
     if (DEMO) { $('demo-bar').hidden = false; $('reset').hidden = false; }
     $('login-wait').hidden = true; $('login').disabled = false;
     $('login-demo').hidden = !DEMO; $('login-fb').hidden = DEMO;
+    if (DEMO) $('login-p').textContent = '試用版：選擇場站即可登入，不需密碼。';
     if (DEMO) {
       if (me && (me.role === 'admin' || SITES.some(function(s){ return s.id === me.site; }))) start(); else $('login-title').focus();
       return;

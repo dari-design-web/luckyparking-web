@@ -107,6 +107,7 @@ textarea:focus-visible,select:focus-visible,input:focus-visible{outline:2px soli
 .cardd summary:focus-visible{outline:2px solid var(--blue);outline-offset:3px}
 body.kb .emerg{display:none}
 :focus-visible{outline:3px solid var(--navy)!important;outline-offset:3px}
+[tabindex="-1"]:focus{outline:none!important}
 header a{display:inline-flex;align-items:center;min-height:44px}
 .done{text-align:center;padding:12px 0}
 .done .okc.endc{background:var(--info)}
@@ -328,7 +329,7 @@ header a{display:inline-flex;align-items:center;min-height:44px}
     Array.prototype.forEach.call($('steps').children, function(li, i){ li.className = i < idx ? 'done' : i === idx ? 'now' : ''; if (i === idx) li.setAttribute('aria-current', 'step'); else li.removeAttribute('aria-current'); });
     var t = '', p = '案件 ' + c.code, cls = 'status';
     if (c.status === 'new' && c.escalated) { t = DEMO ? '備援通知模擬，未實際通知人員。' : '已送出備援通知，尚待人員確認。'; cls += ' warn'; }
-    else if (c.status === 'new' && c.escalateFailed) { t = '暫時無法通知備援'; p += '　請使用現場求助，或依指標前往管理室。'; cls += ' warn'; }
+    else if (c.status === 'new' && c.escalateFailed) { t = '暫時無法送出備援通知'; p += '　請改用現場實體求助，或向現場人員出示筆談卡。'; cls += ' warn'; }
     else if (c.status === 'new') { t = c.cycle > 1 ? '已再次通知管理室，尚待人員接手' : '已收到，尚待人員接手'; }
     else if (c.status === 'accepted') { t = '管理員已接手'; cls += ' ok'; }
     else if (c.status === 'working') { t = '管理員已接手・正在處理'; cls += ' ok'; }
