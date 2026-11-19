@@ -151,7 +151,7 @@ footer .wrap{color:var(--ink2);padding-top:30px;padding-bottom:40px;font-size:15
 <aside class="side" aria-label="使用提醒"><div class="wrap">
   <div class="box">
     <p class="t"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 11v6M12 7.5v.5"/></svg>現在就需要協助？</p>
-    <p>如需現場服務，請用對講機聯繫或洽管理室。</p>
+    <p>如需現場服務，請洽各場站管理室。</p>
   </div>
   <div class="box site-now" id="site-show" hidden>
     <p class="t"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 22s7-6.2 7-12a7 7 0 10-14 0c0 5.8 7 12 7 12z"/><circle cx="12" cy="10" r="2.5"/></svg>目前場站</p>
@@ -437,7 +437,8 @@ footer .wrap{color:var(--ink2);padding-top:30px;padding-bottom:40px;font-size:15
     photo: '照片無法處理，請移除照片後再送出，或改用 JPG／PNG。',
     size: '照片太大，請移除一張照片後再送出。',
     site: '無法辨識停車場，請重新選擇。',
-    contact: '請確認姓氏、稱謂與聯絡方式。', tel: '手機號碼格式不正確。', mail: '電子郵件格式不正確。'
+    contact: '請確認姓氏、稱謂與聯絡方式。', tel: '手機號碼格式不正確。', mail: '電子郵件格式不正確。',
+    server: '系統暫時無法收件（後端設定未完成），請稍後再試，或洽各場站管理室。'
   };
   function sendErr(m){ $('e-send').textContent = m; $('e-send').scrollIntoView({ block: 'center' }); }
 

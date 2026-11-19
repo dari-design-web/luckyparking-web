@@ -225,7 +225,16 @@ function nextCaseNo() {
 }
 
 function sheet() {
-  const ss = SpreadsheetApp.openById(PropertiesService.getScriptProperties().getProperty('sheetId'));
+  const props = PropertiesService.getScriptProperties();
+  if (!props.getProperty('sheetId')) {          // 還沒執行過 setup：自動建立紀錄試算表
+    const ss0 = SpreadsheetApp.create('顧客意見箱紀錄');
+    const sh0 = ss0.getSheets()[0];
+    sh0.setName(SHEET_NAME);
+    sh0.getRange(1, 1, 1, HEAD.length).setValues([HEAD]).setFontWeight('bold');
+    sh0.setFrozenRows(1);
+    props.setProperty('sheetId', ss0.getId());
+  }
+  const ss = SpreadsheetApp.openById(props.getProperty('sheetId'));
   return ss.getSheetByName(SHEET_NAME) || ss.getSheets()[0];
 }
 
