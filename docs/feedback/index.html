@@ -53,7 +53,7 @@ legend.row{width:100%;padding:0}
 .grid2 .full{grid-column:1/-1}
 .opt{position:relative;display:block}
 .opt input{position:absolute;opacity:0;inset:0;margin:0;cursor:pointer}
-.opt span{display:flex;align-items:center;justify-content:center;gap:8px;min-height:52px;padding:8px 12px;border:1.5px solid var(--line);border-radius:14px;background:#fff;text-align:center;font-weight:500;line-height:1.35}
+.opt span{white-space:nowrap;display:flex;align-items:center;justify-content:center;gap:8px;min-height:52px;padding:8px 12px;border:1.5px solid var(--line);border-radius:14px;background:#fff;text-align:center;font-weight:500;line-height:1.35}
 .opt input:checked + span{background:var(--blue);border-color:var(--blue);color:#fff;font-weight:700}
 .opt input:checked + span::before{content:"";width:16px;height:10px;border-left:2.5px solid #fff;border-bottom:2.5px solid #fff;transform:rotate(-45deg) translate(2px,-3px)}
 .opt input:focus-visible + span{outline:2px solid var(--blue);outline-offset:3px}
@@ -113,17 +113,17 @@ footer .wrap{color:var(--ink2);padding-top:30px;padding-bottom:40px;font-size:15
   header{background:#fff;border-bottom:1px solid var(--rule)}
   header .wrap,footer .wrap{max-width:1180px;padding:0 40px;border-bottom:0}
   header .wrap{height:72px}
-  .layout{max-width:1180px;margin:0 auto;padding:56px 40px 16px;display:grid;grid-template-columns:minmax(0,400px) minmax(0,1fr);gap:64px;align-items:start}
+  .layout{max-width:1180px;margin:0 auto;padding:56px 40px 16px;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.7fr);gap:clamp(32px,5vw,64px);align-items:start}
   .left{position:sticky;top:32px}
   .hero{background:none}
   .hero .wrap,.side .wrap,main .wrap{max-width:none;padding:0}
-  h1{font-size:46px;margin-bottom:16px}
+  h1{font-size:clamp(36px,3.6vw,46px);margin-bottom:16px}
   .lead{font-size:17px}
   .side .wrap{padding-top:32px}
   .side .box{background:#fff;border:1px solid var(--rule)}
   .side .site-now{background:var(--info);border-color:transparent}
-  main.right .wrap{background:#fff;border:1px solid var(--rule);border-radius:28px;padding:40px 48px 44px}
-  #types.grid2{grid-template-columns:repeat(4,minmax(0,1fr))}
+  main.right .wrap{background:#fff;border:1px solid var(--rule);border-radius:28px;padding:clamp(28px,3.4vw,40px) clamp(28px,4vw,48px) 44px}
+  #types.grid2{grid-template-columns:repeat(auto-fill,minmax(150px,1fr))}
   #types .full{grid-column:auto}
   .sec.first{margin-top:8px}
   .photos .ph{width:112px;height:112px}
