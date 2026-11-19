@@ -50,6 +50,13 @@ main .wrap{padding-top:16px;padding-bottom:12px}
 .req{font-size:15px;color:var(--ink2);white-space:nowrap}
 legend.row{width:100%;padding:0}
 .grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.whenshow{display:flex;flex-wrap:wrap;align-items:center;gap:4px 16px;min-height:52px;padding:0 16px;border:1.5px solid var(--rule);border-radius:14px;background:var(--soft)}
+.whenshow b{font-size:17px;font-variant-numeric:tabular-nums}
+.whenpick{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);align-items:center;gap:10px 8px}
+.whenpick #w-date{grid-column:1/-1}
+.whenpick #w-h,.whenpick #w-m{font-variant-numeric:tabular-nums}
+@media (min-width:600px){.whenpick{grid-template-columns:minmax(0,1.6fr) minmax(0,1fr) auto minmax(0,1fr)}.whenpick #w-date{grid-column:auto}}
+.whenpick option:disabled{color:#A9B3BF}
 .grid2 .full{grid-column:1/-1}
 .opt{position:relative;display:block}
 .opt input{position:absolute;opacity:0;inset:0;margin:0;cursor:pointer}
@@ -205,9 +212,16 @@ footer .wrap{color:var(--ink2);padding-top:30px;padding-bottom:40px;font-size:15
     <p class="err" id="e-msg"></p>
   </div>
 
-  <div class="field">
-    <div class="row"><label class="lbl" for="when">發生時間</label><span class="req">選填</span></div>
-    <input type="datetime-local" id="when">
+  <div class="field" role="group" aria-labelledby="when-lbl">
+    <div class="row"><span class="lbl" id="when-lbl">發生時間</span><span class="req">預設為現在</span></div>
+    <div class="whenshow" id="when-show"><b id="when-text"></b><button type="button" class="linkbtn" id="when-edit">更改時間</button></div>
+    <div class="whenpick" id="when-pick" hidden>
+      <select id="w-date" aria-label="發生日期"></select>
+      <select id="w-h" aria-label="發生時間：時"></select><span aria-hidden="true">：</span>
+      <select id="w-m" aria-label="發生時間：分"></select>
+    </div>
+    <p class="hint" id="when-hint">以 15 分鐘為單位；還沒到的時間無法選擇。</p>
+    <p class="err" id="e-when"></p>
   </div>
 
   <hr class="rule">
@@ -345,7 +359,7 @@ footer .wrap{color:var(--ink2);padding-top:30px;padding-bottom:40px;font-size:15
     else $('summary-t').textContent = '尚未送出，請確認 ' + left + ' 個欄位';
   }
   var summaryItems = {};
-  function clearAll(){ ['e-site','e-type','e-msg','e-contact','e-send'].forEach(clearErr); $('summary').hidden = true; }
+  function clearAll(){ ['e-site','e-type','e-msg','e-when','e-contact','e-send'].forEach(clearErr); $('summary').hidden = true; }
   function onEdit(e){ Object.keys(errField).forEach(function(id){ var el = errField[id]; if (el === e.target || (e.target.name && el.name === e.target.name) || (id === 'e-contact' && $('contact').contains(e.target))) clearErr(id); }); }
   f.addEventListener('input', onEdit); f.addEventListener('change', onEdit);
   function showErrors(list){
@@ -442,6 +456,7 @@ footer .wrap{color:var(--ink2);padding-top:30px;padding-bottom:40px;font-size:15
     photo: '照片無法處理，請移除照片後再送出，或改用 JPG／PNG。',
     size: '照片太大，請移除一張照片後再送出。',
     site: '無法辨識停車場，請重新選擇。',
+    when: '發生時間不能晚於現在，請按「更改時間」重新選擇。',
     contact: '請確認姓氏、稱謂與聯絡方式。', tel: '手機號碼格式不正確。', mail: '電子郵件格式不正確。',
     server: '系統暫時無法收件（後端設定未完成），請稍後再試，或洽各場站管理室。'
   };
@@ -456,8 +471,8 @@ footer .wrap{color:var(--ink2);padding-top:30px;padding-bottom:40px;font-size:15
     var tel = $('tel').value.replace(/[\s\-()]/g,''), mail = $('mail').value.trim(), title = $('title').value;
     var list = [], first = function(name){ return f.querySelector('input[name=' + name + ']'); };
     if (!kind) list.push({ id: 'e-site', msg: '請選擇「一般意見」或「場站意見」。', el: first('kind'), group: 'kind' });
-    else if (!citySel.value) list.push({ id: 'e-site', msg: '請先選擇縣市。', el: citySel });
-    else if (!site) list.push({ id: 'e-site', msg: '請選擇場站。', el: sel });
+    else if (kind === 'site' && !citySel.value) list.push({ id: 'e-site', msg: '請先選擇縣市。', el: citySel });
+    else if (kind === 'site' && !site) list.push({ id: 'e-site', msg: '請選擇場站。', el: sel });
     if (!type) list.push({ id: 'e-type', msg: '請選擇一種意見類型。', el: first('type'), group: 'type' });
     if (msg.length < 5) list.push({ id: 'e-msg', msg: '請寫下意見內容（至少 5 個字）。', el: $('msg') });
     if (reply === '需要') {
@@ -467,9 +482,10 @@ footer .wrap{color:var(--ink2);padding-top:30px;padding-bottom:40px;font-size:15
       else if (tel && !/^(\+?886|0)9\d{8}$/.test(tel)) list.push({ id: 'e-contact', msg: '手機號碼格式不正確，請輸入 09 開頭的 10 碼。', el: $('tel') });
       else if (mail && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(mail)) list.push({ id: 'e-contact', msg: '請填寫完整電子郵件地址。', el: $('mail') });
     }
+    if (whenAt > floor15(new Date())) list.push({ id: 'e-when', msg: '發生時間不能晚於現在，請重新選擇。', el: $('when-pick').hidden ? $('when-edit') : $('w-h') });
     if (list.length) return showErrors(list);
     var data = new URLSearchParams({
-      reqid: sid, site: site, type: type, msg: msg, when: $('when').value, reply: reply,
+      reqid: sid, site: site, type: type, msg: msg, when: whenStr(), reply: reply,
       name: reply === '需要' ? $('surname').value.trim() + title : '',
       tel: reply === '需要' ? tel : '', mail: reply === '需要' ? mail : '',
       website: $('website').value
@@ -532,7 +548,47 @@ footer .wrap{color:var(--ink2);padding-top:30px;padding-bottom:40px;font-size:15
     if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(t).then(ok, function(){ $('copy-status').textContent = '無法自動複製，請記下案件編號 ' + t; });
     else $('copy-status').textContent = '請記下案件編號 ' + t;
   };
+  // 發生時間：預設為填單時間往前取整到 15 分鐘（15:48 → 15:45）；按「更改時間」才出現選單，
+  // 日期可選今天起往前 30 天，時、分各一個選單（分只有 00／15／30／45），今天還沒到的時間呈灰色不可選
+  var WK = '日一二三四五六', whenAt;
+  function pad(n){ return ('0' + n).slice(-2); }
+  function floor15(d){ var x = new Date(d); x.setSeconds(0, 0); x.setMinutes(x.getMinutes() - x.getMinutes() % 15); return x; }
+  function ymd(d){ return d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate()); }
+  function whenStr(){ return ymd(whenAt) + 'T' + pad(whenAt.getHours()) + ':' + pad(whenAt.getMinutes()); }
+  function dayName(d){
+    var t = new Date(), diff = Math.round((new Date(t.getFullYear(), t.getMonth(), t.getDate()) - new Date(d.getFullYear(), d.getMonth(), d.getDate())) / 864e5);
+    return (diff === 0 ? '今天 ' : diff === 1 ? '昨天 ' : '') + (d.getMonth() + 1) + '/' + d.getDate() + '（' + WK[d.getDay()] + '）';
+  }
+  function showWhen(){ $('when-text').textContent = dayName(whenAt) + ' ' + pad(whenAt.getHours()) + ':' + pad(whenAt.getMinutes()); }
+  function fillWhen(){
+    var t = new Date(), ds = $('w-date'), hs = $('w-h'), ms = $('w-m'), i, o;
+    ds.length = 0; hs.length = 0; ms.length = 0;
+    for (i = 0; i < 31; i++) { var d = new Date(t.getFullYear(), t.getMonth(), t.getDate() - i); o = document.createElement('option'); o.value = ymd(d); o.textContent = dayName(d); ds.appendChild(o); }
+    for (i = 0; i < 24; i++) { o = document.createElement('option'); o.value = i; o.textContent = pad(i) + ' 時'; hs.appendChild(o); }
+    [0, 15, 30, 45].forEach(function(m){ o = document.createElement('option'); o.value = m; o.textContent = pad(m) + ' 分'; ms.appendChild(o); });
+  }
+  function syncWhen(){
+    var max = floor15(new Date()), today = $('w-date').value === ymd(max), hs = $('w-h'), ms = $('w-m');
+    Array.prototype.forEach.call(hs.options, function(o){ o.disabled = today && +o.value > max.getHours(); });
+    if (hs.options[hs.selectedIndex].disabled) hs.value = max.getHours();
+    var sameHour = today && +hs.value === max.getHours();
+    Array.prototype.forEach.call(ms.options, function(o){ o.disabled = sameHour && +o.value > max.getMinutes(); });
+    if (ms.options[ms.selectedIndex].disabled) ms.value = max.getMinutes();
+    var p = $('w-date').value.split('-');
+    whenAt = new Date(+p[0], +p[1] - 1, +p[2], +hs.value, +ms.value);
+    showWhen();
+  }
+  function resetWhen(){
+    whenAt = floor15(new Date()); fillWhen();
+    $('w-date').value = ymd(whenAt); $('w-h').value = whenAt.getHours(); $('w-m').value = whenAt.getMinutes();
+    syncWhen(); $('when-pick').hidden = true; $('when-show').hidden = false;
+  }
+  ['w-date', 'w-h', 'w-m'].forEach(function(id){ $(id).addEventListener('change', function(){ syncWhen(); clearErr('e-when'); }); });
+  $('when-edit').onclick = function(){ fillWhen(); $('w-date').value = ymd(whenAt); $('w-h').value = whenAt.getHours(); $('w-m').value = whenAt.getMinutes(); syncWhen(); $('when-show').hidden = true; $('when-pick').hidden = false; $('w-date').focus(); };
+  resetWhen();
+
   $('again').onclick = function(){
+    resetWhen();
     f.reset(); fillSites(''); $('count').textContent = '0／2000'; $('contact').hidden = true; photos = []; pending = 0; drawPhotos();
     clearAll(); clearErr('e-photo'); setKind(); applyQR(); sid = newSid(); lastBody = '';
     $('done').hidden = true; document.body.classList.remove('is-done'); f.hidden = false; window.scrollTo(0, 0); $('fb-title').focus();

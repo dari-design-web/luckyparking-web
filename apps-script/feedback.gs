@@ -240,6 +240,8 @@ function handle(e) {
   if (mail && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(mail)) return { ok: false, error: 'mail' };
   const whenRaw = get('when', 16);
   if (whenRaw && !/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}$/.test(whenRaw)) return { ok: false, error: 'when' };
+  // 發生時間不可晚於現在（以臺灣時間計，容許 20 分鐘手機時鐘誤差）
+  if (whenRaw && new Date(whenRaw + ':00+08:00').getTime() > Date.now() + 20 * 60 * 1000) return { ok: false, error: 'when' };
   const when = whenRaw.replace('T', ' ');
 
   // 先做便宜的檢查：重送直接回原案號；超過每小時上限就不再處理照片
