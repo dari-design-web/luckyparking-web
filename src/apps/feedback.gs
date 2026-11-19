@@ -42,7 +42,8 @@ function handle(e) {
   const get = (k, n) => String(p[k] || '').trim().slice(0, n || 200);
   if (get('website')) return { ok: false, error: 'bot' };          // 機器人填了隱藏欄位
 
-  let sid = get('sid', 40);
+  // 送出代碼的欄位不能叫 sid：Google 會把 sid 當成登入工作階段參數，直接回 400
+  let sid = get('reqid', 40);
   if (!sid) sid = 'srv-' + Utilities.getUuid().replace(/-/g, '');   // 舊版頁面沒有送出代碼：照常收件
   if (!/^[A-Za-z0-9_-]{10,40}$/.test(sid)) return { ok: false, error: 'sid' };
   const siteId = get('site', 40);

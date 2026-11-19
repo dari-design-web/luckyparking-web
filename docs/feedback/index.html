@@ -28,7 +28,11 @@ header .tag{margin-left:auto;font-size:15px;color:var(--ink2)}
 h1{font-size:33px;line-height:1.25;font-weight:700;margin:0 0 12px;letter-spacing:.01em}
 h1:focus{outline:none}
 .lead{margin:0;color:var(--ink2)}
-main .wrap{padding-top:24px;padding-bottom:12px}
+.side .wrap{padding-top:24px}
+.side .box:last-child{margin-bottom:0}
+main .wrap{padding-top:16px;padding-bottom:12px}
+.is-done .left{display:none}
+.is-done main .wrap{padding-top:8px}
 .box{border-radius:20px;padding:18px 20px;margin:0 0 16px;background:var(--info)}
 .box .t{display:flex;align-items:center;gap:8px;font-weight:700;color:var(--navy);margin:0 0 6px}
 .box p{margin:0;color:var(--ink2)}
@@ -104,35 +108,64 @@ select:focus-visible,textarea:focus-visible,input:focus-visible{outline:2px soli
 footer .wrap{color:var(--ink2);padding-top:30px;padding-bottom:40px;font-size:15px;line-height:1.7}
 .hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
 [hidden]{display:none!important}
+@media (min-width:960px){
+  body{background:var(--soft)}
+  header{background:#fff;border-bottom:1px solid var(--rule)}
+  header .wrap,footer .wrap{max-width:1180px;padding:0 40px;border-bottom:0}
+  header .wrap{height:72px}
+  .layout{max-width:1180px;margin:0 auto;padding:56px 40px 16px;display:grid;grid-template-columns:minmax(0,400px) minmax(0,1fr);gap:64px;align-items:start}
+  .left{position:sticky;top:32px}
+  .hero{background:none}
+  .hero .wrap,.side .wrap,main .wrap{max-width:none;padding:0}
+  h1{font-size:46px;margin-bottom:16px}
+  .lead{font-size:17px}
+  .side .wrap{padding-top:32px}
+  .side .box{background:#fff;border:1px solid var(--rule)}
+  .side .site-now{background:var(--info);border-color:transparent}
+  main.right .wrap{background:#fff;border:1px solid var(--rule);border-radius:28px;padding:40px 48px 44px}
+  #types.grid2{grid-template-columns:repeat(4,minmax(0,1fr))}
+  #types .full{grid-column:auto}
+  .sec.first{margin-top:8px}
+  .photos .ph{width:112px;height:112px}
+  .submit{max-width:360px;margin-left:auto}
+  .is-done .layout{grid-template-columns:minmax(0,1fr);max-width:720px}
+  .is-done main.right .wrap{padding:48px 56px}
+  .done p{max-width:none}
+  footer .wrap{padding-top:28px}
+}
 </style>
 </head>
 <body>
 <header><div class="wrap"><a class="home" href="../" aria-label="回大日開發官網首頁"><img src="../assets/img/logo-dari.png" alt="大日開發 DARI GROUP"></a><span class="tag">線上服務</span></div></header>
 
-<div id="page">
+<div id="page" class="layout">
+<div class="left">
 <section class="hero"><div class="wrap">
   <p class="eyebrow">每一份回饋，都讓服務更好</p>
   <h1 id="fb-title" tabindex="-1">顧客意見箱</h1>
   <p class="lead">告訴我們您的停車體驗。<br>您的意見，會由公司逐件查看。</p>
 </div></section>
+<aside class="side" aria-label="使用提醒"><div class="wrap">
+  <div class="box">
+    <p class="t"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 11v6M12 7.5v.5"/></svg>現在就需要協助？</p>
+    <p>柵欄沒開、繳費卡住，請用對講機或洽管理室；不便說話可出示本頁示意。意見箱不是即時客服。</p>
+  </div>
+  <div class="box site-now" id="site-show" hidden>
+    <p class="t"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 22s7-6.2 7-12a7 7 0 10-14 0c0 5.8 7 12 7 12z"/><circle cx="12" cy="10" r="2.5"/></svg>目前場站</p>
+    <b class="name" id="site-name"></b>
+    <button type="button" class="linkbtn" id="site-change">不是這一場？</button>
+  </div>
+</div></aside>
+</div>
 
-<main><div class="wrap">
+<main class="right"><div class="wrap">
 <form id="fb" novalidate data-endpoint="https://script.google.com/macros/s/AKfycbwJkjrkHEZ1fXCS1XjmEpKZ_IYsEtoW9h8JpcOoEYwQXTMSjDYYnLwiYwqKO8hhP2nl/exec">
   <div class="summary" id="summary" role="alert" tabindex="-1" hidden>
     <p class="t"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 7v6M12 16.5v.5"/></svg><span id="summary-t">尚未送出，請確認以下欄位</span></p>
     <ul id="summary-list"></ul>
   </div>
 
-  <div class="box">
-    <p class="t"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 11v6M12 7.5v.5"/></svg>現在就需要協助？</p>
-    <p>柵欄沒開、繳費卡住，請用對講機或洽管理室；不便說話可出示本頁示意。意見箱不是即時客服。</p>
-  </div>
 
-  <div class="box site-now" id="site-show" hidden>
-    <p class="t"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 22s7-6.2 7-12a7 7 0 10-14 0c0 5.8 7 12 7 12z"/><circle cx="12" cy="10" r="2.5"/></svg>目前場站</p>
-    <b class="name" id="site-name"></b>
-    <button type="button" class="linkbtn" id="site-change">不是這一場？</button>
-  </div>
 
   <fieldset class="field" id="kind-set" aria-describedby="kind-hint e-site">
     <legend class="row"><span class="lbl">意見對象</span><span class="req">必填</span></legend>
@@ -422,7 +455,7 @@ footer .wrap{color:var(--ink2);padding-top:30px;padding-bottom:40px;font-size:15
     }
     if (list.length) return showErrors(list);
     var data = new URLSearchParams({
-      sid: sid, site: site, type: type, msg: msg, when: $('when').value, reply: reply,
+      reqid: sid, site: site, type: type, msg: msg, when: $('when').value, reply: reply,
       name: reply === '需要' ? $('surname').value.trim() + title : '',
       tel: reply === '需要' ? tel : '', mail: reply === '需要' ? mail : '',
       website: $('website').value
@@ -430,7 +463,7 @@ footer .wrap{color:var(--ink2);padding-top:30px;padding-bottom:40px;font-size:15
     photos.forEach(function(d, i){ data.append('p' + (i + 1), d); });
     var body = data.toString();
     if (body.length > 9000000) return sendErr(MSG.size);
-    if (lastBody && body !== lastBody) { sid = newSid(); data.set('sid', sid); body = data.toString(); }
+    if (lastBody && body !== lastBody) { sid = newSid(); data.set('reqid', sid); body = data.toString(); }
     lastBody = body;
     var btn = $('send'); sending = true; btn.disabled = true; drawPhotos();
     btn.textContent = photos.length ? '照片上傳中…' : '正在送出…';
@@ -452,7 +485,7 @@ footer .wrap{color:var(--ink2);padding-top:30px;padding-bottom:40px;font-size:15
   });
 
   function showDone(caseNo, demo){
-    f.hidden = true; document.querySelector('.hero').hidden = true; $('done').hidden = false;
+    f.hidden = true; document.body.classList.add('is-done'); $('done').hidden = false;
     $('case-no').textContent = caseNo;
     $('demo-note').hidden = !demo;
     $('done-note').textContent = val('reply') === '需要' ? '我們會逐件查看，並依您留下的方式回覆。這不是即時求助管道。'
@@ -467,7 +500,7 @@ footer .wrap{color:var(--ink2);padding-top:30px;padding-bottom:40px;font-size:15
   $('again').onclick = function(){
     f.reset(); $('count').textContent = '0／2000'; $('contact').hidden = true; photos = []; pending = 0; drawPhotos();
     clearAll(); clearErr('e-photo'); setKind(); applyQR(); sid = newSid(); lastBody = '';
-    $('done').hidden = true; document.querySelector('.hero').hidden = false; f.hidden = false; window.scrollTo(0, 0); $('fb-title').focus();
+    $('done').hidden = true; document.body.classList.remove('is-done'); f.hidden = false; window.scrollTo(0, 0); $('fb-title').focus();
   };
 })();
 </script>
