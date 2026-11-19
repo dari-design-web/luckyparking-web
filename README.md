@@ -35,7 +35,8 @@ Settings → Pages → Build and deployment → Source 選「Deploy from a branc
 
 ## 線上顧客意見箱（`docs/feedback/`）
 - 網址：`https://dari-design-web.github.io/luckyparking-web/feedback/?s=場站代碼`；只透過各場 QR Code 進入，不放選單、不列入 sitemap、`noindex`。
-- 場站代碼＝`parking.json` 的 `code`（沒有就用 `img`），一場一個，不可重複。
+- 場站代碼＝`parking.json` 的 `code`，一場一個，不可重複；**已印在 QR 立牌上，發布後不可更改**，新場站只能新增代碼。
 - 頁面原始檔：`src/apps/feedback.html`；Apps Script 原始檔：`src/apps/feedback.gs`。執行 `node build.mjs` 會產生 `docs/feedback/index.html` 與 `apps-script/feedback.gs`（已帶入 42 場代碼與收件信箱）。
 - `site.json` 的 `feedbackTo`＝收件信箱；`feedbackEndpoint`＝Apps Script 網頁應用程式網址。尚未填網址時，頁面為「試用版」，送出不會寄信。
-- 新增或改名停車場後，要重新執行 `node build.mjs`，並把新的 `apps-script/feedback.gs` 貼回 Apps Script、重新部署（管理部署作業 → 編輯 → 新版本）。
+- 新增或改名停車場後，要重新執行 `node build.mjs`，並**先**把新的 `apps-script/feedback.gs` 貼回 Apps Script、執行 setup、重新部署（管理部署作業 → 編輯 → 新版本），再推上網頁。
+- 後端行為：同一則意見帶同一個送出代碼（sid），重送不會重複建立案件；寄信失敗會在試算表「通知狀態」標「待補寄」，每小時自動補寄；外部輸入以文字寫入試算表，不會被當成公式。

@@ -604,17 +604,22 @@ fs.writeFileSync(path.join(OUT, 'robots.txt'), `User-agent: *\nAllow: /\nSitemap
 // 線上服務小工具（只透過現場 QR Code 進入，不放選單、不列入 sitemap）
 {
   const CITY_ORDER = ['臺北市', '新北市', '桃園市', '基隆市'];
-  const LOTS = PARKING.map(p => ({ id: p.code || p.img, name: p.name, city: p.city }))
+  const LOTS = PARKING.map(p => ({ id: p.code, name: p.name, city: p.city }))
     .sort((a, b) => (CITY_ORDER.indexOf(a.city) + 99) % 99 - (CITY_ORDER.indexOf(b.city) + 99) % 99);
-  if (new Set(LOTS.map(l => l.id)).size !== LOTS.length || LOTS.some(l => !l.id)) throw new Error('停車場代碼重複或缺漏');
+  // 場站代碼已印在 QR 立牌上：一經發布不可更改，只能新增
+  if (LOTS.some(l => !/^[a-z0-9-]+$/.test(l.id || '')) || new Set(LOTS.map(l => l.id)).size !== LOTS.length) throw new Error('parking.json 的 code 缺漏、格式不符或重複');
+  const ep = SITE.feedbackEndpoint || '';
+  if (ep && !/^https:\/\/script\.google\.com\/macros\/s\/[\w-]+\/exec$/.test(ep)) throw new Error('feedbackEndpoint 格式不符');
   const fbDir = path.join(OUT, 'feedback');
   fs.mkdirSync(fbDir, { recursive: true });
+  const lotsJson = JSON.stringify(LOTS).replace(/</g, '\\u003c');
   fs.writeFileSync(path.join(fbDir, 'index.html'), fs.readFileSync(path.join(ROOT, 'src/apps/feedback.html'), 'utf8')
-    .replace('__SITES__', JSON.stringify(LOTS))
-    .replace('__ENDPOINT__', esc(SITE.feedbackEndpoint || '')));
-  const gsMap = '{\n  \'general\': { name: \'一般意見\', city: \'—\' },\n' + LOTS.map(l => `  '${l.id}': { name: '${l.name}', city: '${l.city}' }`).join(',\n') + '\n}';
+    .replace('__SITES__', () => lotsJson)
+    .replace('__ENDPOINT__', () => esc(ep)));
+  const gsSites = Object.fromEntries([['general', { name: '一般意見', city: '—' }], ...LOTS.map(l => [l.id, { name: l.name, city: l.city }])]);
   fs.mkdirSync(path.join(ROOT, 'apps-script'), { recursive: true });
   fs.writeFileSync(path.join(ROOT, 'apps-script/feedback.gs'), fs.readFileSync(path.join(ROOT, 'src/apps/feedback.gs'), 'utf8')
-    .replace('__SITES__', gsMap).replace('__TO__', SITE.feedbackTo || SITE.email));
+    .replace('__SITES__', () => JSON.stringify(gsSites, null, 1))
+    .replace('__TO__', () => JSON.stringify(SITE.feedbackTo || SITE.email)));
 }
 console.log('built', Object.keys(pages).length, 'pages →', OUT);
