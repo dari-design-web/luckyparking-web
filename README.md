@@ -32,3 +32,10 @@ Settings → Pages → Build and deployment → Source 選「Deploy from a branc
 - 數字與年份只放有出處的；不確定的標「資料補充中」。
 - 照片不放可辨識人臉（除非已取得同意）與他人商標。
 - 不使用中國品牌的服務與素材。
+
+## 線上顧客意見箱（`docs/feedback/`）
+- 網址：`https://dari-design-web.github.io/luckyparking-web/feedback/?s=場站代碼`；只透過各場 QR Code 進入，不放選單、不列入 sitemap、`noindex`。
+- 場站代碼＝`parking.json` 的 `code`（沒有就用 `img`），一場一個，不可重複。
+- 頁面原始檔：`src/apps/feedback.html`；Apps Script 原始檔：`src/apps/feedback.gs`。執行 `node build.mjs` 會產生 `docs/feedback/index.html` 與 `apps-script/feedback.gs`（已帶入 42 場代碼與收件信箱）。
+- `site.json` 的 `feedbackTo`＝收件信箱；`feedbackEndpoint`＝Apps Script 網頁應用程式網址。尚未填網址時，頁面為「試用版」，送出不會寄信。
+- 新增或改名停車場後，要重新執行 `node build.mjs`，並把新的 `apps-script/feedback.gs` 貼回 Apps Script、重新部署（管理部署作業 → 編輯 → 新版本）。

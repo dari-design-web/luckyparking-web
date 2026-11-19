@@ -600,4 +600,21 @@ ${Object.keys(pages).filter(f => f !== '404.html').map(f => `  <url><loc>${SITE.
 </urlset>
 `);
 fs.writeFileSync(path.join(OUT, 'robots.txt'), `User-agent: *\nAllow: /\nSitemap: ${SITE.baseUrl}sitemap.xml\n`);
+
+// 線上服務小工具（只透過現場 QR Code 進入，不放選單、不列入 sitemap）
+{
+  const CITY_ORDER = ['臺北市', '新北市', '桃園市', '基隆市'];
+  const LOTS = PARKING.map(p => ({ id: p.code || p.img, name: p.name, city: p.city }))
+    .sort((a, b) => (CITY_ORDER.indexOf(a.city) + 99) % 99 - (CITY_ORDER.indexOf(b.city) + 99) % 99);
+  if (new Set(LOTS.map(l => l.id)).size !== LOTS.length || LOTS.some(l => !l.id)) throw new Error('停車場代碼重複或缺漏');
+  const fbDir = path.join(OUT, 'feedback');
+  fs.mkdirSync(fbDir, { recursive: true });
+  fs.writeFileSync(path.join(fbDir, 'index.html'), fs.readFileSync(path.join(ROOT, 'src/apps/feedback.html'), 'utf8')
+    .replace('__SITES__', JSON.stringify(LOTS))
+    .replace('__ENDPOINT__', esc(SITE.feedbackEndpoint || '')));
+  const gsMap = '{\n' + LOTS.map(l => `  '${l.id}': { name: '${l.name}', city: '${l.city}' }`).join(',\n') + '\n}';
+  fs.mkdirSync(path.join(ROOT, 'apps-script'), { recursive: true });
+  fs.writeFileSync(path.join(ROOT, 'apps-script/feedback.gs'), fs.readFileSync(path.join(ROOT, 'src/apps/feedback.gs'), 'utf8')
+    .replace('__SITES__', gsMap).replace('__TO__', SITE.feedbackTo || SITE.email));
+}
 console.log('built', Object.keys(pages).length, 'pages →', OUT);
