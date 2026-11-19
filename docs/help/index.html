@@ -25,7 +25,7 @@ main{flex:1}
 h1{font-size:30px;line-height:1.3;margin:22px 0 8px;font-weight:700}
 h1:focus,h2:focus{outline:none}
 .lead{margin:0 0 20px;color:var(--ink2)}
-.where{background:var(--info);border-radius:18px;padding:16px 18px;margin:18px 0 0}
+.where{background:var(--info);border-radius:18px;padding:12px 16px 4px;margin:18px 0 0}
 .where b{display:block;font-size:19px;color:var(--navy);line-height:1.4}
 .where span{display:block;color:var(--ink2)}
 .where span:empty{display:none}
@@ -51,8 +51,15 @@ textarea:focus-visible,select:focus-visible,input:focus-visible{outline:2px soli
 .err:empty{display:none}
 .err:not(:empty)::before{content:"！"}
 .sp{height:16px}
-.emerg{position:sticky;bottom:0;background:var(--warn);color:var(--warnink);font-size:15px;line-height:1.5;padding:12px 20px calc(12px + env(safe-area-inset-bottom));display:flex;gap:10px;align-items:flex-start;z-index:5}
-.emerg .wrap{display:flex;gap:10px;padding:0}
+.dock{position:sticky;bottom:0;z-index:6;background:#fff;border-top:1px solid var(--rule);padding:10px 0 calc(8px + env(safe-area-inset-bottom))}
+.dock .err{margin:0 0 8px}
+.emerg{display:flex;gap:8px;align-items:flex-start;margin:10px 0 0;background:var(--warn);color:var(--warnink);font-size:14px;line-height:1.5;border-radius:12px;padding:8px 12px}
+.emerg .ico{width:18px;height:18px;margin-top:2px}
+.picklbl{font-weight:700;margin:16px 0 8px}
+.hint2{color:var(--warnink);font-size:15px;margin:6px 0 0}
+.qtoggle{display:inline-flex;align-items:center;min-height:44px;margin-top:4px;padding:0 2px;background:none;border:0;color:var(--blue);font:inherit;font-size:15px;font-weight:500;cursor:pointer}
+.qtoggle::after{content:"▾";margin-left:4px}
+.qtoggle[aria-expanded=true]::after{content:"▴"}
 /* 對談 */
 .casehead{font-size:17px;font-weight:400;line-height:1.5;margin:0;padding:14px 0 6px}
 .casehead b{color:var(--navy);font-weight:700}
@@ -74,18 +81,18 @@ textarea:focus-visible,select:focus-visible,input:focus-visible{outline:2px soli
 .note{color:var(--ink2);font-size:15px;margin:0 0 6px}
 .log{display:flex;flex-direction:column;gap:10px;padding:8px 0 16px}
 .msg{max-width:84%;padding:10px 14px;border-radius:16px;white-space:pre-wrap;word-break:break-word;line-height:1.55}
-.msg small{display:block;font-size:13px;color:var(--ink2);margin-bottom:2px}
+.msg small{display:block;font-size:14px;color:var(--ink2);margin-bottom:2px}
 .msg.me{align-self:flex-end;background:var(--blue);color:#fff;border-bottom-right-radius:6px}
 .msg.me small{color:#DCE8F7}
 .msg.them{align-self:flex-start;background:var(--info);border-bottom-left-radius:6px}
 .msg.sys{align-self:center;background:none;color:var(--ink2);font-size:14px;padding:2px 8px}
 .msg.fail{background:var(--errbg);color:var(--err)}
 .msg .retry{display:inline-flex;min-height:44px;align-items:center;margin-top:4px;background:none;border:0;color:var(--err);font:inherit;font-weight:700;text-decoration:underline;cursor:pointer;padding:0}
-.newmsg{position:sticky;bottom:calc(var(--emh,0px) + 116px);margin:0 auto;display:block;border:0;border-radius:999px;background:var(--navy);color:#fff;font:inherit;font-size:15px;padding:8px 18px;min-height:44px;cursor:pointer;z-index:7}
+.newmsg{display:block;width:100%;margin:0 0 8px;border:0;border-radius:12px;background:var(--info);color:var(--navy);font:inherit;font-size:15px;font-weight:700;padding:8px 14px;min-height:44px;cursor:pointer}
 .pend:empty{display:none}
 .pend{padding-top:0}
 .msg:focus{outline:2px solid var(--blue);outline-offset:3px}
-.composer{position:sticky;bottom:var(--emh,0px);background:#fff;border-top:1px solid var(--rule);padding:10px 0 calc(10px + env(safe-area-inset-bottom));z-index:6}
+
 .composer .row{display:flex;gap:10px;align-items:flex-end}
 .composer textarea{min-height:48px;max-height:140px;padding:11px 14px}
 .send{flex:none;width:52px;height:48px;border:0;border-radius:14px;background:var(--blue);color:#fff;cursor:pointer;display:grid;place-items:center}
@@ -99,6 +106,8 @@ textarea:focus-visible,select:focus-visible,input:focus-visible{outline:2px soli
 .cardd summary{display:flex;align-items:center;min-height:44px;color:var(--blue);font-weight:500;cursor:pointer;text-decoration:underline;text-underline-offset:3px}
 .cardd summary:focus-visible{outline:2px solid var(--blue);outline-offset:3px}
 body.kb .emerg{display:none}
+:focus-visible{outline:3px solid var(--navy)!important;outline-offset:3px}
+header a{display:inline-flex;align-items:center;min-height:44px}
 .done{text-align:center;padding:12px 0}
 .done .okc.endc{background:var(--info)}
 .done .okc{width:88px;height:88px;border-radius:50%;background:var(--okbg);display:grid;place-items:center;margin:18px auto 14px}
@@ -112,7 +121,8 @@ body.kb .emerg{display:none}
   header{background:#fff;border-bottom:1px solid var(--rule)}
   header .wrap{border-bottom:0}
   main .wrap{background:#fff;border:1px solid var(--rule);border-radius:24px;margin-top:32px;margin-bottom:24px;padding:8px 32px 24px}
-  .composer{border-radius:0 0 24px 24px}
+  .dock{max-width:560px;margin:0 auto 24px;border:1px solid var(--rule);border-radius:0 0 24px 24px}
+  main .wrap{margin-bottom:0!important;border-radius:24px 24px 0 0!important}
 }
 </style>
 </head>
@@ -124,19 +134,20 @@ body.kb .emerg{display:none}
 <!-- 開始 -->
 <section class="wrap" id="v-start">
   <div class="status warn" id="resume" hidden style="margin-top:16px"><p class="t" id="resume-t"></p><button type="button" class="linkbtn" id="resume-b">回到先前的求助</button></div>
-  <div class="where" id="where">
-    <b id="w-site">尚未選擇場站</b><span id="w-dev"></span>
-    <div><button type="button" class="linkbtn" id="fix-where">位置不對？</button></div>
-  </div>
-  <div id="pick" hidden>
-    <div class="sp"></div>
-    <label class="hp" for="city">縣市</label>
-    <div class="grid2"><select id="city" aria-label="縣市"><option value="">選縣市</option></select><select id="site" aria-label="場站" disabled><option value="">選場站</option></select></div>
-    <div class="sp"></div>
-    <input type="text" id="dev" maxlength="30" placeholder="位置（選填，例：B2 繳費機旁）" aria-label="位置">
-  </div>
   <h1 id="start-title" tabindex="-1">不用說，也能問。</h1>
   <p class="lead">聽不到、不方便說話，都可以用文字和管理室對談。</p>
+  <div class="where" id="where">
+    <b id="w-site">尚未選擇場站</b><span id="w-dev"></span>
+    <button type="button" class="linkbtn" id="fix-where">更改位置</button>
+  </div>
+  <div id="pick" hidden>
+    <p class="picklbl" id="pick-t">請選擇所在場站</p>
+    <div class="grid2"><select id="city" aria-label="縣市"><option value="">選縣市</option></select><select id="site" aria-label="場站" disabled><option value="">選場站</option></select></div>
+    <div class="sp"></div>
+    <input type="text" id="dev" maxlength="30" placeholder="位置（選填，例：B2 繳費機旁）" aria-label="位置" aria-describedby="dev-hint">
+    <p class="hint2" id="dev-hint" hidden>已切換場站，請確認所在位置。</p>
+  </div>
+  <div class="sp"></div>
   <fieldset style="border:0;padding:0;margin:0">
     <legend class="hp">需要協助的狀況</legend>
     <div class="grid2" id="cats"></div>
@@ -144,9 +155,6 @@ body.kb .emerg{display:none}
   <div class="sp"></div>
   <label class="hp" for="first">描述您的狀況</label>
   <textarea id="first" rows="3" maxlength="500" placeholder="或直接輸入您的狀況…"></textarea>
-  <p class="err" id="e-start" role="alert"></p>
-  <div class="sp"></div>
-  <button class="primary" id="start" type="button">開始文字求助 <span aria-hidden="true">→</span></button>
   <div class="sp"></div>
 </section>
 
@@ -172,7 +180,6 @@ body.kb .emerg{display:none}
 
   <div class="log" id="log" role="log" aria-label="對談內容"></div>
   <div class="log pend" id="pend"></div>
-  <button type="button" class="newmsg" id="newmsg" hidden>有新訊息 ↓</button>
 
   <div id="done" class="done" hidden>
     <div class="okc" id="done-ok" aria-hidden="true"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#176444" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></div>
@@ -186,18 +193,28 @@ body.kb .emerg{display:none}
     <p class="note" style="margin-top:12px">問題還沒解決？按「仍需要協助」，會通知管理室在同一案件繼續處理。</p>
   </div>
 
-  <div class="composer" id="composer">
-    <div class="row">
-      <label class="hp" for="draft">輸入訊息</label>
-      <textarea id="draft" rows="1" maxlength="500" placeholder="輸入訊息…"></textarea>
-      <button class="send" id="send" type="button" aria-label="送出訊息"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M4 12l16-8-6 16-3-7z"/></svg></button>
-    </div>
-    <div class="quick" id="quick" role="group" aria-label="常用回覆（點選後放入輸入框）"></div>
-  </div>
 </section>
 </main>
 
-<div class="emerg" role="note"><div class="wrap"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 7v6M12 16.5v.5"/></svg><span>發生人身危險，請立即使用現場緊急求助或撥打緊急電話。</span></div></div>
+<div class="dock" id="dock">
+  <div class="wrap">
+    <div id="dock-start">
+      <p class="err" id="e-start" role="alert"></p>
+      <button class="primary" id="start" type="button">送出求助 <span aria-hidden="true">→</span></button>
+    </div>
+    <div class="composer" id="composer" hidden>
+      <button type="button" class="newmsg" id="newmsg" hidden>有新訊息，點此查看 ↓</button>
+      <div class="row">
+        <label class="hp" for="draft">輸入訊息</label>
+        <textarea id="draft" rows="1" maxlength="500" placeholder="輸入訊息…"></textarea>
+        <button class="send" id="send" type="button" aria-label="送出訊息"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M4 12l16-8-6 16-3-7z"/></svg></button>
+      </div>
+      <button type="button" class="qtoggle" id="qtoggle" aria-expanded="false" aria-controls="quick">常用回覆</button>
+      <div class="quick" id="quick" role="group" aria-label="常用回覆（點選後放入輸入框）" hidden></div>
+    </div>
+    <p class="emerg" role="note"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 7v6M12 16.5v.5"/></svg><span>發生人身危險，請立即使用現場緊急求助或撥打緊急電話。</span></p>
+  </div>
+</div>
 
 <script>window.HELP_FB = {"apiKey":"AIzaSyDUoIG3FCxiyzixCDwM1m-5w5MF7-Ak4qs","authDomain":"wedding-seating-37b71.firebaseapp.com","projectId":"wedding-seating-37b71","appId":"1:830651084062:web:fc326c270926d742bf2d0f"}; window.HELP_ROLE = 'customer';</script>
 <script src="api.js?v=a95919c12e"></script>
@@ -239,17 +256,20 @@ body.kb .emerg{display:none}
   Object.keys(groups).forEach(function(c){ var o = document.createElement('option'); o.value = c; o.textContent = c; $('city').appendChild(o); });
   function fillSites(c){ var sel = $('site'); sel.length = 1; sel.disabled = !c; (groups[c] || []).forEach(function(s){ var o = document.createElement('option'); o.value = s.id; o.textContent = s.name; sel.appendChild(o); }); }
   // 換縣市：場站與原位置一起清掉，避免送到上一場
-  $('city').onchange = function(){ fillSites(this.value); siteObj = null; device = ''; $('dev').value = ''; showWhere(); };
-  $('site').onchange = function(){ siteObj = SITES.filter(function(s){ return s.id === $('site').value; })[0] || null; showWhere(); };
-  $('dev').oninput = function(){ device = this.value.trim().slice(0, 30); showWhere(); };
+  // 換縣市或換場站：清掉舊位置與自動帶入的草稿，提醒客人確認位置
+  function siteChanged(){ device = ''; $('dev').value = ''; $('dev-hint').hidden = false; if (autoDraft()) $('first').value = cat ? cat + '。' : ''; showWhere(); }
+  function autoDraft(){ var t = $('first').value; return !t.trim() || CATS.some(function(x){ return t.indexOf(x[0]) === 0 && /，我在.*。$|。$/.test(t); }); }
+  $('city').onchange = function(){ fillSites(this.value); siteObj = null; siteChanged(); };
+  $('site').onchange = function(){ siteObj = SITES.filter(function(s){ return s.id === $('site').value; })[0] || null; siteChanged(); };
+  $('dev').oninput = function(){ device = this.value.trim().slice(0, 30); $('dev-hint').hidden = true; showWhere(); };
   function showWhere(){
     var known = ALL_SITES.some(function(s){ return s.id === q.get('s'); });
     $('w-site').textContent = siteObj ? siteObj.name : !q.get('s') ? '尚未選擇場站' : known ? '這個場站尚未開放文字求助，如需現場服務，請洽各場站管理室。' : '無法辨識這個場站，請重新選擇';
     $('w-dev').textContent = device ? '位置：' + device : '';
   }
   showWhere();
-  if (!siteObj) $('pick').hidden = false;
-  $('fix-where').onclick = function(){ $('pick').hidden = false; if (siteObj) { $('city').value = siteObj.city; fillSites(siteObj.city); $('site').value = siteObj.id; } $('dev').value = device; $('city').focus(); };
+  if (!siteObj) { $('pick').hidden = false; $('where').hidden = !q.get('s'); }
+  $('fix-where').onclick = function(){ $('pick').hidden = false; $('pick-t').textContent = '更改所在場站與位置'; if (siteObj) { $('city').value = siteObj.city; fillSites(siteObj.city); $('site').value = siteObj.id; } $('dev').value = device; $('city').focus(); };
 
   // 狀況按鈕：選了會放進輸入框，仍由使用者按「開始」
   var cat = '';
@@ -279,7 +299,7 @@ body.kb .emerg{display:none}
         var c = e && e.code;
         $('e-start').textContent = c === 'too_fast' ? '剛剛已送出過一件，請等 30 秒後再按一次。' : c === 'denied' ? '系統暫時無法收件，請使用現場求助，或依指標前往管理室。' : '連線中斷，尚未送出；請再按一次，或使用現場求助。';
       })
-      .then(function(){ btn.disabled = false; btn.firstChild.textContent = '開始文字求助 '; });
+      .then(function(){ btn.disabled = false; btn.firstChild.textContent = '送出求助 '; });
   };
   try { op = JSON.parse(read('dari-help-op')); } catch (e) {}
 
@@ -288,6 +308,7 @@ body.kb .emerg{display:none}
   var vibOn = false, lastTheirs = -1, lastStatus = '', lastSt = '';
   function openCase(id){
     caseId = id; current = null; shown = {}; pending = {}; $('log').innerHTML = ''; $('pend').innerHTML = '';
+    $('dock-start').hidden = true; $('composer').hidden = false;
     lastTheirs = -1; lastStatus = ''; lastSt = ''; delete $('done').dataset.focused;
     $('v-start').hidden = true; $('v-chat').hidden = false;
     if (unsub) unsub();
@@ -299,7 +320,7 @@ body.kb .emerg{display:none}
 
   function fmt(t){ var d = new Date(t); return ('0' + d.getHours()).slice(-2) + ':' + ('0' + d.getMinutes()).slice(-2); }
   function render(c){
-    if (!c) { store('dari-help-case', null); if (unsub) unsub(); unsub = null; $('v-chat').hidden = true; $('v-start').hidden = false; return; }
+    if (!c) { store('dari-help-case', null); if (unsub) unsub(); unsub = null; $('v-chat').hidden = true; $('v-start').hidden = false; $('dock-start').hidden = false; $('composer').hidden = true; return; }
     current = c;
     $('c-site').textContent = c.siteName; $('c-dev').textContent = c.device || '';
     var idx = { new: 0, accepted: 1, working: 2, closed: 4 }[c.status];
@@ -346,16 +367,18 @@ body.kb .emerg{display:none}
   }
   // 對談只追加新訊息，不重畫舊訊息（避免螢幕閱讀器整串重念）
   function drawLog(c){
-    var stick = atBottom(), log = $('log'), added = null;
+    var stick = atBottom(), log = $('log'), added = null, fromThem = false;
     c.messages.forEach(function(m){
       if (shown[m.id]) return; shown[m.id] = 1;
+      if (m.from !== 'customer') fromThem = true;
       var d = m.from === 'system' ? bubble('sys', '', m.text) : bubble(m.from === 'customer' ? 'me' : 'them', (m.from === 'customer' ? '我' : '管理室') + '　' + fmt(m.at), m.text);
       d.dataset.id = m.id; log.appendChild(d); added = d;
       if (m.clientMsgId && pending[m.clientMsgId]) { delete pending[m.clientMsgId]; }
     });
     drawPending();
     if (added) {
-      if (stick) { window.scrollTo(0, document.body.scrollHeight); $('newmsg').hidden = true; }
+      // 自己送出的訊息一律捲到最新；對方的新訊息只在使用者正在看最新內容時才自動捲動，否則顯示提示
+      if (stick || !fromThem) { window.scrollTo(0, document.body.scrollHeight); $('newmsg').hidden = true; }
       else $('newmsg').hidden = false;
     }
   }
@@ -388,7 +411,8 @@ body.kb .emerg{display:none}
   $('draft').addEventListener('input', grow);
   $('send').onclick = function(){ var t = $('draft'), v = t.value.trim(); if (!v || !caseId) { t.focus(); return; } send(v); t.value = ''; grow(); t.focus(); };
   $('draft').addEventListener('keydown', function(e){ if (e.key === 'Enter' && !e.shiftKey && !e.isComposing) { e.preventDefault(); $('send').click(); } });
-  QUICK.forEach(function(w){ var b = document.createElement('button'); b.type = 'button'; b.textContent = w; b.onclick = function(){ $('draft').value = w; grow(); $('draft').focus(); }; $('quick').appendChild(b); });
+  QUICK.forEach(function(w){ var b = document.createElement('button'); b.type = 'button'; b.textContent = w; b.onclick = function(){ $('draft').value = w; grow(); $('quick').hidden = true; $('qtoggle').setAttribute('aria-expanded', 'false'); $('draft').focus(); }; $('quick').appendChild(b); });
+  $('qtoggle').onclick = function(){ var open = $('quick').hidden; $('quick').hidden = !open; this.setAttribute('aria-expanded', open ? 'true' : 'false'); if (open) $('quick').firstChild.focus(); };
 
   $('again').onclick = function(){
     var btn = this; btn.disabled = true; $('e-again').textContent = '';
@@ -405,12 +429,11 @@ body.kb .emerg{display:none}
   // 試用版：本輪排隊 3 分鐘仍沒人接手，模擬「已通知備援」（正式版由伺服器排程判斷，不靠這個頁面）
   setInterval(function(){ if (!DEMO) return; if (current && current.status === 'new' && !current.escalated && Date.now() - current.queuedAt > 3 * 60 * 1000) API.markEscalated(current.id, current.cycle).catch(function(){}); }, 15000);
 
-  // 底部緊急提示的高度，給輸入框留位置；手機鍵盤打開時暫時收起緊急提示，讓輸入框有空間
-  var em = document.querySelector('.emerg');
+  // 手機鍵盤打開（正在輸入）時暫時收起底部緊急提示，讓輸入框有空間；收起鍵盤後恢復
   function emh(){
-    var vv = window.visualViewport;
-    document.body.classList.toggle('kb', !!(vv && vv.height < window.innerHeight * 0.75 && document.activeElement && document.activeElement.tagName === 'TEXTAREA'));
-    document.documentElement.style.setProperty('--emh', (document.body.classList.contains('kb') ? 0 : em.offsetHeight) + 'px');
+    var a = document.activeElement, typing = a && (a.tagName === 'TEXTAREA' || (a.tagName === 'INPUT' && a.type === 'text'));
+    var vv = window.visualViewport, small = vv ? vv.height < (window.screen && screen.height ? screen.height : window.innerHeight) * 0.7 : false;
+    document.body.classList.toggle('kb', !!(typing && (small || matchMedia('(pointer:coarse)').matches)));
   }
   emh(); window.addEventListener('resize', emh);
   if (window.visualViewport) window.visualViewport.addEventListener('resize', emh);

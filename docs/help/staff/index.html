@@ -43,16 +43,23 @@ textarea{resize:none;display:block}
 .err{color:var(--err);font-weight:500;font-size:16px;line-height:1.5}
 #e-dlg:not(:empty){margin-top:8px}
 .err:empty{display:none}
-.alertset{display:flex;flex-wrap:wrap;gap:12px;align-items:center;background:var(--warn);border:1.5px solid #F1C7A6;border-radius:18px;padding:14px 18px;margin:0 0 14px}
-.alertset.on{background:var(--okbg);border-color:#B9DCC8}
-.alertset .t{flex:1 1 260px}
-.alertset b{display:block;color:var(--warnink)}
-.alertset.on b{color:var(--ok)}
+.alertset{display:flex;flex-wrap:wrap;gap:8px 12px;align-items:center;background:#fff;border:1px solid var(--rule);border-left:4px solid var(--orange);border-radius:14px;padding:8px 8px 8px 14px;margin:0 0 12px}
+.alertset.on{border-left-color:var(--ok)}
+.alertset.fail{border-left-color:var(--err)}
+.alertset .t{flex:1 1 220px;min-width:0}
+.alertset b{display:block;font-size:16px}
+.alertset details{font-size:15px;color:var(--ink2);margin-top:2px}
+.alertset summary{cursor:pointer;min-height:32px;display:flex;align-items:center;color:var(--blue)}
+.alertset .btn{min-height:44px;padding:0 16px;font-size:16px}
+.loadst{background:var(--info);color:var(--navy);border-radius:12px;padding:10px 14px;margin:0 0 12px;font-weight:500}
+.loadst.bad{background:var(--errbg);color:var(--err)}
 .counts{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:0 0 14px}
 .counts div{background:#fff;border:1px solid var(--rule);border-radius:16px;padding:10px 14px}
 .counts span{display:block;font-size:14px;color:var(--ink2)}
 .counts strong{font-size:28px;line-height:1.2;font-variant-numeric:tabular-nums}
 .counts .n strong{color:var(--newink)}
+.counts .oldest{display:block;font-size:14px;color:var(--newink);font-weight:500}
+.counts .oldest:empty{display:none}
 .cols{display:block}
 .list{display:flex;flex-direction:column;gap:10px;margin:0;padding:0;list-style:none}
 .case{display:block;width:100%;text-align:left;background:#fff;border:1.5px solid var(--rule);border-radius:18px;padding:14px 16px;font:inherit;color:inherit;cursor:pointer}
@@ -74,8 +81,10 @@ textarea{resize:none;display:block}
 /* 詳細 */
 .lnk{display:inline-flex;align-items:center;min-height:44px;background:none;border:0;padding:0;color:var(--blue);font:inherit;font-weight:500;text-decoration:underline;text-underline-offset:3px;cursor:pointer}
 .back{display:inline-flex;align-items:center;min-height:44px;gap:6px;background:none;border:0;padding:0;color:var(--blue);font:inherit;font-weight:700;cursor:pointer}
-.dhead{display:flex;flex-wrap:wrap;gap:8px 14px;align-items:baseline;margin:4px 0 10px}
-.dhead h2{margin:0}
+.dhead{display:flex;flex-wrap:wrap;gap:8px 12px;align-items:center;margin:4px 0 2px}
+.dhead h2{margin:0;font-size:20px;flex:1 1 auto;min-width:0}
+.btn.sm{min-height:44px;padding:0 14px;font-size:15px}
+.dsub{margin:0 0 10px;color:var(--ink2);font-size:15px}
 .meta{display:grid;grid-template-columns:auto 1fr;gap:4px 14px;margin:0 0 12px;font-size:15px}
 .meta dt{color:var(--ink2)}
 .meta dd{margin:0;font-weight:500}
@@ -100,6 +109,10 @@ textarea{resize:none;display:block}
 dialog{border:0;border-radius:20px;padding:22px;max-width:440px;width:calc(100% - 40px)}
 dialog::backdrop{background:rgba(18,26,38,.45)}
 .radios{display:flex;flex-direction:column;gap:8px;margin:8px 0}
+.rgrp{margin:8px 0 0;font-size:15px;font-weight:700;color:var(--ink2)}
+.dlgprev{margin:4px 0 0;color:var(--navy);font-weight:500}
+.dlgprev:empty{display:none}
+dialog{max-height:calc(100dvh - 32px);overflow:auto}
 .radios label{display:flex;align-items:center;gap:10px;min-height:48px;padding:0 14px;border:1.5px solid var(--line);border-radius:14px;cursor:pointer}
 .radios input{width:20px;height:20px;accent-color:var(--blue)}
 .acts{display:flex;gap:10px;margin-top:16px}
@@ -118,16 +131,22 @@ table.sites tr.hot .w{color:var(--newink);font-weight:700}
 table.sites tr[aria-selected=true] td{box-shadow:inset 0 -2px 0 var(--blue)}
 .ro{background:var(--info);color:var(--navy);border-radius:14px;padding:12px 14px;margin:12px 0;font-weight:500}
 .case .site{display:block;font-size:14px;color:var(--navy);font-weight:700;margin-top:6px}
+:focus-visible{outline:3px solid var(--navy)!important;outline-offset:3px}
+.top :focus-visible{outline-color:#fff!important}
+.msg small{font-size:14px!important}
 [hidden]{display:none!important}
 @media (max-width:959px){
   #v-work.in-detail .counts{display:none}
   #v-work.in-detail .alertset{padding:8px 14px;margin-bottom:10px}
-  #v-work.in-detail .alertset .small{display:none}
+  #v-work.in-detail .alertset details{display:none}
+  #v-work.in-detail .loadst{display:none}
   #v-work.in-detail .alertset .btn{min-height:44px;padding:0 14px;font-size:15px}
 }
 @media (min-width:960px){
   .cols{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.5fr);gap:20px;align-items:start}
-  #v-detail{position:sticky;top:76px}
+  #v-detail{position:sticky;top:76px;display:flex;flex-direction:column;max-height:calc(100dvh - 92px)}
+  #v-detail .log{flex:1 1 auto;max-height:none;min-height:120px}
+  #v-list[hidden]{display:block!important}
   #v-detail .back{display:none}
   .log{max-height:46vh}
 }
@@ -167,12 +186,14 @@ table.sites tr[aria-selected=true] td{box-shadow:inset 0 -2px 0 var(--blue)}
 
 <!-- 工作區 -->
 <div class="page" id="v-work" hidden>
-  <div class="alertset" id="alertset" role="status">
-    <div class="t"><b id="al-t">請先測試接案提醒</b><span class="small muted" id="al-p">本頁保持前景且裝置支援時，可播放提醒聲。震動與系統通知依裝置及設定而定；請先測試，再開始值守。</span></div>
-    <button class="btn orange" type="button" id="al-btn">開啟並測試提醒</button>
+  <div class="alertset" id="alertset">
+    <div class="t"><b id="al-t">提醒尚未測試</b>
+      <details id="al-d"><summary>說明</summary><span id="al-p">本頁保持前景且裝置支援時，可播放提醒聲。震動與系統通知依裝置及設定而定；請先測試，再開始值守。</span></details></div>
+    <button class="btn line" type="button" id="al-btn">測試提醒</button>
   </div>
+  <p class="loadst" id="loadst" role="status">讀取案件中…</p>
   <div class="counts" aria-label="本場案件數">
-    <div class="n"><span>待接手</span><strong id="n-new">0</strong></div>
+    <div class="n"><span>待接手</span><strong id="n-new">0</strong><small class="oldest" id="n-old"></small></div>
     <div><span>處理中</span><strong id="n-work">0</strong></div>
     <div><span>今日已結案</span><strong id="n-closed">0</strong></div>
   </div>
@@ -198,8 +219,10 @@ table.sites tr[aria-selected=true] td{box-shadow:inset 0 -2px 0 var(--blue)}
 
     <section id="v-detail" class="box" hidden aria-labelledby="d-title">
       <button type="button" class="back" id="back">← 回案件列表</button>
-      <div class="dhead"><h2 id="d-title" tabindex="-1"></h2><span class="chip" id="d-chip"></span></div>
-      <dl class="meta">
+      <div class="dhead"><h2 id="d-title" tabindex="-1"></h2><span class="chip" id="d-chip"></span>
+        <button class="btn line sm" type="button" id="d-close" hidden>結案…</button></div>
+      <p class="dsub" id="d-sub"></p>
+      <dl class="meta" hidden>
         <dt>位置</dt><dd id="d-dev"></dd>
         <dt>狀況</dt><dd id="d-cat"></dd>
         <dt>送出</dt><dd id="d-time"></dd>
@@ -222,7 +245,6 @@ table.sites tr[aria-selected=true] td{box-shadow:inset 0 -2px 0 var(--blue)}
           <button class="btn" type="button" id="d-send">送出</button>
         </div>
         <p class="err" id="e-reply"></p>
-        <div class="closebar"><button class="btn line wide" type="button" id="d-close">結案並確認處理結果</button></div>
       </div>
       <p class="muted small" id="d-closed-note" hidden></p>
     </section>
@@ -234,6 +256,7 @@ table.sites tr[aria-selected=true] td{box-shadow:inset 0 -2px 0 var(--blue)}
   <h2 id="dlg-t">確認處理結果</h2>
   <p class="muted small" style="margin:0">選前兩項，客人會看到「本次協助已完成」；選後兩項，客人會看到「本次對話已結束」，並可按「仍需要協助」再次求助。</p>
   <div class="radios" id="dlg-r" role="radiogroup" aria-labelledby="dlg-t"></div>
+  <p class="dlgprev" id="dlg-prev" aria-live="polite"></p>
   <label class="f" for="dlg-note" style="margin-top:6px">補充說明（選填，客人看得到）</label>
   <input type="text" id="dlg-note" maxlength="60">
   <p class="err" id="e-dlg" role="alert"></p>
@@ -259,8 +282,9 @@ table.sites tr[aria-selected=true] td{box-shadow:inset 0 -2px 0 var(--blue)}
   var API = null, DEMO = false;
   var $ = function(id){ return document.getElementById(id); };
   function rid(){ var a = new Uint8Array(8); crypto.getRandomValues(a); return Array.prototype.map.call(a, function(b){ return ('0' + b.toString(16)).slice(-2); }).join(''); }
-  var TPL = ['我會到現場協助，請在安全處等候。', '請依指標到管理室，可使用筆談。', '已處理完成，可以離場。'];
-  var TPL_GATE = '請稍候，我將依權限協助處理柵欄。';
+  // 範本：按鈕顯示短標籤，點選後把完整句子放進輸入框
+  var TPL = [['到場協助', '我會到現場協助，請在安全處等候。'], ['請到管理室', '請依指標到管理室，可使用筆談。'], ['已處理完成', '已處理完成，可以離場。']];
+  var TPL_GATE = ['依權限處理柵欄', '請稍候，我將依權限協助處理柵欄。'];
   // 只有確認問題排除的兩項，客人端才顯示「本次協助已完成」；其餘顯示「本次對話已結束」並保留「仍需要協助」
   var RESULTS = ['問題已排除，可正常離場', '已於現場確認問題排除', '已轉管理室接續處理', '客人已離開，未確認是否排除'];
   var STATUS = { new: ['new', '新案件・尚未接手'], accepted: ['acc', '已接手'], working: ['work', '處理中'], closed: ['closed', '已結案'] };
@@ -337,9 +361,10 @@ table.sites tr[aria-selected=true] td{box-shadow:inset 0 -2px 0 var(--blue)}
         note === 'granted' ? '系統通知：已允許' : '系統通知：未允許，切到其他 App 時不會跳通知',
         screen ? '螢幕：此頁開著時會保持亮著' : '螢幕：無法保持常亮，請調長自動鎖定時間'
       ];
-      $('alertset').className = 'alertset on';
-      $('al-t').textContent = '提醒測試結果';
+      $('alertset').className = 'alertset ' + (sound ? 'on' : 'fail');
+      $('al-t').textContent = sound ? '提示音已播放，請確認有聽到' : '提示音無法播放，請留意畫面';
       $('al-p').textContent = lines.join('；') + '。手機鎖定或切到其他 App 時，網頁可能無法發出聲音；值守時請讓此頁保持在前景。';
+      $('al-d').querySelector('summary').textContent = '詳細結果';
       $('al-btn').textContent = '再測試一次';
       say('提醒測試結果：' + lines.join('，'));
     });
@@ -357,13 +382,18 @@ table.sites tr[aria-selected=true] td{box-shadow:inset 0 -2px 0 var(--blue)}
       $('al-p').textContent = '本頁保持前景且裝置支援時，任一場有新案件都會播放提醒聲。管理員只能查看，不能接手。';
       ALL_SITES.filter(function(s){ return !LIVE || !PILOT || PILOT.indexOf(s.id) >= 0; }).forEach(function(s){ var o = document.createElement('option'); o.value = s.id; o.textContent = s.name; $('site-filter').appendChild(o); });
       $('site-filter').onchange = function(){ siteF = this.value; drawList(); drawSites(); };
-      unsub = API.watchAll(onCases, function(e){ $('al-p').textContent = e.code === 'denied' ? '此帳號沒有管理員權限，請登出後重新登入。' : '連線中斷，請確認網路。'; });
+      unsub = API.watchAll(onCases, connErr);
       return;
     }
-    unsub = API.watchSite(me.site, onCases, function(e){ say('連線中斷：' + (e.code === 'denied' ? '此帳號沒有本場權限，請重新登入。' : '正在重新連線。')); $('al-p').textContent = e.code === 'denied' ? '此帳號沒有本場權限，請登出後重新登入。' : '連線中斷，請確認網路。'; });
+    unsub = API.watchSite(me.site, onCases, connErr);
+  }
+  var lastSync = 0;
+  function connErr(e){
+    var t = e && e.code === 'denied' ? '此帳號沒有' + (ADMIN ? '管理員' : '本場') + '權限，請登出後重新登入。' : '連線中斷' + (lastSync ? '，以下為 ' + hm(lastSync) + ' 的資料' : '') + '；請確認網路。';
+    $('loadst').hidden = false; $('loadst').className = 'loadst bad'; $('loadst').textContent = t; say(t);
   }
   function onCases(list){
-    cases = list;
+    cases = list; lastSync = Date.now(); $('loadst').hidden = true;
     if (!seen) {
       // 第一次載入（或交班重開）：不響鈴，但明確告知目前待接手件數
       var waiting = list.filter(function(c){ return c.status === 'new'; });
@@ -415,7 +445,9 @@ table.sites tr[aria-selected=true] td{box-shadow:inset 0 -2px 0 var(--blue)}
   }
   // 案件清單：重畫後把鍵盤焦點放回原本那一件
   function drawList(){
-    $('n-new').textContent = cases.filter(function(c){ return c.status === 'new'; }).length;
+    var wl = cases.filter(function(c){ return c.status === 'new' && (!siteF || c.site === siteF); });
+    $('n-new').textContent = wl.length;
+    $('n-old').textContent = wl.length ? '最久等候 ' + ago(Math.min.apply(null, wl.map(function(c){ return c.queuedAt; }))).replace('前', '') : '';
     $('n-work').textContent = cases.filter(function(c){ return c.status === 'accepted' || c.status === 'working'; }).length;
     $('n-closed').textContent = cases.filter(function(c){ return c.status === 'closed' && isToday(c.closedAt); }).length;
     var show = cases.filter(function(c){ return (filter === 'closed' ? c.status === 'closed' : c.status !== 'closed') && (!siteF || c.site === siteF); });
@@ -473,7 +505,8 @@ table.sites tr[aria-selected=true] td{box-shadow:inset 0 -2px 0 var(--blue)}
   function drawDetail(first){
     var c = detail && detail.id === sel ? detail : null;
     if (!c) { if (detail === undefined && sel) return; $('v-detail').hidden = true; $('v-list').hidden = false; sel = null; if ($('dlg').open) $('dlg').close(); return; }
-    $('d-title').textContent = c.code;
+    $('d-title').textContent = (c.device || '未填位置') + '｜' + c.category;
+    $('d-sub').textContent = (ADMIN ? (c.siteName || siteName(c.site)) + '・' : '') + c.code + '・' + hm(c.queuedAt) + ' 送出（' + ago(c.queuedAt) + '）' + (c.cycle > 1 ? '・第 ' + c.cycle + ' 次求助' : '');
     $('d-chip').className = 'chip ' + STATUS[c.status][0]; $('d-chip').textContent = STATUS[c.status][1];
     $('d-dev').textContent = c.device || '未填位置';
     $('d-cat').textContent = c.category;
@@ -495,6 +528,7 @@ table.sites tr[aria-selected=true] td{box-shadow:inset 0 -2px 0 var(--blue)}
     $('d-taken').hidden = ADMIN || !(activeCase && !isMine);
     $('d-taken-t').textContent = '此案件已由「' + (c.acceptedBy || '其他人員') + '」接手。';
     $('d-reply').hidden = ADMIN || !(isMine && activeCase);
+    $('d-close').hidden = $('d-reply').hidden;
     $('d-closed-note').hidden = c.status !== 'closed';
     $('d-closed-note').textContent = c.status === 'closed' ? '已於 ' + hm(c.closedAt) + ' 結案：' + (c.result || '') : '';
     // 接手狀態改變時播報一次（例如被別人改由他接手）
@@ -509,7 +543,7 @@ table.sites tr[aria-selected=true] td{box-shadow:inset 0 -2px 0 var(--blue)}
     }
     // 範本：柵欄、繳費類才顯示「依權限協助處理柵欄」
     var tpl = TPL.slice(); if (c.category === '柵欄沒開' || c.category === '繳費失敗') tpl.splice(1, 0, TPL_GATE);
-    var box = $('d-tpl'); if (box.dataset.k !== c.id + c.category) { box.dataset.k = c.id + c.category; box.innerHTML = ''; tpl.forEach(function(t){ var b = document.createElement('button'); b.type = 'button'; b.textContent = t; b.onclick = function(){ $('d-draft').value = t; $('d-draft').focus(); }; box.appendChild(b); }); }
+    var box = $('d-tpl'); if (box.dataset.k !== c.id + c.category) { box.dataset.k = c.id + c.category; box.innerHTML = ''; tpl.forEach(function(t){ var b = document.createElement('button'); b.type = 'button'; b.textContent = t[0]; b.title = t[1]; b.setAttribute('aria-label', t[0] + '：' + t[1]); b.onclick = function(){ $('d-draft').value = t[1]; $('d-draft').focus(); }; box.appendChild(b); }); }
   }
   function drawPending(c){
     var box = $('d-pend'); box.innerHTML = '';
@@ -523,7 +557,7 @@ table.sites tr[aria-selected=true] td{box-shadow:inset 0 -2px 0 var(--blue)}
   $('d-accept').onclick = function(){
     var btn = this, id = sel; btn.disabled = true; btn.textContent = '接手中，等待確認…'; $('e-accept').textContent = '';
     API.accept(id, me.name, DEV).then(function(r){
-      if (r.ok) { say('已接手 ' + $('d-title').textContent + '，可以回覆了。'); if (sel === id) $('d-draft').focus(); }
+      if (r.ok) { say('已接手，可以回覆了。'); if (sel === id && matchMedia('(pointer:fine)').matches) setTimeout(function(){ if (!$('d-reply').hidden) $('d-draft').focus(); }, 50); }
       else { $('e-accept').textContent = '已由「' + (r.by || '其他人員') + '」接手，無法重複接手。'; say($('e-accept').textContent); }
     }).catch(function(){ $('e-accept').textContent = '連線中斷，尚未接手；請再按一次。'; say($('e-accept').textContent); })
       .then(function(){ btn.disabled = false; btn.textContent = '接手此案件'; });
@@ -555,14 +589,19 @@ table.sites tr[aria-selected=true] td{box-shadow:inset 0 -2px 0 var(--blue)}
 
   // 結案：視窗綁定開啟當下的案件與接手版本
   var dlgFor = null;
-  RESULTS.forEach(function(r){ var l = document.createElement('label'), i2 = document.createElement('input'); i2.type = 'radio'; i2.name = 'res'; i2.value = r; i2.onchange = function(){ $('e-dlg').textContent = ''; }; l.appendChild(i2); l.appendChild(document.createTextNode(r)); $('dlg-r').appendChild(l); });
+  [['問題已排除', RESULTS.slice(0, 2)], ['對話結束，客人仍可再次求助', RESULTS.slice(2)]].forEach(function(g){
+    var h = document.createElement('p'); h.className = 'rgrp'; h.textContent = g[0]; $('dlg-r').appendChild(h);
+    g[1].forEach(function(r, k){ var l = document.createElement('label'), i2 = document.createElement('input'); i2.type = 'radio'; i2.name = 'res'; i2.value = r;
+      i2.onchange = function(){ $('e-dlg').textContent = ''; $('dlg-prev').textContent = '客人會看到：「' + (/^(問題已排除|已於現場確認問題排除)/.test(r) ? '本次協助已完成' : '本次對話已結束') + '」'; };
+      l.appendChild(i2); l.appendChild(document.createTextNode(r)); $('dlg-r').appendChild(l); });
+  });
   $('d-close').onclick = function(){
     var c = detail; if (!c) return;
     dlgFor = { id: c.id, ver: c.assignVer };
-    $('e-dlg').textContent = ''; $('dlg-note').value = ''; Array.prototype.forEach.call(document.querySelectorAll('[name=res]'), function(x){ x.checked = false; });
+    $('e-dlg').textContent = ''; $('dlg-note').value = ''; $('dlg-prev').textContent = ''; Array.prototype.forEach.call(document.querySelectorAll('[name=res]'), function(x){ x.checked = false; });
     $('dlg').showModal(); document.querySelector('[name=res]').focus();
   };
-  $('dlg').addEventListener('close', function(){ var c = detail; if (c && c.status !== 'closed' && !$('d-reply').hidden) $('d-close').focus(); else $('d-title').focus(); });
+  $('dlg').addEventListener('close', function(){ var c = detail; if (c && c.status !== 'closed' && !$('d-close').hidden) $('d-close').focus(); else $('d-title').focus(); });
   $('dlg-cancel').onclick = function(){ $('dlg').close(); };
   $('dlg-ok').onclick = function(){
     var r = document.querySelector('[name=res]:checked');

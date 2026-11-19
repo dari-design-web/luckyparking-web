@@ -11,7 +11,8 @@ service cloud.firestore {
     function pw() { return signedIn() && request.auth.token.firebase.sign_in_provider == 'password'; }
     function staffPath() { return /databases/$(database)/documents/staff/$(request.auth.uid); }
     function isStaff(site) {
-      return pw() && exists(staffPath()) && get(staffPath()).data.active == true && get(staffPath()).data.site == site;
+      return pw() && exists(staffPath()) && get(staffPath()).data.active == true && get(staffPath()).data.site == site
+        && get(staffPath()).data.get('role', '') != 'admin';
     }
     function isAdmin() {
       return pw() && exists(staffPath()) && get(staffPath()).data.active == true && get(staffPath()).data.get('role', '') == 'admin';
