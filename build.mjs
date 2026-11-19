@@ -574,7 +574,7 @@ pages['404.html'] = {
 
 // 先驗證意見箱設定，失敗時不動到既有的 docs/
 {
-  const codes = PARKING.map(p => p.code);
+  const codes = [...PARKING.map(p => p.code), ...(SITE.feedbackExtra || []).map(p => p.code)];
   if (codes.some(c => typeof c !== 'string' || !/^[a-z0-9-]{1,40}$/.test(c) || c === 'general') || new Set(codes).size !== codes.length) throw new Error('parking.json 的 code 缺漏、格式不符、重複或使用保留字 general');
   const ep = SITE.feedbackEndpoint || '';
   if (ep && !/^https:\/\/script\.google\.com\/macros\/s\/[\w-]+\/exec$/.test(ep)) throw new Error('feedbackEndpoint 格式不符');
@@ -613,7 +613,7 @@ fs.writeFileSync(path.join(OUT, 'robots.txt'), `User-agent: *\nAllow: /\nSitemap
 // 線上服務小工具（只透過現場 QR Code 進入，不放選單、不列入 sitemap）
 {
   const CITY_ORDER = ['臺北市', '新北市', '桃園市', '基隆市'];
-  const LOTS = PARKING.map(p => ({ id: p.code, name: p.name, city: p.city }))
+  const LOTS = [...PARKING, ...(SITE.feedbackExtra || [])].map(p => ({ id: p.code, name: p.name, city: p.city }))
     .sort((a, b) => (CITY_ORDER.indexOf(a.city) + 99) % 99 - (CITY_ORDER.indexOf(b.city) + 99) % 99);
   // 場站代碼已印在 QR 立牌上：一經發布不可更改，只能新增
   const ep = SITE.feedbackEndpoint || '';

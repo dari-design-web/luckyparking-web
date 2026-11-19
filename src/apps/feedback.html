@@ -143,12 +143,12 @@ footer .wrap{color:var(--ink2);padding-top:30px;padding-bottom:40px;font-size:15
 <section class="hero"><div class="wrap">
   <p class="eyebrow">每一份回饋，都讓服務更好</p>
   <h1 id="fb-title" tabindex="-1">顧客意見箱</h1>
-  <p class="lead">告訴我們您的停車體驗。<br>您的意見，會由公司逐件查看。</p>
+  <p class="lead">告訴我們您的停車體驗。<br>您的意見，是我們進步的動力。</p>
 </div></section>
 <aside class="side" aria-label="使用提醒"><div class="wrap">
   <div class="box">
     <p class="t"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 11v6M12 7.5v.5"/></svg>現在就需要協助？</p>
-    <p>柵欄沒開、繳費卡住，請用對講機或洽管理室；不便說話可出示本頁示意。意見箱不是即時客服。</p>
+    <p>如需現場服務，請用對講機聯繫或洽管理室。</p>
   </div>
   <div class="box site-now" id="site-show" hidden>
     <p class="t"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 22s7-6.2 7-12a7 7 0 10-14 0c0 5.8 7 12 7 12z"/><circle cx="12" cy="10" r="2.5"/></svg>目前場站</p>
@@ -173,12 +173,14 @@ footer .wrap{color:var(--ink2);padding-top:30px;padding-bottom:40px;font-size:15
       <label class="opt"><input type="radio" name="kind" value="general"><span>一般意見</span></label>
       <label class="opt"><input type="radio" name="kind" value="site"><span>場站意見</span></label>
     </div>
-    <p class="hint" id="kind-hint">一般意見：公司整體服務、官網或其他建議。場站意見：針對某一個停車場。</p>
+    <p class="hint" id="kind-hint">一般意見：公司整體服務、官網或其他建議。場站意見：針對某一個停車場或場域。</p>
   </fieldset>
   <div class="field" id="site-box" hidden>
-    <div class="row"><label class="lbl" for="site">請選擇停車場</label><span class="req">必填</span></div>
-    <select id="site" aria-describedby="site-hint e-site"><option value="">請選擇停車場</option></select>
-    <p class="hint" id="site-hint">依縣市分組顯示全部場站。</p>
+    <div class="row"><label class="lbl" for="city">請選擇場站</label><span class="req">必填</span></div>
+    <div class="stack">
+      <select id="city" aria-label="縣市" aria-describedby="e-site"><option value="">先選縣市</option></select>
+      <select id="site" aria-label="場站" aria-describedby="e-site" disabled><option value="">再選場站</option></select>
+    </div>
   </div>
   <p class="err" id="e-site" style="margin:-18px 0 24px"></p>
 
@@ -283,14 +285,16 @@ footer .wrap{color:var(--ink2);padding-top:30px;padding-bottom:40px;font-size:15
 
   function val(name){ var r = f.querySelector('input[name=' + name + ']:checked'); return r ? r.value : ''; }
 
-  // 停車場清單（依縣市分組）
-  var groups = {};
+  // 場站：先選縣市，再列出該縣市的場站
+  var groups = {}, citySel = $('city');
   SITES.forEach(function(s){ (groups[s.city] = groups[s.city] || []).push(s); });
-  Object.keys(groups).forEach(function(c){
-    var og = document.createElement('optgroup'); og.label = c;
-    groups[c].forEach(function(s){ var o = document.createElement('option'); o.value = s.id; o.textContent = s.name; og.appendChild(o); });
-    sel.appendChild(og);
-  });
+  Object.keys(groups).forEach(function(c){ var o = document.createElement('option'); o.value = c; o.textContent = c + '（' + groups[c].length + '）'; citySel.appendChild(o); });
+  function fillSites(c){
+    sel.length = 1; sel.options[0].textContent = c ? '再選場站' : '請先選縣市'; sel.disabled = !c;
+    (groups[c] || []).forEach(function(s){ var o = document.createElement('option'); o.value = s.id; o.textContent = s.name; sel.appendChild(o); });
+  }
+  fillSites('');
+  citySel.addEventListener('change', function(){ fillSites(this.value); });
   var q = new URLSearchParams(location.search).get('s');
   var hit = SITES.filter(function(s){ return s.id === q; })[0];
 
@@ -300,11 +304,11 @@ footer .wrap{color:var(--ink2);padding-top:30px;padding-bottom:40px;font-size:15
     if (!hit) return;
     f.querySelector('input[name=kind][value=site]').checked = true;
     $('kind-set').hidden = true; $('site-box').hidden = true;
-    sel.value = hit.id;
+    citySel.value = hit.city; fillSites(hit.city); sel.value = hit.id;
     $('site-name').textContent = hit.name; $('site-show').hidden = false;
   }
   applyQR();
-  $('site-change').onclick = function(){ $('site-show').hidden = true; $('kind-set').hidden = false; $('site-box').hidden = false; sel.focus(); };
+  $('site-change').onclick = function(){ $('site-show').hidden = true; $('kind-set').hidden = false; $('site-box').hidden = false; citySel.focus(); };
 
   // 意見類型：雙欄，「其他」單獨一列
   TYPES.forEach(function(t){
@@ -333,6 +337,7 @@ footer .wrap{color:var(--ink2);padding-top:30px;padding-bottom:40px;font-size:15
       else el.removeAttribute('aria-invalid');
       delete errField[id];
     }
+    if (!Object.keys(errField).length) $('summary').hidden = true;
   }
   function clearAll(){ ['e-site','e-type','e-msg','e-contact','e-send'].forEach(clearErr); $('summary').hidden = true; }
   function onEdit(e){ Object.keys(errField).forEach(function(id){ var el = errField[id]; if (el === e.target || (e.target.name && el.name === e.target.name) || (id === 'e-contact' && $('contact').contains(e.target))) clearErr(id); }); }
@@ -443,7 +448,8 @@ footer .wrap{color:var(--ink2);padding-top:30px;padding-bottom:40px;font-size:15
     var tel = $('tel').value.replace(/[\s\-()]/g,''), mail = $('mail').value.trim(), title = $('title').value;
     var list = [], first = function(name){ return f.querySelector('input[name=' + name + ']'); };
     if (!kind) list.push({ id: 'e-site', msg: '請選擇「一般意見」或「場站意見」。', el: first('kind'), group: 'kind' });
-    else if (!site) list.push({ id: 'e-site', msg: '請選擇停車場。', el: sel });
+    else if (!citySel.value) list.push({ id: 'e-site', msg: '請先選擇縣市。', el: citySel });
+    else if (!site) list.push({ id: 'e-site', msg: '請選擇場站。', el: sel });
     if (!type) list.push({ id: 'e-type', msg: '請選擇一種意見類型。', el: first('type'), group: 'type' });
     if (msg.length < 5) list.push({ id: 'e-msg', msg: '請寫下意見內容（至少 5 個字）。', el: $('msg') });
     if (reply === '需要') {
@@ -484,13 +490,34 @@ footer .wrap{color:var(--ink2);padding-top:30px;padding-bottom:40px;font-size:15
     });
   });
 
+  // 送出成功的彩紙（系統設定「減少動態效果」時不播放）
+  function confetti(){
+    if (window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    var c = document.createElement('canvas'), g = c.getContext('2d'); if (!g) return;
+    var W = c.width = innerWidth, H = c.height = innerHeight;
+    c.setAttribute('aria-hidden', 'true');
+    c.style.cssText = 'position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:50';
+    document.body.appendChild(c);
+    var colors = ['#2561A9', '#EF7836', '#5B9BE0', '#F6B26B', '#1B4A83', '#7FC8A9'], P = [];
+    for (var i = 0; i < 160; i++) {
+      var a = -Math.PI / 2 + (Math.random() - 0.5) * 1.6, v = 7 + Math.random() * 9;
+      P.push({ x: W / 2 + (Math.random() - 0.5) * W * 0.3, y: H * 0.45, vx: Math.cos(a) * v, vy: Math.sin(a) * v, w: 6 + Math.random() * 6, h: 8 + Math.random() * 8, r: Math.random() * 6, vr: (Math.random() - 0.5) * 0.3, col: colors[i % colors.length] });
+    }
+    var t0 = performance.now();
+    (function tick(t){
+      var k = t - t0; g.clearRect(0, 0, W, H);
+      P.forEach(function(p){ p.vy += 0.28; p.vx *= 0.99; p.x += p.vx; p.y += p.vy; p.r += p.vr;
+        g.save(); g.translate(p.x, p.y); g.rotate(p.r); g.globalAlpha = Math.max(0, 1 - k / 2600); g.fillStyle = p.col; g.fillRect(-p.w / 2, -p.h / 2, p.w, p.h * Math.abs(Math.cos(p.r * 2))); g.restore(); });
+      if (k < 2600) requestAnimationFrame(tick); else c.remove();
+    })(t0);
+  }
   function showDone(caseNo, demo){
     f.hidden = true; document.body.classList.add('is-done'); $('done').hidden = false;
     $('case-no').textContent = caseNo;
     $('demo-note').hidden = !demo;
     $('done-note').textContent = val('reply') === '需要' ? '我們會逐件查看，並依您留下的方式回覆。這不是即時求助管道。'
-      : (val('kind') === 'general' ? '我們會轉給相關部門逐件查看。這不是即時求助管道。' : '我們會轉給負責的停車場逐件查看。這不是即時求助管道。');
-    window.scrollTo(0, 0); $('done-title').focus();
+      : (val('kind') === 'general' ? '我們會轉給相關部門逐件查看。這不是即時求助管道。' : '我們會轉給負責的場站逐件查看。這不是即時求助管道。');
+    window.scrollTo(0, 0); $('done-title').focus(); confetti();
   }
   $('copy').onclick = function(){
     var t = $('case-no').textContent, ok = function(){ $('copy').textContent = '已複製'; $('copy-status').textContent = '已複製案件編號'; setTimeout(function(){ $('copy').textContent = '複製案件編號'; }, 2500); };
@@ -498,7 +525,7 @@ footer .wrap{color:var(--ink2);padding-top:30px;padding-bottom:40px;font-size:15
     else $('copy-status').textContent = '請記下案件編號 ' + t;
   };
   $('again').onclick = function(){
-    f.reset(); $('count').textContent = '0／2000'; $('contact').hidden = true; photos = []; pending = 0; drawPhotos();
+    f.reset(); fillSites(''); $('count').textContent = '0／2000'; $('contact').hidden = true; photos = []; pending = 0; drawPhotos();
     clearAll(); clearErr('e-photo'); setKind(); applyQR(); sid = newSid(); lastBody = '';
     $('done').hidden = true; document.body.classList.remove('is-done'); f.hidden = false; window.scrollTo(0, 0); $('fb-title').focus();
   };

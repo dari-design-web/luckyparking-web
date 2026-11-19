@@ -29,5 +29,6 @@
   "jobs1111": "https://www.1111.com.tw/corp/71713686/",
   "formEndpoint": "https://script.google.com/macros/s/AKfycbxclrprm8GAu6zHktSy_338aM4tKMbQNyF5ei8B03YpSSi3wVLmQ2lmh7ihYgBqsB8/exec",
   "feedbackEndpoint": "https://script.google.com/macros/s/AKfycbwJkjrkHEZ1fXCS1XjmEpKZ_IYsEtoW9h8JpcOoEYwQXTMSjDYYnLwiYwqKO8hhP2nl/exec",
-  "feedbackTo": "dari25420001@gmail.com"
+  "feedbackTo": "dari25420001@gmail.com",
+  "feedbackExtra": [{"code": "shenao", "name": "深澳鐵道自行車", "city": "新北市"}]
 }
