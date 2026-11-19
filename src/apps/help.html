@@ -95,7 +95,7 @@ textarea:focus-visible,select:focus-visible,input:focus-visible{outline:2px soli
 
 .composer .row{display:flex;gap:10px;align-items:flex-end}
 .composer textarea{min-height:48px;max-height:140px;padding:11px 14px}
-.send{flex:none;width:52px;height:48px;border:0;border-radius:14px;background:var(--blue);color:#fff;cursor:pointer;display:grid;place-items:center}
+.send{flex:none;min-width:84px;height:48px;padding:0 14px;border:0;border-radius:14px;background:var(--blue);color:#fff;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:6px;font:inherit;font-size:16px;font-weight:700}
 .send[disabled]{background:#E3E8EF;color:var(--ink2)}
 .quick{display:flex;flex-wrap:wrap;gap:8px;margin:8px 0 0}
 .quick button{flex:none;min-height:44px;padding:0 14px;border:1.5px solid var(--line);border-radius:999px;background:#fff;font:inherit;font-size:15px;cursor:pointer}
@@ -109,7 +109,11 @@ body.kb .emerg{display:none}
 :focus-visible{outline:3px solid var(--navy)!important;outline-offset:3px}
 [tabindex="-1"]:focus{outline:none!important}
 header a{display:inline-flex;align-items:center;min-height:44px}
-.done{text-align:center;padding:12px 0}
+.done{text-align:center;padding:4px 0 8px}
+.logtoggle{display:flex;align-items:center;justify-content:center;width:100%;min-height:48px;margin:4px 0 8px;background:var(--soft);border:1px solid var(--rule);border-radius:14px;color:var(--navy);font:inherit;font-weight:700;cursor:pointer}
+.logtoggle::after{content:"▾";margin-left:6px}
+.logtoggle[aria-expanded=true]::after{content:"▴"}
+.done .primary{margin-top:4px}
 .done .okc.endc{background:var(--info)}
 .done .okc{width:88px;height:88px;border-radius:50%;background:var(--okbg);display:grid;place-items:center;margin:18px auto 14px}
 .casebox{background:var(--info);border-radius:16px;padding:14px 18px;text-align:left;margin:16px 0}
@@ -179,9 +183,6 @@ header a{display:inline-flex;align-items:center;min-height:44px}
     <div class="card"><p class="big">我需要停車協助。</p><p class="big2">請用文字或筆談與我溝通。</p></div>
   </details>
 
-  <div class="log" id="log" role="log" aria-label="對談內容"></div>
-  <div class="log pend" id="pend"></div>
-
   <div id="done" class="done" hidden>
     <div class="okc" id="done-ok" aria-hidden="true"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#176444" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></div>
     <div class="okc endc" id="done-end" aria-hidden="true" hidden><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#1B4A83" stroke-width="2.4" stroke-linecap="round"><path d="M12 7v6M12 16.5v.5"/></svg></div>
@@ -193,6 +194,10 @@ header a{display:inline-flex;align-items:center;min-height:44px}
     <button class="ghost" id="restart" type="button" hidden style="margin-top:10px">重新開始求助</button>
     <p class="note" style="margin-top:12px">問題還沒解決？按「仍需要協助」，會通知管理室在同一案件繼續處理。</p>
   </div>
+  <button type="button" class="logtoggle" id="logtoggle" aria-expanded="false" aria-controls="log" hidden>查看本次對話紀錄</button>
+  <div class="log" id="log" role="log" aria-label="對談內容"></div>
+  <div class="log pend" id="pend"></div>
+
 
 </section>
 </main>
@@ -208,7 +213,7 @@ header a{display:inline-flex;align-items:center;min-height:44px}
       <div class="row">
         <label class="hp" for="draft">輸入訊息</label>
         <textarea id="draft" rows="1" maxlength="500" placeholder="輸入訊息…"></textarea>
-        <button class="send" id="send" type="button" aria-label="送出訊息"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M4 12l16-8-6 16-3-7z"/></svg></button>
+        <button class="send" id="send" type="button"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M4 12l16-8-6 16-3-7z"/></svg>送出</button>
       </div>
       <button type="button" class="qtoggle" id="qtoggle" aria-expanded="false" aria-controls="quick">常用回覆</button>
       <div class="quick" id="quick" role="group" aria-label="常用回覆（點選後放入輸入框）" hidden></div>
@@ -310,7 +315,7 @@ header a{display:inline-flex;align-items:center;min-height:44px}
   function openCase(id){
     caseId = id; current = null; shown = {}; pending = {}; $('log').innerHTML = ''; $('pend').innerHTML = '';
     $('dock-start').hidden = true; $('composer').hidden = false;
-    lastTheirs = -1; lastStatus = ''; lastSt = ''; delete $('done').dataset.focused;
+    lastTheirs = -1; lastStatus = ''; lastSt = ''; delete $('done').dataset.focused; delete $('logtoggle').dataset.user;
     $('v-start').hidden = true; $('v-chat').hidden = false;
     if (unsub) unsub();
     unsub = API.watchCase(id, render);
@@ -341,9 +346,14 @@ header a{display:inline-flex;align-items:center;min-height:44px}
     $('escal').hidden = !(waiting && (c.escalated || c.escalateFailed));
     $('cardd').hidden = !(waiting && !c.escalated && !c.escalateFailed);
     $('done').hidden = c.status !== 'closed'; $('composer').hidden = c.status === 'closed';
+    $('steps').hidden = c.status === 'closed';
+    $('logtoggle').hidden = c.status !== 'closed';
+    if (c.status !== 'closed') { $('log').hidden = false; $('pend').hidden = false; }
+    else if (!$('logtoggle').dataset.user) { $('log').hidden = true; $('pend').hidden = true; $('logtoggle').setAttribute('aria-expanded', 'false'); $('logtoggle').textContent = '查看本次對話紀錄'; }
     if (c.status === 'closed') {
       // 只有管理室確認問題排除時才說「協助已完成」，其餘只說對話結束
       var solved = /^(問題已排除|已於現場確認問題排除)/.test(c.result || '');
+      $('again').className = solved ? 'ghost' : 'primary';
       $('done-title').textContent = solved ? '本次協助已完成' : '本次對話已結束';
       $('done-ok').hidden = !solved; $('done-end').hidden = solved;
       $('done-result').textContent = c.result ? '管理室處理結果：' + c.result : ''; $('done-code').textContent = c.code;
@@ -356,7 +366,7 @@ header a{display:inline-flex;align-items:center;min-height:44px}
     }
     lastTheirs = theirs; lastStatus = c.status;
     if (c.status === 'closed' && !$('done').dataset.focused) { $('done').dataset.focused = 1; $('done-title').focus(); }
-    if (c.status !== 'closed') delete $('done').dataset.focused;
+    if (c.status !== 'closed') { delete $('done').dataset.focused; delete $('logtoggle').dataset.user; }
   }
   document.addEventListener('visibilitychange', function(){ if (!document.hidden) document.title = '文字求助｜大日開發 Lucky Parking'; });
 
@@ -425,6 +435,7 @@ header a{display:inline-flex;align-items:center;min-height:44px}
       })
       .then(function(){ btn.disabled = false; });
   };
+  $('logtoggle').onclick = function(){ var open = $('log').hidden; $('log').hidden = !open; $('pend').hidden = !open; this.dataset.user = 1; this.setAttribute('aria-expanded', open ? 'true' : 'false'); this.textContent = open ? '收合對話紀錄' : '查看本次對話紀錄'; };
   $('restart').onclick = function(){ store('dari-help-case', null); location.reload(); };
 
   // 試用版：本輪排隊 3 分鐘仍沒人接手，模擬「已通知備援」（正式版由伺服器排程判斷，不靠這個頁面）

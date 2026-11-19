@@ -20,6 +20,8 @@ body{margin:0;background:var(--soft);color:var(--ink);font:16px/1.6 "Noto Sans T
 .top b{font-size:18px}
 .top .scope{font-size:14px;color:#D6E3F3}
 .top :focus-visible{outline-color:#fff}
+.robadge{margin-left:auto;background:#fff;color:var(--navy);border-radius:10px;padding:6px 12px;font-weight:700;font-size:15px;white-space:nowrap}
+.robadge:not([hidden]) + .out{margin-left:0}
 .top .out{margin-left:auto;min-height:44px;padding:0 14px;border:1.5px solid #9DB6D6;border-radius:12px;background:none;color:#fff;font:inherit;cursor:pointer}
 .demo{background:#FFF6DD;color:#6B4E00;font-size:14px;padding:8px 20px;text-align:center}
 .page{max-width:1180px;margin:0 auto;padding:16px 20px 40px}
@@ -43,7 +45,7 @@ textarea{resize:none;display:block}
 .err{color:var(--err);font-weight:500;font-size:16px;line-height:1.5}
 #e-dlg:not(:empty){margin-top:8px}
 .err:empty{display:none}
-.alertset{display:flex;flex-wrap:wrap;gap:8px 12px;align-items:center;background:#fff;border:1px solid var(--rule);border-left:4px solid var(--orange);border-radius:14px;padding:8px 8px 8px 14px;margin:0 0 12px}
+.alertset{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px 12px;align-items:center;background:#fff;border:1px solid var(--rule);border-left:4px solid var(--orange);border-radius:14px;padding:10px 12px 10px 14px;margin:0 0 12px}
 .alertset.on{border-left-color:var(--ok)}
 .alertset.fail{border-left-color:var(--err)}
 .alertset .t{flex:1 1 220px;min-width:0}
@@ -135,6 +137,48 @@ table.sites tr[aria-selected=true] td{box-shadow:inset 0 -2px 0 var(--blue)}
 [tabindex="-1"]:focus{outline:none!important}
 .top :focus-visible{outline-color:#fff!important}
 .msg small{font-size:14px!important}
+.only-narrow{display:none!important}
+@media (max-width:767px){.only-wide{display:none!important}.only-narrow{display:block!important}a.only-narrow{display:inline-flex!important}}
+.adminhead h1{font-size:28px;margin:4px 0}
+.syncline{color:var(--navy);font-weight:500;margin:8px 0 12px}
+.syncline.bad{color:var(--err)}
+.oldline{margin:-4px 0 12px;font-weight:700;color:var(--newink)}
+.sbhead{display:flex;flex-wrap:wrap;gap:8px 12px;align-items:flex-start;justify-content:space-between;margin-bottom:10px}
+.sbhead h2{margin:0}
+.sbtools{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.sortsel{width:auto;min-width:200px}
+table.sites th.num,table.sites td.num{text-align:right}
+table.sites td.num span{justify-content:flex-end}
+table.sites .sub{display:block;font-size:14px;color:var(--ink2);font-weight:400}
+table.sites td:first-child button{flex-direction:column;align-items:flex-start;justify-content:center;padding:6px 10px}
+.morebtn{margin-top:10px;min-height:44px}
+.closedlist{margin:10px 0 0;line-height:1.8}
+.casesbox{margin-top:14px}
+.filters{display:flex;flex-wrap:wrap;gap:10px;margin:0 0 10px}
+.filters select{width:auto;min-width:220px}
+table.ctable{width:100%;border-collapse:collapse;font-size:16px}
+table.ctable th{text-align:left;font-size:14px;color:var(--ink2);font-weight:500;padding:10px;border-bottom:1px solid var(--rule);background:var(--soft)}
+table.ctable td{padding:10px;border-bottom:1px solid var(--rule);vertical-align:middle}
+table.ctable td.code{color:var(--navy);font-weight:700;white-space:nowrap;font-variant-numeric:tabular-nums}
+table.ctable td:last-child{text-align:right}
+.cardlist{display:grid;gap:10px}
+.scard,.ccard{background:#fff;border:1px solid var(--rule);border-radius:16px;padding:14px 16px}
+.scard.hot{border-left:4px solid var(--orange)}
+.scard .nm{display:flex;justify-content:space-between;gap:8px;align-items:flex-start;font-weight:700;color:var(--navy);font-size:17px}
+.scard .nums{margin:6px 0 2px}
+.scard .w{color:var(--newink);font-weight:700}
+.scard .foot,.ccard .foot{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-top:6px}
+.ccard .top2{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.ccard .wt{color:var(--newink);font-weight:700}
+.ccard .dv{font-weight:700;font-size:17px;margin:6px 0 2px}
+.ccard .code{color:var(--navy);font-weight:700;overflow-wrap:anywhere}
+.viewbtn{min-height:44px;padding:0 16px;font-size:16px}
+#v-work.admin .cols{display:block}
+#v-work.admin #v-list{display:none!important}
+#v-work.admin #v-detail{position:static;max-height:none;max-width:760px;margin:0 auto;display:block}
+#v-work.admin #v-detail .back{display:inline-flex!important}
+#v-work.admin #v-detail .log{max-height:60vh}
+#v-work.admin-detail #admin-head,#v-work.admin-detail #sites-box,#v-work.admin-detail #cases-box,#v-work.admin-detail .counts,#v-work.admin-detail .alertset,#v-work.admin-detail .oldline{display:none!important}
 [hidden]{display:none!important}
 @media (max-width:959px){
   #v-work.in-detail .counts{display:none}
@@ -155,7 +199,7 @@ table.sites tr[aria-selected=true] td{box-shadow:inset 0 -2px 0 var(--blue)}
 </head>
 <body>
 <div class="vh" id="live" role="status"></div>
-<div class="top"><div class="in"><b id="top-t">管理室</b><span class="scope" id="scope">文字求助</span><button type="button" class="out" id="logout" hidden>登出</button></div></div>
+<div class="top"><div class="in"><b id="top-t">管理室</b><span class="scope" id="scope">文字求助</span><span class="robadge" id="ro-badge" hidden>僅供查看</span><button type="button" class="out" id="logout" hidden>登出</button></div></div>
 <div class="demo" id="demo-bar" hidden>試用版：僅供介面測試，未連線至實際管理室。資料只存在這個瀏覽器，請另開客人端分頁一起測試。</div>
 
 <!-- 登入 -->
@@ -187,6 +231,11 @@ table.sites tr[aria-selected=true] td{box-shadow:inset 0 -2px 0 var(--blue)}
 
 <!-- 工作區 -->
 <div class="page" id="v-work" hidden>
+  <div class="adminhead" id="admin-head" hidden>
+    <h1 id="admin-title" tabindex="-1">跨場案件總覽</h1>
+    <p class="muted" style="margin:0">此帳號僅能查看；接手、回覆與結案由各場管理室處理。</p>
+    <p class="syncline" id="syncline" role="status">讀取中…</p>
+  </div>
   <div class="alertset" id="alertset">
     <div class="t"><b id="al-t">提醒尚未測試</b>
       <details id="al-d"><summary>說明</summary><span id="al-p">本頁保持前景且裝置支援時，可播放提醒聲。震動與系統通知依裝置及設定而定；請先測試，再開始值守。</span></details></div>
@@ -194,17 +243,39 @@ table.sites tr[aria-selected=true] td{box-shadow:inset 0 -2px 0 var(--blue)}
   </div>
   <p class="loadst" id="loadst" role="status">讀取案件中…</p>
   <div class="counts" aria-label="本場案件數">
-    <div class="n"><span>待接手</span><strong id="n-new">0</strong><small class="oldest" id="n-old"></small></div>
+    <div class="n"><span>待接手</span><strong id="n-new">0</strong></div>
     <div><span>處理中</span><strong id="n-work">0</strong></div>
     <div><span>今日已結案</span><strong id="n-closed">0</strong></div>
   </div>
+  <p class="oldline" id="n-oldline" hidden></p>
   <section class="box sitesbox" id="sites-box" hidden aria-labelledby="sites-title">
-    <h2 id="sites-title">各場狀況</h2>
-    <p class="muted small" style="margin:-4px 0 10px">管理員只能查看；接手、回覆與結案請由各場管理室處理。點選場站可篩選下方案件。</p>
-    <div class="tablewrap"><table class="sites">
-      <thead><tr><th scope="col">場站</th><th scope="col">待接手</th><th scope="col">處理中</th><th scope="col">今日結案</th><th scope="col">最久等候</th></tr></thead>
+    <div class="sbhead">
+      <div><h2 id="sites-title">場站概況</h2><p class="muted small" id="sites-sub" style="margin:2px 0 0"></p></div>
+      <div class="sbtools"><a class="lnk only-narrow" href="#cases-title" id="jump-cases">跳至案件</a>
+        <label class="vh" for="site-sort">排序方式</label><select id="site-sort" class="sortsel"><option value="wait">排序：最久等候</option><option value="n">排序：待接手件數</option><option value="name">排序：場名</option></select></div>
+    </div>
+    <div class="tablewrap only-wide"><table class="sites">
+      <thead><tr><th scope="col">場站</th><th scope="col" class="num">待接手</th><th scope="col" class="num">處理中</th><th scope="col" class="num">今日結案</th><th scope="col" class="num">最久等候</th></tr></thead>
       <tbody id="sites-body"></tbody>
     </table></div>
+    <div class="cardlist only-narrow" id="sites-cards"></div>
+    <button type="button" class="btn line wide morebtn" id="sites-more" aria-expanded="false" hidden></button>
+    <button type="button" class="btn line wide morebtn" id="closed-toggle" aria-expanded="false" aria-controls="closed-list" hidden></button>
+    <p class="muted small closedlist" id="closed-list" hidden></p>
+  </section>
+  <section class="box casesbox" id="cases-box" hidden aria-labelledby="cases-title">
+    <div class="sbhead"><h2 id="cases-title" tabindex="-1">案件清單</h2><span class="muted small" id="cases-count"></span></div>
+    <div class="filters">
+      <label class="vh" for="f-site">篩選場站</label><select id="f-site"><option value="">場站：全部已開放</option></select>
+      <label class="vh" for="f-state">篩選狀態</label><select id="f-state"><option value="open">狀態：進行中</option><option value="closed">狀態：今日結案</option></select>
+    </div>
+    <div class="tablewrap only-wide"><table class="ctable">
+      <thead><tr><th scope="col">案件編號</th><th scope="col">場站</th><th scope="col">位置｜狀況</th><th scope="col">狀態</th><th scope="col">本輪時間</th><th scope="col"><span class="vh">操作</span></th></tr></thead>
+      <tbody id="cases-body"></tbody>
+    </table></div>
+    <div class="cardlist only-narrow" id="cases-cards"></div>
+    <p class="empty" id="cases-empty" hidden>此條件沒有案件。</p>
+    <p class="muted small" id="cases-foot" style="margin:10px 0 0"></p>
   </section>
   <div class="cols">
     <section id="v-list" aria-labelledby="list-title">
@@ -220,6 +291,7 @@ table.sites tr[aria-selected=true] td{box-shadow:inset 0 -2px 0 var(--blue)}
 
     <section id="v-detail" class="box" hidden aria-labelledby="d-title">
       <button type="button" class="back" id="back">← 回案件列表</button>
+      <p class="ro" id="d-ro" hidden>僅供查看，無法接手、回覆或結案。</p>
       <div class="dhead"><h2 id="d-title" tabindex="-1"></h2><span class="chip" id="d-chip"></span>
         <button class="btn line sm" type="button" id="d-close" hidden>結案…</button></div>
       <p class="dsub" id="d-sub"></p>
@@ -230,7 +302,6 @@ table.sites tr[aria-selected=true] td{box-shadow:inset 0 -2px 0 var(--blue)}
       </dl>
       <div class="log" id="d-log" role="log" aria-label="對談內容"><div id="d-msgs" style="display:contents"></div><div id="d-pend" style="display:contents"></div></div>
 
-      <p class="ro" id="d-ro" hidden>管理員檢視：只能查看對話，不能接手或回覆。</p>
       <div class="gate" id="d-gate" hidden>
         <p>接手後才能回覆。接手後，客人會看到「管理員已接手」。</p>
         <button class="btn wide big" type="button" id="d-accept">接手此案件</button>
@@ -379,10 +450,18 @@ table.sites tr[aria-selected=true] td{box-shadow:inset 0 -2px 0 var(--blue)}
     $('top-t').textContent = ADMIN ? '管理員' : '管理室';
     document.title = (ADMIN ? '管理員｜' : '管理室｜') + me.siteName;
     if (ADMIN) {
-      $('sites-box').hidden = false; $('site-filter-box').hidden = false; $('list-title').textContent = '各場案件';
+      $('v-work').classList.add('admin');
+      $('admin-head').hidden = false; $('sites-box').hidden = false; $('cases-box').hidden = false; $('ro-badge').hidden = false;
+      $('top-t').textContent = '文字求助｜跨場管理'; $('scope').textContent = '';
+      $('loadst').hidden = true;
       $('al-p').textContent = '本頁保持前景且裝置支援時，任一場有新案件都會播放提醒聲。管理員只能查看，不能接手。';
-      ALL_SITES.filter(function(s){ return !LIVE || !PILOT || PILOT.indexOf(s.id) >= 0; }).forEach(function(s){ var o = document.createElement('option'); o.value = s.id; o.textContent = s.name; $('site-filter').appendChild(o); });
-      $('site-filter').onchange = function(){ siteF = this.value; drawList(); drawSites(); };
+      openSites().forEach(function(s){ var o = document.createElement('option'); o.value = s.id; o.textContent = '場站：' + s.name; $('f-site').appendChild(o); });
+      $('f-site').onchange = function(){ siteF = this.value; drawList(); drawSites(); };
+      $('f-state').onchange = function(){ drawAdminCases(); };
+      $('site-sort').onchange = function(){ drawSites(); };
+      $('sites-more').onclick = function(){ showAllSites = !showAllSites; drawSites(); };
+      $('closed-toggle').onclick = function(){ var o = $('closed-list').hidden; $('closed-list').hidden = !o; this.setAttribute('aria-expanded', o ? 'true' : 'false'); drawSites(); };
+      $('jump-cases').onclick = function(e){ e.preventDefault(); $('cases-box').scrollIntoView({ block: 'start' }); $('cases-title').focus(); };
       unsub = API.watchAll(onCases, connErr);
       return;
     }
@@ -391,10 +470,12 @@ table.sites tr[aria-selected=true] td{box-shadow:inset 0 -2px 0 var(--blue)}
   var lastSync = 0;
   function connErr(e){
     var t = e && e.code === 'denied' ? '此帳號沒有' + (ADMIN ? '管理員' : '本場') + '權限，請登出後重新登入。' : '連線中斷' + (lastSync ? '，以下為 ' + hm(lastSync) + ' 的資料' : '') + '；請確認網路。';
+    if (ADMIN) { $('syncline').className = 'syncline bad'; $('syncline').textContent = t; say(t); return; }
     $('loadst').hidden = false; $('loadst').className = 'loadst bad'; $('loadst').textContent = t; say(t);
   }
   function onCases(list){
     cases = list; lastSync = Date.now(); $('loadst').hidden = true;
+    if (ADMIN) { $('syncline').className = 'syncline'; $('syncline').textContent = '已連線｜最後成功更新 ' + hm(lastSync); }
     if (!seen) {
       // 第一次載入（或交班重開）：不響鈴，但明確告知目前待接手件數
       var waiting = list.filter(function(c){ return c.status === 'new'; });
@@ -421,36 +502,98 @@ table.sites tr[aria-selected=true] td{box-shadow:inset 0 -2px 0 var(--blue)}
   function hm(t){ var d = new Date(t); return ('0' + d.getHours()).slice(-2) + ':' + ('0' + d.getMinutes()).slice(-2); }
   function isToday(t){ var a = new Date(t), b = new Date(); return a.toDateString() === b.toDateString(); }
   var ORDER = { new: 0, accepted: 1, working: 1, closed: 2 }, siteF = '';
-  // 管理員：各場一列，有待接手的排前面，最久等候標示
+  // 管理員：已開放的場站（正式版為試辦場站）；未開放的收合，不以 0 冒充有服務
+  var showAllSites = false;
+  function openSites(){ return ALL_SITES.filter(function(s){ return !LIVE || !PILOT || PILOT.indexOf(s.id) >= 0; }); }
+  function el(tag, cls, text){ var e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; }
+  function filterSite(id){ siteF = siteF === id ? '' : id; $('f-site').value = siteF; drawList(); drawSites(); $('cases-box').scrollIntoView({ block: 'start' }); $('cases-title').focus(); }
   function drawSites(){
     if (!ADMIN) return;
-    var ids = {}; ALL_SITES.forEach(function(s){ if (!LIVE || !PILOT || PILOT.indexOf(s.id) >= 0) ids[s.id] = 1; });
-    cases.forEach(function(c){ ids[c.site] = 1; });
-    var rows = Object.keys(ids).map(function(id){
+    var opens = openSites(), openIds = {}; opens.forEach(function(s){ openIds[s.id] = 1; });
+    cases.forEach(function(c){ openIds[c.site] = 1; });
+    var rows = Object.keys(openIds).map(function(id){
       var cs = cases.filter(function(c){ return c.site === id; });
       var waiting = cs.filter(function(c){ return c.status === 'new'; });
       return { id: id, name: siteName(id), n: waiting.length, w: cs.filter(function(c){ return c.status === 'accepted' || c.status === 'working'; }).length,
         d: cs.filter(function(c){ return c.status === 'closed' && isToday(c.closedAt); }).length,
         oldest: waiting.length ? Math.min.apply(null, waiting.map(function(c){ return c.queuedAt; })) : 0 };
     });
-    rows.sort(function(a, b){ return (b.n - a.n) || ((a.oldest || 9e15) - (b.oldest || 9e15)) || (b.w - a.w) || a.name.localeCompare(b.name, 'zh-Hant'); });
-    var tb = $('sites-body'); tb.innerHTML = '';
-    rows.forEach(function(r){
-      var tr = document.createElement('tr'); if (r.n) tr.className = 'hot'; tr.setAttribute('aria-selected', siteF === r.id ? 'true' : 'false');
-      var td = document.createElement('td'), b = document.createElement('button'); b.type = 'button'; b.textContent = r.name;
-      b.onclick = function(){ siteF = siteF === r.id ? '' : r.id; $('site-filter').value = siteF; drawList(); drawSites(); };
-      td.appendChild(b); tr.appendChild(td);
-      [[r.n, 'w'], [r.w, ''], [r.d, ''], [r.oldest ? ago(r.oldest).replace('前', '') : '—', 'w']].forEach(function(v){ var t = document.createElement('td'), s = document.createElement('span'); s.textContent = v[0]; if (v[1] && r.n) s.className = v[1]; t.appendChild(s); tr.appendChild(t); });
+    var mode = $('site-sort').value;
+    rows.sort(function(a, b){
+      if (mode === 'name') return a.name.localeCompare(b.name, 'zh-Hant');
+      if (mode === 'n') return (b.n - a.n) || (b.w - a.w) || a.name.localeCompare(b.name, 'zh-Hant');
+      return ((a.oldest || 9e15) - (b.oldest || 9e15)) || (b.n - a.n) || (b.w - a.w) || a.name.localeCompare(b.name, 'zh-Hant');
+    });
+    var total = ALL_SITES.length, nOpen = rows.length, closedSites = ALL_SITES.filter(function(s){ return !openIds[s.id]; });
+    $('sites-sub').textContent = '已開放 ' + nOpen + '／配置 ' + total + ' 場';
+    var shown = showAllSites ? rows : rows.slice(0, 6);
+    $('sites-more').hidden = rows.length <= 6;
+    $('sites-more').textContent = showAllSites ? '只顯示前 6 場' : '顯示其餘已開放場站（' + (rows.length - 6) + '）';
+    $('sites-more').setAttribute('aria-expanded', showAllSites ? 'true' : 'false');
+    var tb = $('sites-body'), cards = $('sites-cards'); tb.innerHTML = ''; cards.innerHTML = '';
+    var syncTxt = lastSync ? '資料已更新' : '讀取中';
+    shown.forEach(function(r){
+      var wait = r.oldest ? ago(r.oldest).replace('前', '') : '—';
+      var tr = el('tr', r.n ? 'hot' : ''); tr.setAttribute('aria-selected', siteF === r.id ? 'true' : 'false');
+      var td = el('td'), b = el('button'); b.type = 'button'; b.textContent = r.name; b.appendChild(el('span', 'sub', '已開放・' + syncTxt));
+      b.onclick = function(){ filterSite(r.id); }; td.appendChild(b); tr.appendChild(td);
+      [[r.n, 'w'], [r.w, ''], [r.d, ''], [wait, 'w']].forEach(function(v){ var t = el('td', 'num'), sp = el('span', v[1] && r.n ? v[1] : '', v[0]); t.appendChild(sp); tr.appendChild(t); });
       tb.appendChild(tr);
+      var c = el('article', 'scard' + (r.n ? ' hot' : ''));
+      var nm = el('div', 'nm'); nm.appendChild(el('span', '', r.name)); nm.appendChild(el('span', 'chip acc', '已開放')); c.appendChild(nm);
+      c.appendChild(el('p', 'nums', '待接手 ' + r.n + '　處理中 ' + r.w + '　今日結案 ' + r.d));
+      var ft = el('div', 'foot'); ft.appendChild(el('span', r.n ? 'w' : 'muted', '最久等候 ' + wait));
+      var vb = el('button', 'btn line viewbtn', siteF === r.id ? '取消篩選' : '查看'); vb.type = 'button'; vb.setAttribute('aria-label', (siteF === r.id ? '取消篩選 ' : '查看 ') + r.name + ' 的案件'); vb.onclick = function(){ filterSite(r.id); }; ft.appendChild(vb);
+      c.appendChild(ft); cards.appendChild(c);
+    });
+    $('closed-toggle').hidden = closedSites.length === 0;
+    var open_ = !$('closed-list').hidden;
+    $('closed-toggle').textContent = '未開放文字求助 ' + closedSites.length + ' 場　' + (open_ ? '收合' : '展開配置清單');
+    $('closed-list').textContent = closedSites.map(function(s){ return s.name; }).join('、');
+  }
+  // 管理員：案件清單（電腦為表格、手機為卡片；只能查看）
+  function caseTime(c){
+    if (c.status === 'new') return '已等 ' + Math.max(0, Math.floor((Date.now() - c.queuedAt) / 60000)) + ' 分鐘';
+    if (c.status === 'accepted') return hm(c.acceptedAt) + ' 接手';
+    if (c.status === 'working') return hm(c.workingAt) + ' 開始處理';
+    return hm(c.closedAt) + ' 結案';
+  }
+  function drawAdminCases(){
+    if (!ADMIN) return;
+    var st = $('f-state').value;
+    var show = cases.filter(function(c){ return (st === 'closed' ? c.status === 'closed' && isToday(c.closedAt) : c.status !== 'closed') && (!siteF || c.site === siteF); });
+    show.sort(function(a, b){ return st === 'closed' ? b.closedAt - a.closedAt : (ORDER[a.status] - ORDER[b.status]) || (a.queuedAt - b.queuedAt); });
+    var fa = document.activeElement, focusId = fa && fa.dataset ? fa.dataset.view : null;
+    var tb = $('cases-body'), cards = $('cases-cards'); tb.innerHTML = ''; cards.innerHTML = '';
+    $('cases-count').textContent = (st === 'closed' ? '今日結案 ' : '進行中 ') + show.length + ' 件';
+    $('cases-empty').hidden = show.length > 0;
+    $('cases-foot').textContent = '已顯示 ' + show.length + '／' + show.length + ' 件｜僅查看，不改變案件狀態';
+    show.forEach(function(c){
+      var label = (c.device || '未填位置') + '｜' + c.category, sn = c.siteName || siteName(c.site);
+      var tr = el('tr');
+      tr.appendChild(el('td', 'code', c.code)); tr.appendChild(el('td', '', sn)); tr.appendChild(el('td', '', label));
+      var t1 = el('td'); t1.appendChild(el('span', 'chip ' + STATUS[c.status][0], STATUS[c.status][1].replace('・尚未接手', ''))); tr.appendChild(t1);
+      tr.appendChild(el('td', c.status === 'new' ? 'wt' : '', caseTime(c)));
+      var t2 = el('td'), b = el('button', 'btn line viewbtn', '查看案件'); b.type = 'button'; b.dataset.view = c.id; b.setAttribute('aria-label', '查看案件 ' + c.code + '，' + label); b.onclick = function(){ open(c.id); }; t2.appendChild(b); tr.appendChild(t2);
+      tb.appendChild(tr);
+      var cd = el('article', 'ccard');
+      var top = el('div', 'top2'); top.appendChild(el('span', 'chip ' + STATUS[c.status][0], STATUS[c.status][1].replace('・尚未接手', ''))); top.appendChild(el('span', c.status === 'new' ? 'wt' : 'muted', caseTime(c))); cd.appendChild(top);
+      cd.appendChild(el('p', 'dv', label)); cd.appendChild(el('p', 'muted', sn));
+      var ft = el('div', 'foot'); ft.appendChild(el('span', 'code', c.code));
+      var b2 = el('button', 'btn line viewbtn', '查看案件'); b2.type = 'button'; b2.dataset.view = c.id + '-m'; b2.setAttribute('aria-label', '查看案件 ' + c.code + '，' + label); b2.onclick = function(){ open(c.id); }; ft.appendChild(b2);
+      cd.appendChild(ft); cards.appendChild(cd);
+      if (focusId === c.id) b.focus(); else if (focusId === c.id + '-m') b2.focus();
     });
   }
   // 案件清單：重畫後把鍵盤焦點放回原本那一件
   function drawList(){
     var wl = cases.filter(function(c){ return c.status === 'new' && (!siteF || c.site === siteF); });
     $('n-new').textContent = wl.length;
-    $('n-old').textContent = wl.length ? '最久等候 ' + ago(Math.min.apply(null, wl.map(function(c){ return c.queuedAt; }))).replace('前', '') : '';
+    $('n-oldline').hidden = !wl.length || ADMIN;
+    $('n-oldline').textContent = wl.length ? '最久等候：' + ago(Math.min.apply(null, wl.map(function(c){ return c.queuedAt; }))).replace('前', '') : '';
     $('n-work').textContent = cases.filter(function(c){ return c.status === 'accepted' || c.status === 'working'; }).length;
     $('n-closed').textContent = cases.filter(function(c){ return c.status === 'closed' && isToday(c.closedAt); }).length;
+    if (ADMIN) { drawAdminCases(); return; }
     var show = cases.filter(function(c){ return (filter === 'closed' ? c.status === 'closed' : c.status !== 'closed') && (!siteF || c.site === siteF); });
     show.sort(function(a, b){ return filter === 'closed' ? b.closedAt - a.closedAt : (ORDER[a.status] - ORDER[b.status]) || (a.queuedAt - b.queuedAt); });
     var ul = $('list'), fa = document.activeElement, focusId = fa && fa.classList && fa.classList.contains('case') ? fa.dataset.id : null;
@@ -478,7 +621,7 @@ table.sites tr[aria-selected=true] td{box-shadow:inset 0 -2px 0 var(--blue)}
     b.onclick = function(){ filter = b.dataset.f; Array.prototype.forEach.call(document.querySelectorAll('.filter button'), function(x){ x.setAttribute('aria-pressed', x === b ? 'true' : 'false'); }); drawList(); };
   });
   // 每 30 秒只更新「幾分鐘前」，不重建清單
-  setInterval(function(){ Array.prototype.forEach.call(document.querySelectorAll('.case .age'), function(a){ a.textContent = ago(+a.dataset.t); }); drawSites(); }, 30000);
+  setInterval(function(){ Array.prototype.forEach.call(document.querySelectorAll('.case .age'), function(a){ a.textContent = ago(+a.dataset.t); }); drawSites(); drawAdminCases(); }, 30000);
 
   // 案件詳細
   var pending = {}, drafts = {}, shown = {}, overArm = '', detail = null, unDetail = null;
@@ -486,6 +629,7 @@ table.sites tr[aria-selected=true] td{box-shadow:inset 0 -2px 0 var(--blue)}
     if (sel !== id) { if (unDetail) unDetail(); detail = undefined; unDetail = API.watchCase(id, function(c){ detail = c; if (sel === id) drawDetail(); }); }
     if (sel && sel !== id) drafts[sel] = $('d-draft').value;
     if (sel !== id) { $('d-msgs').innerHTML = ''; shown = {}; overArm = ''; resetOver(); $('e-accept').textContent = ''; $('e-reply').textContent = ''; }
+    if (ADMIN && !sel) { adminScroll = window.scrollY; $('v-work').classList.add('admin-detail'); $('back').textContent = '← 返回總覽'; window.scrollTo(0, 0); }
     sel = id; $('v-detail').hidden = false; $('v-work').classList.add('in-detail');
     $('d-draft').value = drafts[id] || '';
     if (!matchMedia('(min-width:960px)').matches) $('v-list').hidden = true;
@@ -495,8 +639,15 @@ table.sites tr[aria-selected=true] td{box-shadow:inset 0 -2px 0 var(--blue)}
   $('back').onclick = function(){
     var id = sel; if (id) drafts[id] = $('d-draft').value;
     sel = null; if (unDetail) unDetail(); unDetail = null; detail = null; $('v-work').classList.remove('in-detail'); $('v-detail').hidden = true; $('v-list').hidden = false; drawList();
+    if (ADMIN) {
+      $('v-work').classList.remove('admin-detail'); window.scrollTo(0, adminScroll);
+      var vb = document.querySelector('[data-view="' + id + '"]') || document.querySelector('[data-view="' + id + '-m"]');
+      if (vb && vb.offsetParent) vb.focus(); else { var vm = document.querySelector('[data-view="' + id + '-m"]'); if (vm && vm.offsetParent) vm.focus(); else $('cases-title').focus(); }
+      return;
+    }
     var b = document.querySelector('.case[data-id="' + id + '"]') || document.querySelector('.case'); if (b) b.focus(); else $('list-title').focus();
   };
+  var adminScroll = 0;
   function bubble(cls, head, text){
     var d = document.createElement('div'); d.className = 'msg ' + cls;
     if (head) { var s = document.createElement('small'); s.textContent = head; d.appendChild(s); }
