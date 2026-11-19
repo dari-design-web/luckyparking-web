@@ -21,6 +21,7 @@ const SITE_CC = {
 const TYPES = ['收費／繳費', '設備故障', '服務態度', '環境清潔', '安全問題', '建議或讚美', '其他'];
 
 const SITES = {
+  'general': { name: '一般意見', city: '—' },
   'tpmc': { name: '臺北流行音樂中心地下停車場', city: '臺北市' },
   'rongxing': { name: '榮星花園地下停車場', city: '臺北市' },
   'minquan': { name: '民權公園地下停車場', city: '臺北市' },
@@ -135,7 +136,7 @@ function doPost(e) {
 
   const body = [
     '案件編號：' + caseNo,
-    '停車場：' + site.name + '（' + site.city + '）',
+    siteId === 'general' ? '意見對象：一般意見（非特定停車場）' : '停車場：' + site.name + '（' + site.city + '）',
     '意見類型：' + type,
     '發生時間：' + (when || '（未填）'),
     '',

@@ -92,7 +92,7 @@ function doPost(e) {
 
   const body = [
     '案件編號：' + caseNo,
-    '停車場：' + site.name + '（' + site.city + '）',
+    siteId === 'general' ? '意見對象：一般意見（非特定停車場）' : '停車場：' + site.name + '（' + site.city + '）',
     '意見類型：' + type,
     '發生時間：' + (when || '（未填）'),
     '',

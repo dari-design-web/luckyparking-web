@@ -104,7 +104,7 @@ ${body}
       </div>
       <div><h4>關於</h4><a href="about.html">關於大日</a><a href="awards.html">榮譽獎項</a><a href="esg.html">永續 ESG</a><a href="careers.html">人才招募</a></div>
       <div><h4>事業</h4><a href="parking.html">停車場經營</a><a href="venues.html">多元化經營</a><a href="services.html">智慧服務</a></div>
-      <div><h4>聯絡</h4><a href="contact.html">合作洽詢</a><a href="news.html">最新消息</a><a href="${esc(SITE.facebook)}" target="_blank" rel="noopener">Facebook</a></div>
+      <div><h4>聯絡</h4><a href="contact.html">合作洽詢</a><a href="news.html">最新消息</a><a href="feedback/">顧客意見</a><a href="${esc(SITE.facebook)}" target="_blank" rel="noopener">Facebook</a></div>
     </div>
     <div class="copy"><span>© ${new Date().getFullYear()} 大日開發有限公司 DARI GROUP・<a href="privacy.html">隱私權聲明</a></span><span>Lucky Parking 為大日開發停車品牌</span></div>
   </div>
@@ -612,7 +612,7 @@ fs.writeFileSync(path.join(OUT, 'robots.txt'), `User-agent: *\nAllow: /\nSitemap
   fs.writeFileSync(path.join(fbDir, 'index.html'), fs.readFileSync(path.join(ROOT, 'src/apps/feedback.html'), 'utf8')
     .replace('__SITES__', JSON.stringify(LOTS))
     .replace('__ENDPOINT__', esc(SITE.feedbackEndpoint || '')));
-  const gsMap = '{\n' + LOTS.map(l => `  '${l.id}': { name: '${l.name}', city: '${l.city}' }`).join(',\n') + '\n}';
+  const gsMap = '{\n  \'general\': { name: \'一般意見\', city: \'—\' },\n' + LOTS.map(l => `  '${l.id}': { name: '${l.name}', city: '${l.city}' }`).join(',\n') + '\n}';
   fs.mkdirSync(path.join(ROOT, 'apps-script'), { recursive: true });
   fs.writeFileSync(path.join(ROOT, 'apps-script/feedback.gs'), fs.readFileSync(path.join(ROOT, 'src/apps/feedback.gs'), 'utf8')
     .replace('__SITES__', gsMap).replace('__TO__', SITE.feedbackTo || SITE.email));
