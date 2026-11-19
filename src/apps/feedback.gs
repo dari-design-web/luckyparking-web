@@ -5,7 +5,10 @@
  * 1. 到 script.google.com 建立新專案，把原本的程式碼刪掉，貼上本檔全部內容後儲存。
  * 2. 修改下方 TO（收件信箱）；若某幾場要另外通知場站主管，填在 SITE_CC。
  * 3. 上方函式選單選「setup」→ 執行 → 依畫面完成授權。
- *    它會在您的雲端硬碟建立「顧客意見箱紀錄」試算表，並寄一封測試信到 TO。
+ *    它會在您的雲端硬碟建立「顧客意見箱紀錄」試算表與「顧客意見箱照片」資料夾，並寄一封測試信到 TO。
+ *
+ * 更新程式碼時（例如新增照片功能）：貼上新程式碼 → 儲存 → 再執行一次 setup（新功能需要重新授權）
+ * → 部署 → 管理部署作業 → 鉛筆圖示 → 版本選「新版本」→ 部署。網址不會改變。
  * 4. 收到測試信後：部署 → 新增部署作業 → 類型選「網頁應用程式」
  *    執行身分：我；誰可以存取：所有人 → 部署，把「網頁應用程式網址」交給 Claude。
  */
@@ -40,6 +43,18 @@ function doPost(e) {
   if (mail && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(mail)) return out({ ok: false, error: 'mail' });
   const when = get('when', 20).replace('T', ' ');
 
+  // 照片：最多 3 張，只收 JPEG（網頁端已壓縮），每張解碼後不超過 2MB
+  const photos = [];
+  for (let i = 1; i <= 3; i++) {
+    const d = String(p['p' + i] || '');
+    if (!d) continue;
+    const m = d.match(/^data:image\/jpeg;base64,([A-Za-z0-9+\/=]+)$/);
+    if (!m) return out({ ok: false, error: 'photo' });
+    const bytes = Utilities.base64Decode(m[1]);
+    if (bytes.length > 2 * 1024 * 1024) return out({ ok: false, error: 'photo' });
+    photos.push(bytes);
+  }
+
   // 防灌爆：同內容 10 分鐘內只收一次；同一場每小時最多 30 件
   const cache = CacheService.getScriptCache();
   const dupKey = 'd_' + Utilities.base64EncodeWebSafe(Utilities.computeDigest(Utilities.DigestAlgorithm.MD5, siteId + msg));
@@ -53,10 +68,24 @@ function doPost(e) {
   let caseNo;
   try {
     caseNo = nextCaseNo();
-    const now = Utilities.formatDate(new Date(), 'Asia/Taipei', 'yyyy-MM-dd HH:mm');
-    sheet().appendRow([now, caseNo, siteId, site.name, site.city, type, when, msg, reply ? '需要' : '不需要', name, tel ? "'" + tel : '', mail, '未處理', '']);
   } finally {
     lock.releaseLock();
+  }
+  const blobs = photos.map((b, i) => Utilities.newBlob(b, 'image/jpeg', caseNo + '_' + (i + 1) + '.jpg'));
+  let photoLinks = '';
+  if (blobs.length) {
+    try {   // 存雲端失敗（例如尚未重新授權）時，照片仍會以附件寄出
+      const props = PropertiesService.getScriptProperties();
+      if (!props.getProperty('folderId')) props.setProperty('folderId', DriveApp.createFolder('顧客意見箱照片').getId());
+      const folder = DriveApp.getFolderById(props.getProperty('folderId'));
+      photoLinks = blobs.map(b => folder.createFile(b).getUrl()).join('\n');
+    } catch (err) {
+      photoLinks = '（照片只在信件附件，未存雲端）';
+    }
+  }
+  {
+    const now = Utilities.formatDate(new Date(), 'Asia/Taipei', 'yyyy-MM-dd HH:mm');
+    sheet().appendRow([now, caseNo, siteId, site.name, site.city, type, when, msg, reply ? '需要' : '不需要', name, tel ? "'" + tel : '', mail, '未處理', '', photoLinks]);
   }
   cache.put(dupKey, '1', 600);
   cache.put(hourKey, String(n + 1), 3600);
@@ -74,6 +103,7 @@ function doPost(e) {
     reply ? '稱呼：' + (name || '（未填）') : '',
     reply ? '手機：' + (tel || '（未留）') : '',
     reply ? '電子郵件：' + (mail || '（未留）') : '',
+    blobs.length ? '照片：' + blobs.length + ' 張（見附件，也存在雲端硬碟「顧客意見箱照片」資料夾）' : '',
     '',
     '來源：線上顧客意見箱（掃描場站 QR Code）。' + (mail ? '直接回覆這封信，就會寄給顧客。' : ''),
     '所有意見都記錄在「顧客意見箱紀錄」試算表，處理後請更新「處理狀態」欄。'
@@ -82,6 +112,7 @@ function doPost(e) {
   const opts = { to: TO, subject: '【顧客意見】' + site.name.replace(/停車場$/, '') + '｜' + type + '｜' + caseNo, body: body, name: '大日開發顧客意見箱' };
   if (SITE_CC[siteId]) opts.cc = SITE_CC[siteId];
   if (mail) opts.replyTo = mail;
+  if (blobs.length) opts.attachments = blobs;
   MailApp.sendEmail(opts);
   return out({ ok: true, caseNo: caseNo });
 }
@@ -115,10 +146,13 @@ function setup() {
     const ss = SpreadsheetApp.create('顧客意見箱紀錄');
     const sh = ss.getSheets()[0];
     sh.setName('意見紀錄');
-    sh.appendRow(['送出時間', '案件編號', '場站代碼', '停車場', '縣市', '意見類型', '發生時間', '意見內容', '需要回覆', '稱呼', '手機', '電子郵件', '處理狀態', '處理說明']);
+    sh.appendRow(['送出時間', '案件編號', '場站代碼', '停車場', '縣市', '意見類型', '發生時間', '意見內容', '需要回覆', '稱呼', '手機', '電子郵件', '處理狀態', '處理說明', '照片']);
     sh.setFrozenRows(1);
-    sh.getRange('A1:N1').setFontWeight('bold');
+    sh.getRange('A1:O1').setFontWeight('bold');
     props.setProperty('sheetId', ss.getId());
   }
-  MailApp.sendEmail(TO, '【測試】顧客意見箱設定成功', '收到這封信，代表顧客意見箱已可寄信。\n紀錄試算表：' + SpreadsheetApp.openById(props.getProperty('sheetId')).getUrl());
+  const sh = sheet();
+  if (sh.getRange('O1').getValue() !== '照片') sh.getRange('O1').setValue('照片').setFontWeight('bold');
+  if (!props.getProperty('folderId')) props.setProperty('folderId', DriveApp.createFolder('顧客意見箱照片').getId());
+  MailApp.sendEmail(TO, '【測試】顧客意見箱設定成功', '收到這封信，代表顧客意見箱已可寄信。\n紀錄試算表：' + SpreadsheetApp.openById(props.getProperty('sheetId')).getUrl() + '\n照片資料夾：' + DriveApp.getFolderById(props.getProperty('folderId')).getUrl());
 }

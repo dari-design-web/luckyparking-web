@@ -51,6 +51,13 @@ select:focus,textarea:focus,input:focus{outline:3px solid rgba(37,97,169,.35);bo
 .case{display:inline-block;font-size:24px;font-weight:700;letter-spacing:.04em;background:var(--bg);border:1px dashed var(--line);border-radius:10px;padding:8px 16px;margin:6px 0 10px}
 .demo{background:#fff4d6;border:1px solid #e9c46a;color:#6b4e00;border-radius:10px;padding:10px 12px;font-size:14px;margin:14px 0 0}
 footer{color:var(--ink2);font-size:13px;text-align:center;padding:22px 0 36px}
+.photos{display:flex;gap:10px;flex-wrap:wrap;margin:0 0 10px}
+.ph{position:relative;width:92px;height:92px;border-radius:10px;overflow:hidden;border:1px solid var(--line);background:var(--bg)}
+.ph img{width:100%;height:100%;object-fit:cover;display:block}
+.ph button{position:absolute;top:4px;right:4px;width:30px;height:30px;border-radius:50%;border:0;background:rgba(18,26,38,.72);color:#fff;font-size:18px;line-height:30px;cursor:pointer}
+.pbtns{display:flex;gap:10px;flex-wrap:wrap}
+.pbtn{display:inline-flex;align-items:center;justify-content:center;gap:6px;min-height:48px;padding:0 18px;border:1.5px solid var(--blue);border-radius:12px;background:#fff;color:var(--blue);font:inherit;font-size:16px;font-weight:700;cursor:pointer}
+.pbtn[disabled]{opacity:.45;cursor:default}
 .hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
 [hidden]{display:none!important}
 </style>
@@ -95,13 +102,35 @@ footer{color:var(--ink2);font-size:13px;text-align:center;padding:22px 0 36px}
   </div>
 
   <div class="card">
+    <span class="lbl" id="ph-lbl">附上照片<small>選填，最多 3 張</small></span>
+    <div class="photos" id="photos" aria-live="polite"></div>
+    <div class="pbtns">
+      <button type="button" class="pbtn" id="ph-cam">拍照</button>
+      <button type="button" class="pbtn" id="ph-pick">從相簿選擇</button>
+    </div>
+    <input type="file" id="f-cam" accept="image/*" capture="environment" hidden>
+    <input type="file" id="f-pick" accept="image/*" multiple hidden>
+    <p class="hint">照片會自動縮小後再送出。請避免拍到他人臉部。</p>
+    <p class="err" id="e-photo" role="alert"></p>
+  </div>
+
+  <div class="card">
     <fieldset class="chips" id="reply-set">
       <legend class="lbl">需要我們回覆嗎？</legend>
       <label class="chip"><input type="radio" name="reply" value="需要"><span>需要回覆</span></label>
       <label class="chip"><input type="radio" name="reply" value="不需要" checked><span>不用回覆</span></label>
     </fieldset>
     <div class="row sub" id="contact" hidden>
-      <div><label class="lbl" for="name">怎麼稱呼您<small>選填</small></label><input type="text" id="name" maxlength="50" autocomplete="name"></div>
+      <div>
+        <label class="lbl" for="surname">您的姓氏</label>
+        <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+          <input type="text" id="surname" maxlength="4" autocomplete="family-name" placeholder="例：王" style="width:120px">
+          <fieldset class="chips" style="gap:8px"><legend class="hp">稱謂</legend>
+            <label class="chip"><input type="radio" name="title" value="先生"><span>先生</span></label>
+            <label class="chip"><input type="radio" name="title" value="小姐"><span>小姐</span></label>
+          </fieldset>
+        </div>
+      </div>
       <div><label class="lbl" for="tel">手機號碼</label><input type="tel" id="tel" maxlength="20" inputmode="tel" autocomplete="tel" placeholder="09xxxxxxxx"></div>
       <div><label class="lbl" for="mail">電子郵件</label><input type="email" id="mail" maxlength="120" autocomplete="email"></div>
       <p class="hint" style="margin:0">手機或電子郵件請至少留一項。</p>
@@ -111,7 +140,7 @@ footer{color:var(--ink2);font-size:13px;text-align:center;padding:22px 0 36px}
 
   <div class="hp" aria-hidden="true"><label>請勿填寫<input type="text" id="website" tabindex="-1" autocomplete="off"></label></div>
 
-  <p class="privacy">您填寫的內容只用於處理這次意見，會寄到本公司信箱並留存紀錄供改善服務使用，不會提供給第三方。</p>
+  <p class="privacy">您填寫的內容（含照片）只用於處理這次意見，會寄到本公司信箱並留存紀錄供改善服務使用，不會提供給第三方。</p>
   <button class="submit" type="submit" id="send">送出意見</button>
   <p class="err" id="e-send" role="alert" aria-live="assertive"></p>
 </form>
@@ -168,6 +197,50 @@ footer{color:var(--ink2);font-size:13px;text-align:center;padding:22px 0 36px}
     r.addEventListener('change', function(){ $('contact').hidden = (val('reply') !== '需要'); });
   });
 
+  // 照片：最多 3 張，長邊縮到 1600px、JPEG 壓縮（同時去除拍攝位置等資訊）
+  var MAXP = 3, photos = [], pending = 0;
+  function drawPhotos(){
+    var box = $('photos'); box.innerHTML = '';
+    photos.forEach(function(d, i){
+      var w = document.createElement('div'); w.className = 'ph';
+      w.innerHTML = '<img alt="附件照片 ' + (i + 1) + '"><button type="button" aria-label="移除第 ' + (i + 1) + ' 張照片">×</button>';
+      w.querySelector('img').src = d;
+      w.querySelector('button').onclick = function(){ photos.splice(i, 1); drawPhotos(); };
+      box.appendChild(w);
+    });
+    $('ph-cam').disabled = $('ph-pick').disabled = photos.length >= MAXP;
+  }
+  function shrink(file){
+    return new Promise(function(ok, no){
+      if (!/^image\//.test(file.type) && !/\.(jpe?g|png|heic|heif|webp)$/i.test(file.name)) return no('type');
+      var url = URL.createObjectURL(file), img = new Image();
+      img.onload = function(){
+        var s = Math.min(1, 1600 / Math.max(img.naturalWidth, img.naturalHeight));
+        var c = document.createElement('canvas'); c.width = Math.round(img.naturalWidth * s); c.height = Math.round(img.naturalHeight * s);
+        var g = c.getContext('2d'); g.fillStyle = '#fff'; g.fillRect(0, 0, c.width, c.height); g.drawImage(img, 0, 0, c.width, c.height);
+        URL.revokeObjectURL(url);
+        var q = 0.82, d = c.toDataURL('image/jpeg', q);
+        while (d.length > 1100000 && q > 0.45) { q -= 0.12; d = c.toDataURL('image/jpeg', q); }
+        ok(d);
+      };
+      img.onerror = function(){ URL.revokeObjectURL(url); no('decode'); };
+      img.src = url;
+    });
+  }
+  function addFiles(list){
+    $('e-photo').textContent = '';
+    var files = Array.prototype.slice.call(list || []);
+    if (photos.length + files.length > MAXP) $('e-photo').textContent = '最多 3 張，多的照片沒有加入。';
+    files = files.slice(0, MAXP - photos.length);
+    pending += files.length;
+    files.reduce(function(p, f){
+      return p.then(function(){ pending--; return shrink(f).then(function(d){ photos.push(d); drawPhotos(); }, function(){ $('e-photo').textContent = '有照片無法讀取，請改用 JPG 或 PNG。'; }); });
+    }, Promise.resolve());
+  }
+  $('ph-cam').onclick = function(){ $('f-cam').click(); };
+  $('ph-pick').onclick = function(){ $('f-pick').click(); };
+  ['f-cam', 'f-pick'].forEach(function(id){ $(id).addEventListener('change', function(){ addFiles(this.files); this.value = ''; }); });
+
   function val(name){ var r = f.querySelector('input[name=' + name + ']:checked'); return r ? r.value : ''; }
   function err(id, msg, focusEl){ $(id).textContent = msg; if (msg && focusEl) focusEl.focus(); return !msg; }
 
@@ -176,21 +249,25 @@ footer{color:var(--ink2);font-size:13px;text-align:center;padding:22px 0 36px}
     ['e-site','e-type','e-msg','e-contact','e-send'].forEach(function(id){ $(id).textContent=''; });
     var site = sel.value, type = val('type'), msg = $('msg').value.trim(), reply = val('reply');
     var tel = $('tel').value.replace(/[\s\-()]/g,''), mail = $('mail').value.trim();
+    if (pending > 0) return err('e-send', '照片處理中，請稍候再送出。');
     if (!site) return err('e-site', '請選擇停車場。', sel);
     if (!type) return err('e-type', '請選擇意見類型。', f.querySelector('input[name=type]'));
     if (msg.length < 5) return err('e-msg', '請寫下意見內容（至少 5 個字）。', $('msg'));
     if (reply === '需要') {
+      if (!$('surname').value.trim()) return err('e-contact', '請留下您的姓氏。', $('surname'));
+      if (!val('title')) return err('e-contact', '請選擇先生或小姐。', f.querySelector('input[name=title]'));
       if (!tel && !mail) return err('e-contact', '需要回覆時，請留下手機或電子郵件。', $('tel'));
       if (tel && !/^(\+?886|0)9\d{8}$/.test(tel)) return err('e-contact', '手機號碼格式不正確，請輸入 09 開頭的 10 碼。', $('tel'));
       if (mail && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(mail)) return err('e-contact', '電子郵件格式不正確。', $('mail'));
     }
     var data = new URLSearchParams({
       site: site, type: type, msg: msg, when: $('when').value, reply: reply,
-      name: reply === '需要' ? $('name').value.trim() : '',
+      name: reply === '需要' ? $('surname').value.trim() + val('title') : '',
       tel: reply === '需要' ? tel : '', mail: reply === '需要' ? mail : '',
       website: $('website').value, t: String(Date.now() - t0)
     });
-    var btn = $('send'); btn.disabled = true; btn.textContent = '傳送中…';
+    photos.forEach(function(d, i){ data.append('p' + (i + 1), d); });
+    var btn = $('send'); btn.disabled = true; btn.textContent = photos.length ? '照片上傳中…' : '傳送中…';
     var finish = function(){ btn.disabled = false; btn.textContent = '送出意見'; };
     if (!ep) { setTimeout(function(){ finish(); showDone('FB-示範-0001', true); }, 600); return; }
     fetch(ep, { method: 'POST', body: data }).then(function(r){ return r.json(); }).then(function(j){
@@ -208,7 +285,7 @@ footer{color:var(--ink2);font-size:13px;text-align:center;padding:22px 0 36px}
     window.scrollTo(0, 0); $('done').focus();
   }
   $('again').onclick = function(){
-    f.reset(); $('count').textContent = '0／2000'; $('contact').hidden = true;
+    f.reset(); $('count').textContent = '0／2000'; $('contact').hidden = true; photos = []; drawPhotos(); $('e-photo').textContent = '';
     if (hit) { sel.value = hit.id; }
     $('done').hidden = true; f.hidden = false; t0 = Date.now(); window.scrollTo(0, 0);
   };
