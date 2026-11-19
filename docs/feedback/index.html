@@ -127,7 +127,7 @@ footer .wrap{color:var(--ink2);padding-top:30px;padding-bottom:40px;font-size:15
   .side .site-now{background:var(--info);border-color:transparent}
   main.right .wrap{background:#fff;border:1px solid var(--rule);border-radius:28px;padding:clamp(28px,3.4vw,40px) clamp(28px,4vw,48px) 44px}
   #types.grid2{grid-template-columns:repeat(auto-fill,minmax(150px,1fr))}
-  #types .full{grid-column:auto}
+  #types .full{grid-column:1/-1}
   .sec.first{margin-top:8px}
   .photos .ph{width:112px;height:112px}
   .submit{max-width:360px;margin-left:auto}
@@ -339,17 +339,22 @@ footer .wrap{color:var(--ink2);padding-top:30px;padding-bottom:40px;font-size:15
       else el.removeAttribute('aria-invalid');
       delete errField[id];
     }
-    if (!Object.keys(errField).length) $('summary').hidden = true;
+    if (summaryItems[id]) { summaryItems[id].remove(); delete summaryItems[id]; }
+    var left = Object.keys(summaryItems).length;
+    if (!left) $('summary').hidden = true;
+    else $('summary-t').textContent = '尚未送出，請確認 ' + left + ' 個欄位';
   }
+  var summaryItems = {};
   function clearAll(){ ['e-site','e-type','e-msg','e-contact','e-send'].forEach(clearErr); $('summary').hidden = true; }
   function onEdit(e){ Object.keys(errField).forEach(function(id){ var el = errField[id]; if (el === e.target || (e.target.name && el.name === e.target.name) || (id === 'e-contact' && $('contact').contains(e.target))) clearErr(id); }); }
   f.addEventListener('input', onEdit); f.addEventListener('change', onEdit);
   function showErrors(list){
     list.forEach(function(x){ setErr(x.id, x.msg, x.el); if (x.group) f.querySelectorAll('input[name=' + x.group + ']').forEach(function(r){ r.setAttribute('aria-invalid', 'true'); }); });
     $('summary-t').textContent = '尚未送出，請確認 ' + list.length + ' 個欄位';
-    var ul = $('summary-list'); ul.innerHTML = '';
+    var ul = $('summary-list'); ul.innerHTML = ''; summaryItems = {};
     list.forEach(function(x){
       var li = document.createElement('li'), a = document.createElement('a');
+      summaryItems[x.id] = li;
       a.href = '#'; a.textContent = x.msg;
       a.onclick = function(ev){ ev.preventDefault(); x.el.focus(); x.el.scrollIntoView({ block: 'center' }); };
       li.appendChild(a); ul.appendChild(li);
