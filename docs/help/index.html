@@ -100,6 +100,7 @@ textarea:focus-visible,select:focus-visible,input:focus-visible{outline:2px soli
 .cardd summary:focus-visible{outline:2px solid var(--blue);outline-offset:3px}
 body.kb .emerg{display:none}
 .done{text-align:center;padding:12px 0}
+.done .okc.endc{background:var(--info)}
 .done .okc{width:88px;height:88px;border-radius:50%;background:var(--okbg);display:grid;place-items:center;margin:18px auto 14px}
 .casebox{background:var(--info);border-radius:16px;padding:14px 18px;text-align:left;margin:16px 0}
 .casebox span{display:block;color:var(--ink2);font-size:15px}
@@ -174,7 +175,8 @@ body.kb .emerg{display:none}
   <button type="button" class="newmsg" id="newmsg" hidden>有新訊息 ↓</button>
 
   <div id="done" class="done" hidden>
-    <div class="okc" aria-hidden="true"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#176444" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></div>
+    <div class="okc" id="done-ok" aria-hidden="true"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#176444" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></div>
+    <div class="okc endc" id="done-end" aria-hidden="true" hidden><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#1B4A83" stroke-width="2.4" stroke-linecap="round"><path d="M12 7v6M12 16.5v.5"/></svg></div>
     <h2 id="done-title" tabindex="-1" style="font-size:26px;margin:0 0 8px">本次協助已完成</h2>
     <p id="done-result" style="margin:0;color:var(--ink2)"></p>
     <div class="casebox"><span>案件編號</span><strong id="done-code"></strong></div>
@@ -301,6 +303,7 @@ body.kb .emerg{display:none}
     current = c;
     $('c-site').textContent = c.siteName; $('c-dev').textContent = c.device || '';
     var idx = { new: 0, accepted: 1, working: 2, closed: 4 }[c.status];
+    $('steps').children[3].textContent = c.status === 'closed' && !/^(問題已排除|已於現場確認問題排除)/.test(c.result || '') ? '已結束' : '已完成';
     Array.prototype.forEach.call($('steps').children, function(li, i){ li.className = i < idx ? 'done' : i === idx ? 'now' : ''; if (i === idx) li.setAttribute('aria-current', 'step'); else li.removeAttribute('aria-current'); });
     var t = '', p = '案件 ' + c.code, cls = 'status';
     if (c.status === 'new' && c.escalated) { t = DEMO ? '備援通知模擬，未實際通知人員。' : '已送出備援通知，尚待人員確認。'; cls += ' warn'; }
@@ -320,6 +323,7 @@ body.kb .emerg{display:none}
       // 只有管理室確認問題排除時才說「協助已完成」，其餘只說對話結束
       var solved = /^(問題已排除|已於現場確認問題排除)/.test(c.result || '');
       $('done-title').textContent = solved ? '本次協助已完成' : '本次對話已結束';
+      $('done-ok').hidden = !solved; $('done-end').hidden = solved;
       $('done-result').textContent = c.result ? '管理室處理結果：' + c.result : ''; $('done-code').textContent = c.code;
     }
     drawLog(c);
