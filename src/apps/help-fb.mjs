@@ -160,7 +160,7 @@ import {
       let s;
       try { s = await getDoc(doc(db, 'staff', u.uid)); } catch (e) { throw wrap(e); }
       if (!s.exists() || s.data().active !== true) { await signOut(auth); throw fail('no_staff'); }
-      return { uid: u.uid, email: u.email, site: s.data().site, name: s.data().name || '' };
+      return { uid: u.uid, email: u.email, site: s.data().site || '', name: s.data().name || '', role: s.data().role === 'admin' ? 'admin' : 'site' };
     },
     staffLogout: function () { ready = Promise.resolve(null); return signOut(auth); },
 
@@ -187,6 +187,28 @@ import {
         subClosed();
       }).catch(bad);
       return () => { stopped = true; clearTimeout(timer); document.removeEventListener('visibilitychange', vis); if (offOpen) offOpen(); if (offClosed) offClosed(); };
+    },
+
+    // 管理員：各場進行中的案件＋今天結案的案件（只讀）
+    watchAll: function (cb, onErr) {
+      let open = null, closed = [], offOpen = null, offClosed = null, timer = null, stopped = false;
+      const emit = () => { if (!open) return; const map = {}; open.concat(closed).forEach(c => { map[c.id] = c; }); cb(Object.keys(map).map(k => map[k])); };
+      const bad = e => { if (onErr) onErr(wrap(e)); };
+      const col = collection(db, 'cases');
+      function subClosed() {
+        if (stopped) return;
+        if (offClosed) offClosed();
+        closed = [];
+        offClosed = onSnapshot(query(col, where('closedDay', '==', taipeiDay())), s => { closed = s.docs.map(toCase); emit(); }, bad);
+        const now = Date.now() + 8 * 3600e3, next = Math.floor(now / 864e5 + 1) * 864e5;
+        clearTimeout(timer); timer = setTimeout(subClosed, next - now + 2000);
+      }
+      me().then(() => {
+        if (stopped) return;
+        offOpen = onSnapshot(query(col, where('open', '==', true)), s => { open = s.docs.map(toCase); emit(); }, bad);
+        subClosed();
+      }).catch(bad);
+      return () => { stopped = true; clearTimeout(timer); if (offOpen) offOpen(); if (offClosed) offClosed(); };
     },
 
     accept: async function (id, by, dev) {

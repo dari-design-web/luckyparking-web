@@ -95,13 +95,21 @@
       });
     },
     // 管理室：試用版選場站即可、不驗證密碼；正式版為帳號密碼登入，場站由後台指定
-    staffLogin: function (site, name) { return Promise.resolve({ site: site, name: name || '值班人員' }); },
+    staffLogin: function (site, name) { return Promise.resolve({ site: site === '*' ? '' : site, name: name || '值班人員', role: site === '*' ? 'admin' : 'site' }); },
     staffSession: function () { return Promise.resolve(null); },
     staffLogout: function () { return Promise.resolve(); },
     watchSite: function (site, cb) {
       var last = '';
       function run() {
         var db = load(), list = Object.keys(db.cases).map(function (k) { return db.cases[k]; }).filter(function (c) { return c.site === site; });
+        var s = JSON.stringify(list); if (s !== last) { last = s; cb(clone(list).map(derive)); }
+      }
+      run(); return on(run);
+    },
+    watchAll: function (cb) {
+      var last = '';
+      function run() {
+        var db = load(), list = Object.keys(db.cases).map(function (k) { return db.cases[k]; });
         var s = JSON.stringify(list); if (s !== last) { last = s; cb(clone(list).map(derive)); }
       }
       run(); return on(run);

@@ -106,6 +106,18 @@ dialog::backdrop{background:rgba(18,26,38,.45)}
 .acts .btn{flex:1}
 .reset{display:inline-flex;min-height:44px;align-items:center;background:none;border:0;color:var(--ink2);font:inherit;font-size:14px;text-decoration:underline;cursor:pointer;padding:0}
 .vh{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.sitesbox{margin:0 0 14px}
+.tablewrap{overflow-x:auto}
+table.sites{width:100%;border-collapse:collapse;font-size:16px}
+table.sites th{text-align:left;font-size:14px;color:var(--ink2);font-weight:500;padding:8px 10px;border-bottom:1px solid var(--rule);white-space:nowrap}
+table.sites td{padding:0;border-bottom:1px solid var(--rule);font-variant-numeric:tabular-nums;white-space:nowrap}
+table.sites td button,table.sites td span{display:flex;align-items:center;min-height:48px;padding:0 10px;width:100%;background:none;border:0;font:inherit;color:inherit;text-align:left;cursor:pointer}
+table.sites td button{font-weight:700;color:var(--navy)}
+table.sites tr.hot td{background:var(--newbg)}
+table.sites tr.hot .w{color:var(--newink);font-weight:700}
+table.sites tr[aria-selected=true] td{box-shadow:inset 0 -2px 0 var(--blue)}
+.ro{background:var(--info);color:var(--navy);border-radius:14px;padding:12px 14px;margin:12px 0;font-weight:500}
+.case .site{display:block;font-size:14px;color:var(--navy);font-weight:700;margin-top:6px}
 [hidden]{display:none!important}
 @media (max-width:959px){
   #v-work.in-detail .counts{display:none}
@@ -123,30 +135,29 @@ dialog::backdrop{background:rgba(18,26,38,.45)}
 </head>
 <body>
 <div class="vh" id="live" role="status"></div>
-<div class="top"><div class="in"><b>管理室</b><span class="scope" id="scope">文字求助</span><button type="button" class="out" id="logout" hidden>登出</button></div></div>
+<div class="top"><div class="in"><b id="top-t">管理室</b><span class="scope" id="scope">文字求助</span><button type="button" class="out" id="logout" hidden>登出</button></div></div>
 <div class="demo" id="demo-bar" hidden>試用版：僅供介面測試，未連線至實際管理室。資料只存在這個瀏覽器，請另開客人端分頁一起測試。</div>
 
 <!-- 登入 -->
 <div class="page" id="v-login">
   <div class="box" style="max-width:520px;margin:12px auto">
     <h1 id="login-title" tabindex="-1">管理室登入</h1>
-    <p class="muted" style="margin:0">登入後只會看到本場的文字求助案件。</p>
+    <p class="muted" style="margin:0">輸入帳號與密碼，登入後自動進入該帳號的場站。</p>
     <form id="login-form" onsubmit="return false">
     <div id="login-demo" hidden>
       <label class="f" for="city">縣市</label>
       <select id="city"><option value="">選縣市</option></select>
       <label class="f" for="site">場站</label>
       <select id="site" disabled><option value="">選場站</option></select>
+      <p class="muted small" style="margin:8px 0 0">試用版不需密碼；縣市選「管理員（各場總覽）」可試用管理員畫面。</p>
     </div>
     <div id="login-fb" hidden>
       <label class="f" for="email">帳號</label>
-      <input type="email" id="email" autocomplete="username" inputmode="email" placeholder="例：minquan@staff.dari-help.tw">
+      <input type="text" id="email" autocomplete="username" autocapitalize="none" autocorrect="off" spellcheck="false" placeholder="例：minquan">
       <label class="f" for="pw">密碼</label>
       <input type="password" id="pw" autocomplete="current-password">
     </div>
     <p class="muted small" id="login-wait">連線中…</p>
-    <label class="f" for="who">值班人員稱呼（選填）</label>
-    <input type="text" id="who" maxlength="12" placeholder="例：王先生、早班">
     <p class="err" id="e-login" role="alert"></p>
     <div style="height:16px"></div>
     <button class="btn wide big" type="submit" id="login" disabled>登入</button>
@@ -165,9 +176,18 @@ dialog::backdrop{background:rgba(18,26,38,.45)}
     <div><span>處理中</span><strong id="n-work">0</strong></div>
     <div><span>今日已結案</span><strong id="n-closed">0</strong></div>
   </div>
+  <section class="box sitesbox" id="sites-box" hidden aria-labelledby="sites-title">
+    <h2 id="sites-title">各場狀況</h2>
+    <p class="muted small" style="margin:-4px 0 10px">管理員只能查看；接手、回覆與結案請由各場管理室處理。點選場站可篩選下方案件。</p>
+    <div class="tablewrap"><table class="sites">
+      <thead><tr><th scope="col">場站</th><th scope="col">待接手</th><th scope="col">處理中</th><th scope="col">今日結案</th><th scope="col">最久等候</th></tr></thead>
+      <tbody id="sites-body"></tbody>
+    </table></div>
+  </section>
   <div class="cols">
     <section id="v-list" aria-labelledby="list-title">
       <h2 id="list-title">本場案件</h2>
+      <div id="site-filter-box" hidden style="margin:0 0 10px"><label class="vh" for="site-filter">篩選場站</label><select id="site-filter"><option value="">全部場站</option></select></div>
       <div class="filter" role="group" aria-label="篩選">
         <button type="button" data-f="open" aria-pressed="true">進行中</button>
         <button type="button" data-f="closed" aria-pressed="false">已結案</button>
@@ -186,6 +206,7 @@ dialog::backdrop{background:rgba(18,26,38,.45)}
       </dl>
       <div class="log" id="d-log" role="log" aria-label="對談內容"><div id="d-msgs" style="display:contents"></div><div id="d-pend" style="display:contents"></div></div>
 
+      <p class="ro" id="d-ro" hidden>管理員檢視：只能查看對話，不能接手或回覆。</p>
       <div class="gate" id="d-gate" hidden>
         <p>接手後才能回覆。接手後，客人會看到「管理員已接手」。</p>
         <button class="btn wide big" type="button" id="d-accept">接手此案件</button>
@@ -220,11 +241,11 @@ dialog::backdrop{background:rgba(18,26,38,.45)}
 </dialog>
 
 <script>window.HELP_FB = {"apiKey":"AIzaSyDUoIG3FCxiyzixCDwM1m-5w5MF7-Ak4qs","authDomain":"wedding-seating-37b71.firebaseapp.com","projectId":"wedding-seating-37b71","appId":"1:830651084062:web:fc326c270926d742bf2d0f"}; window.HELP_ROLE = 'staff';</script>
-<script src="../api.js?v=ac2db4c103"></script>
+<script src="../api.js?v=a95919c12e"></script>
 <script>
 (function(){
   if (!window.HELP_FB || /[?&]demo=1/.test(location.search)) return;
-  var s = document.createElement('script'); s.src = '../api-fb.js?v=ac2db4c103';
+  var s = document.createElement('script'); s.src = '../api-fb.js?v=a95919c12e';
   s.onerror = function(){ window.dispatchEvent(new Event('helpapi-fail')); };
   document.head.appendChild(s);
 })();
@@ -251,10 +272,14 @@ dialog::backdrop{background:rgba(18,26,38,.45)}
   var groups = Object.create(null);
   SITES.forEach(function(s){ (groups[s.city] = groups[s.city] || []).push(s); });
   Object.keys(groups).forEach(function(c){ var o = document.createElement('option'); o.value = c; o.textContent = c; $('city').appendChild(o); });
-  function fillSites(c){ var sel = $('site'); sel.length = 1; sel.disabled = !c; (groups[c] || []).forEach(function(s){ var o = document.createElement('option'); o.value = s.id; o.textContent = s.name; sel.appendChild(o); }); }
+  (function(){ var o = document.createElement('option'); o.value = '*'; o.textContent = '管理員（各場總覽）'; $('city').appendChild(o); })();
+  function fillSites(c){ var sel = $('site'); sel.length = 1; sel.disabled = !c || c === '*'; (groups[c] || []).forEach(function(s){ var o = document.createElement('option'); o.value = s.id; o.textContent = s.name; sel.appendChild(o); }); }
   $('city').onchange = function(){ fillSites(this.value); };
-  var me = null, savedWho = ''; try { me = JSON.parse(localStorage.getItem('dari-help-staff')); savedWho = (me && me.who) || ''; } catch (e) {}
-  $('who').value = savedWho;
+  var me = null; try { me = JSON.parse(localStorage.getItem('dari-help-staff')); } catch (e) {}
+  var STAFF_DOMAIN = 'staff.dari-help.tw', ADMIN = false;
+  // 帳號只要輸入名稱（例：minquan、admin），系統自動補上固定網域
+  function toEmail(a){ a = String(a || '').trim().toLowerCase(); return a.indexOf('@') >= 0 ? a : a + '@' + STAFF_DOMAIN; }
+  function setMe(u){ me = { uid: u.uid, site: u.site, siteName: u.role === 'admin' ? '各場總覽' : siteName(u.site), name: u.name || (u.role === 'admin' ? '管理員' : siteName(u.site) + '管理室'), role: u.role }; }
   function siteName(id){ var s = SITES.filter(function(x){ return x.id === id; })[0]; return s ? s.name : id; }
   function saveMe(){ try { localStorage.setItem('dari-help-staff', JSON.stringify(me)); } catch (e) {} }
   // 這個分頁（裝置）的代號：用來分辨是誰接手；每個分頁各自一個
@@ -262,19 +287,20 @@ dialog::backdrop{background:rgba(18,26,38,.45)}
   var LOGIN_ERR = { bad_login: '帳號或密碼不正確。', no_staff: '這個帳號尚未設定場站，請聯絡管理者。', too_many: '嘗試次數過多，請稍後再試。', offline: '連線中斷，請確認網路後再試。' };
   $('login').onclick = function(){
     $('e-login').textContent = '';
-    var who = $('who').value.trim().slice(0, 12), btn = this;
+    var btn = this;
     if (DEMO) {
+      if ($('city').value === '*') { API.staffLogin('*', '管理員').then(function(u){ me = { site: '', siteName: '各場總覽', name: '管理員', role: 'admin' }; saveMe(); start(); }); return; }
       var s = SITES.filter(function(x){ return x.id === $('site').value; })[0];
       if (!s) { $('e-login').textContent = '請選擇場站。'; ($('city').value ? $('site') : $('city')).focus(); return; }
-      API.staffLogin(s.id, who).then(function(u){ me = { site: s.id, siteName: s.name, name: u.name, who: who }; saveMe(); start(); });
+      API.staffLogin(s.id, s.name + '管理室').then(function(u){ me = { site: s.id, siteName: s.name, name: u.name, role: 'site' }; saveMe(); start(); });
       return;
     }
-    var email = $('email').value.trim(), pw = $('pw').value;
-    if (!email || !pw) { $('e-login').textContent = '請輸入帳號與密碼。'; (email ? $('pw') : $('email')).focus(); return; }
+    var acct = $('email').value.trim(), pw = $('pw').value;
+    if (!acct || !pw) { $('e-login').textContent = '請輸入帳號與密碼。'; (acct ? $('pw') : $('email')).focus(); return; }
     btn.disabled = true; btn.textContent = '登入中…';
-    API.staffLogin(email, pw).then(function(u){
+    API.staffLogin(toEmail(acct), pw).then(function(u){
       $('pw').value = '';
-      me = { uid: u.uid, site: u.site, siteName: siteName(u.site), name: who || u.name || '管理室', who: who }; saveMe(); start();
+      setMe(u); saveMe(); start();
     }).catch(function(e){ $('e-login').textContent = LOGIN_ERR[e && e.code] || '無法登入，請稍後再試。'; $('pw').focus(); })
       .then(function(){ btn.disabled = false; btn.textContent = '登入'; });
   };
@@ -322,8 +348,18 @@ dialog::backdrop{background:rgba(18,26,38,.45)}
   var cases = [], sel = null, filter = 'open', seen = null, seenMsg = {}, unsub = null;
   function start(){
     $('v-login').hidden = true; $('v-work').hidden = false; $('logout').hidden = false;
-    $('scope').textContent = me.siteName + '｜本場案件';
-    document.title = '管理室｜' + me.siteName;
+    ADMIN = me.role === 'admin';
+    $('scope').textContent = ADMIN ? '各場總覽' : me.siteName + '｜本場案件';
+    $('top-t').textContent = ADMIN ? '管理員' : '管理室';
+    document.title = (ADMIN ? '管理員｜' : '管理室｜') + me.siteName;
+    if (ADMIN) {
+      $('sites-box').hidden = false; $('site-filter-box').hidden = false; $('list-title').textContent = '各場案件';
+      $('al-p').textContent = '本頁保持前景且裝置支援時，任一場有新案件都會播放提醒聲。管理員只能查看，不能接手。';
+      ALL_SITES.filter(function(s){ return !LIVE || !PILOT || PILOT.indexOf(s.id) >= 0; }).forEach(function(s){ var o = document.createElement('option'); o.value = s.id; o.textContent = s.name; $('site-filter').appendChild(o); });
+      $('site-filter').onchange = function(){ siteF = this.value; drawList(); drawSites(); };
+      unsub = API.watchAll(onCases, function(e){ $('al-p').textContent = e.code === 'denied' ? '此帳號沒有管理員權限，請登出後重新登入。' : '連線中斷，請確認網路。'; });
+      return;
+    }
     unsub = API.watchSite(me.site, onCases, function(e){ say('連線中斷：' + (e.code === 'denied' ? '此帳號沒有本場權限，請重新登入。' : '正在重新連線。')); $('al-p').textContent = e.code === 'denied' ? '此帳號沒有本場權限，請登出後重新登入。' : '連線中斷，請確認網路。'; });
   }
   function onCases(list){
@@ -341,7 +377,7 @@ dialog::backdrop{background:rgba(18,26,38,.45)}
       });
     }
     seen = {}; list.forEach(function(c){ seen[c.id] = c.status; seenMsg[c.id] = c.custCount || 0; });
-    drawList();
+    drawList(); drawSites();
   }
   function ring(title, where){
     if (alertsOn) { beep(); buzz(); }
@@ -353,13 +389,36 @@ dialog::backdrop{background:rgba(18,26,38,.45)}
   function ago(t){ var m = Math.floor((Date.now() - t) / 60000); return m < 1 ? '剛剛' : m < 60 ? m + ' 分鐘前' : Math.floor(m / 60) + ' 小時前'; }
   function hm(t){ var d = new Date(t); return ('0' + d.getHours()).slice(-2) + ':' + ('0' + d.getMinutes()).slice(-2); }
   function isToday(t){ var a = new Date(t), b = new Date(); return a.toDateString() === b.toDateString(); }
-  var ORDER = { new: 0, accepted: 1, working: 1, closed: 2 };
+  var ORDER = { new: 0, accepted: 1, working: 1, closed: 2 }, siteF = '';
+  // 管理員：各場一列，有待接手的排前面，最久等候標示
+  function drawSites(){
+    if (!ADMIN) return;
+    var ids = {}; ALL_SITES.forEach(function(s){ if (!LIVE || !PILOT || PILOT.indexOf(s.id) >= 0) ids[s.id] = 1; });
+    cases.forEach(function(c){ ids[c.site] = 1; });
+    var rows = Object.keys(ids).map(function(id){
+      var cs = cases.filter(function(c){ return c.site === id; });
+      var waiting = cs.filter(function(c){ return c.status === 'new'; });
+      return { id: id, name: siteName(id), n: waiting.length, w: cs.filter(function(c){ return c.status === 'accepted' || c.status === 'working'; }).length,
+        d: cs.filter(function(c){ return c.status === 'closed' && isToday(c.closedAt); }).length,
+        oldest: waiting.length ? Math.min.apply(null, waiting.map(function(c){ return c.queuedAt; })) : 0 };
+    });
+    rows.sort(function(a, b){ return (b.n - a.n) || ((a.oldest || 9e15) - (b.oldest || 9e15)) || (b.w - a.w) || a.name.localeCompare(b.name, 'zh-Hant'); });
+    var tb = $('sites-body'); tb.innerHTML = '';
+    rows.forEach(function(r){
+      var tr = document.createElement('tr'); if (r.n) tr.className = 'hot'; tr.setAttribute('aria-selected', siteF === r.id ? 'true' : 'false');
+      var td = document.createElement('td'), b = document.createElement('button'); b.type = 'button'; b.textContent = r.name;
+      b.onclick = function(){ siteF = siteF === r.id ? '' : r.id; $('site-filter').value = siteF; drawList(); drawSites(); };
+      td.appendChild(b); tr.appendChild(td);
+      [[r.n, 'w'], [r.w, ''], [r.d, ''], [r.oldest ? ago(r.oldest).replace('前', '') : '—', 'w']].forEach(function(v){ var t = document.createElement('td'), s = document.createElement('span'); s.textContent = v[0]; if (v[1] && r.n) s.className = v[1]; t.appendChild(s); tr.appendChild(t); });
+      tb.appendChild(tr);
+    });
+  }
   // 案件清單：重畫後把鍵盤焦點放回原本那一件
   function drawList(){
     $('n-new').textContent = cases.filter(function(c){ return c.status === 'new'; }).length;
     $('n-work').textContent = cases.filter(function(c){ return c.status === 'accepted' || c.status === 'working'; }).length;
     $('n-closed').textContent = cases.filter(function(c){ return c.status === 'closed' && isToday(c.closedAt); }).length;
-    var show = cases.filter(function(c){ return filter === 'closed' ? c.status === 'closed' : c.status !== 'closed'; });
+    var show = cases.filter(function(c){ return (filter === 'closed' ? c.status === 'closed' : c.status !== 'closed') && (!siteF || c.site === siteF); });
     show.sort(function(a, b){ return filter === 'closed' ? b.closedAt - a.closedAt : (ORDER[a.status] - ORDER[b.status]) || (a.queuedAt - b.queuedAt); });
     var ul = $('list'), fa = document.activeElement, focusId = fa && fa.classList && fa.classList.contains('case') ? fa.dataset.id : null;
     ul.innerHTML = '';
@@ -373,6 +432,7 @@ dialog::backdrop{background:rgba(18,26,38,.45)}
       if (c.status === 'new' && c.escalated) { var e = document.createElement('span'); e.className = 'chip esc'; e.textContent = DEMO ? '已逾時・備援通知（模擬）' : '已逾時・已送出備援通知'; row.appendChild(e); }
       if (c.cycle > 1 && c.status === 'new') { var r = document.createElement('span'); r.className = 'chip esc'; r.textContent = '客人再次求助'; row.appendChild(r); }
       var age = document.createElement('span'); age.className = 'age'; age.dataset.t = c.status === 'closed' ? c.closedAt : c.queuedAt; age.textContent = ago(+age.dataset.t); row.appendChild(age);
+      if (ADMIN) { var sn = document.createElement('span'); sn.className = 'site'; sn.textContent = c.siteName || siteName(c.site); b.appendChild(sn); }
       var dev = document.createElement('p'); dev.className = 'dev'; dev.textContent = (c.device || '未填位置') + '｜' + c.category;
       var pre = document.createElement('p'); pre.className = 'pre'; pre.textContent = c.lastCustomerText || '';
       b.appendChild(row); b.appendChild(dev); b.appendChild(pre);
@@ -385,7 +445,7 @@ dialog::backdrop{background:rgba(18,26,38,.45)}
     b.onclick = function(){ filter = b.dataset.f; Array.prototype.forEach.call(document.querySelectorAll('.filter button'), function(x){ x.setAttribute('aria-pressed', x === b ? 'true' : 'false'); }); drawList(); };
   });
   // 每 30 秒只更新「幾分鐘前」，不重建清單
-  setInterval(function(){ Array.prototype.forEach.call(document.querySelectorAll('.case .age'), function(a){ a.textContent = ago(+a.dataset.t); }); }, 30000);
+  setInterval(function(){ Array.prototype.forEach.call(document.querySelectorAll('.case .age'), function(a){ a.textContent = ago(+a.dataset.t); }); drawSites(); }, 30000);
 
   // 案件詳細
   var pending = {}, drafts = {}, shown = {}, overArm = '', detail = null, unDetail = null;
@@ -430,10 +490,11 @@ dialog::backdrop{background:rgba(18,26,38,.45)}
     if (stick) log.scrollTop = log.scrollHeight;
     var isMine = !!c.acceptedDev && c.acceptedDev === DEV && (DEMO || !me.uid || c.acceptedUid === me.uid);
     var activeCase = c.status === 'accepted' || c.status === 'working';
-    $('d-gate').hidden = c.status !== 'new';
-    $('d-taken').hidden = !(activeCase && !isMine);
+    $('d-ro').hidden = !ADMIN;
+    $('d-gate').hidden = ADMIN || c.status !== 'new';
+    $('d-taken').hidden = ADMIN || !(activeCase && !isMine);
     $('d-taken-t').textContent = '此案件已由「' + (c.acceptedBy || '其他人員') + '」接手。';
-    $('d-reply').hidden = !(isMine && activeCase);
+    $('d-reply').hidden = ADMIN || !(isMine && activeCase);
     $('d-closed-note').hidden = c.status !== 'closed';
     $('d-closed-note').textContent = c.status === 'closed' ? '已於 ' + hm(c.closedAt) + ' 結案：' + (c.result || '') : '';
     // 接手狀態改變時播報一次（例如被別人改由他接手）
@@ -523,12 +584,12 @@ dialog::backdrop{background:rgba(18,26,38,.45)}
     $('login-wait').hidden = true; $('login').disabled = false;
     $('login-demo').hidden = !DEMO; $('login-fb').hidden = DEMO;
     if (DEMO) {
-      if (me && SITES.some(function(s){ return s.id === me.site; })) start(); else $('login-title').focus();
+      if (me && (me.role === 'admin' || SITES.some(function(s){ return s.id === me.site; }))) start(); else $('login-title').focus();
       return;
     }
     API.staffSession().then(function(u){
       if (!u) { $('login-title').focus(); return; }
-      me = { uid: u.uid, site: u.site, siteName: siteName(u.site), name: savedWho || u.name || '管理室', who: savedWho }; saveMe(); start();
+      setMe(u); saveMe(); start();
     }).catch(function(e){ $('e-login').textContent = LOGIN_ERR[e && e.code] || '請重新登入。'; $('login-title').focus(); });
   }
   window.addEventListener('helpapi-fail', function(){ if (!API) $('login-wait').textContent = '無法連線，請確認網路後重新整理。'; });
