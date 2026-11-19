@@ -39,4 +39,4 @@ Settings → Pages → Build and deployment → Source 選「Deploy from a branc
 - 頁面原始檔：`src/apps/feedback.html`；Apps Script 原始檔：`src/apps/feedback.gs`。執行 `node build.mjs` 會產生 `docs/feedback/index.html` 與 `apps-script/feedback.gs`（已帶入 42 場代碼與收件信箱）。
 - `site.json` 的 `feedbackTo`＝收件信箱；`feedbackEndpoint`＝Apps Script 網頁應用程式網址。尚未填網址時，頁面為「試用版」，送出不會寄信。
 - 新增或改名停車場後，要重新執行 `node build.mjs`，並**先**把新的 `apps-script/feedback.gs` 貼回 Apps Script、執行 setup、重新部署（管理部署作業 → 編輯 → 新版本），再推上網頁。
-- 後端行為：同一則意見帶同一個送出代碼（sid），重送不會重複建立案件；寄信失敗會在試算表「通知狀態」標「待補寄」，每小時自動補寄；外部輸入以文字寫入試算表，不會被當成公式。
+- 後端行為：內容相同的重送帶同一個送出代碼（sid），不會重複建立案件；內容改過就算新的一則。寄信失敗標「待補寄」、卡在「寄送中」超過 20 分鐘的也會補寄（標示可能重複），每小時自動處理，一筆失敗不影響其他案件。狀態更新依「送出代碼」定位，承辦人排序試算表不會寫錯列（建議用篩選檢視）。外部輸入以文字寫入，不會被當成公式。

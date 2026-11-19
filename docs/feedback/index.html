@@ -246,7 +246,7 @@ footer .wrap{color:var(--ink2);padding-top:30px;padding-bottom:40px;font-size:15
     var a = new Uint8Array(12); (window.crypto || window.msCrypto).getRandomValues(a);
     return Array.prototype.map.call(a, function(b){ return ('0' + b.toString(16)).slice(-2); }).join('');
   }
-  var sid = newSid();   // 同一則意見重送時沿用，後端不會重複建立案件
+  var sid = newSid(), lastBody = '';   // 內容相同的重送沿用同一個代碼，後端不會重複建立案件；內容改了就是新的一則
 
   function val(name){ var r = f.querySelector('input[name=' + name + ']:checked'); return r ? r.value : ''; }
 
@@ -301,7 +301,7 @@ footer .wrap{color:var(--ink2);padding-top:30px;padding-bottom:40px;font-size:15
       delete errField[id];
     }
   }
-  function clearAll(){ ['e-site','e-type','e-msg','e-contact','e-send','e-photo'].forEach(clearErr); $('summary').hidden = true; }
+  function clearAll(){ ['e-site','e-type','e-msg','e-contact','e-send'].forEach(clearErr); $('summary').hidden = true; }
   function onEdit(e){ Object.keys(errField).forEach(function(id){ var el = errField[id]; if (el === e.target || (e.target.name && el.name === e.target.name) || (id === 'e-contact' && $('contact').contains(e.target))) clearErr(id); }); }
   f.addEventListener('input', onEdit); f.addEventListener('change', onEdit);
   function showErrors(list){
@@ -319,7 +319,7 @@ footer .wrap{color:var(--ink2);padding-top:30px;padding-bottom:40px;font-size:15
   }
 
   // 照片：最多 3 張；長邊縮到 1600px 並轉 JPEG（同時去除拍攝位置等資訊），單張壓到約 800KB 以內
-  var MAXP = 3, photos = [], pending = 0;
+  var MAXP = 3, photos = [], pending = 0, queue = Promise.resolve();
   function announce(t){ $('ph-status').textContent = t; }
   function drawPhotos(focusIdx){
     var box = $('photos'); box.innerHTML = '';
@@ -379,13 +379,14 @@ footer .wrap{color:var(--ink2);padding-top:30px;padding-bottom:40px;font-size:15
     files = files.slice(0, Math.max(0, room));
     if (!files.length) return;
     pending += files.length; drawPhotos(); announce('照片處理中…');
-    files.reduce(function(chain, file){
-      return chain.then(function(){
+    // 所有選檔共用同一個佇列，一次只解碼一張，避免手機記憶體不足
+    files.forEach(function(file){
+      queue = queue.then(function(){
         return shrink(file).then(function(d){ photos.push(d); }, function(){
           $('e-photo').textContent = '有照片無法讀取，請改用 JPG 或 PNG；在 LINE 裡開啟時，也可改用手機瀏覽器。';
-        }).then(function(){ pending--; drawPhotos(); });
+        }).then(function(){ pending--; drawPhotos(); if (!pending) announce('目前 ' + photos.length + ' 張照片'); });
       });
-    }, Promise.resolve()).then(function(){ announce('目前 ' + photos.length + ' 張照片'); });
+    });
   }
   $('ph-cam').onclick = function(){ $('f-cam').click(); };
   $('ph-pick').onclick = function(){ $('f-pick').click(); };
@@ -427,7 +428,10 @@ footer .wrap{color:var(--ink2);padding-top:30px;padding-bottom:40px;font-size:15
       website: $('website').value
     });
     photos.forEach(function(d, i){ data.append('p' + (i + 1), d); });
-    if (data.toString().length > 9000000) return sendErr(MSG.size);
+    var body = data.toString();
+    if (body.length > 9000000) return sendErr(MSG.size);
+    if (lastBody && body !== lastBody) { sid = newSid(); data.set('sid', sid); body = data.toString(); }
+    lastBody = body;
     var btn = $('send'); sending = true; btn.disabled = true; drawPhotos();
     btn.textContent = photos.length ? '照片上傳中…' : '正在送出…';
     var finish = function(){ sending = false; btn.disabled = false; btn.textContent = '送出意見'; drawPhotos(); };
@@ -462,7 +466,7 @@ footer .wrap{color:var(--ink2);padding-top:30px;padding-bottom:40px;font-size:15
   };
   $('again').onclick = function(){
     f.reset(); $('count').textContent = '0／2000'; $('contact').hidden = true; photos = []; pending = 0; drawPhotos();
-    clearAll(); setKind(); applyQR(); sid = newSid();
+    clearAll(); clearErr('e-photo'); setKind(); applyQR(); sid = newSid(); lastBody = '';
     $('done').hidden = true; document.querySelector('.hero').hidden = false; f.hidden = false; window.scrollTo(0, 0); $('fb-title').focus();
   };
 })();

@@ -572,6 +572,14 @@ pages['404.html'] = {
 <section class="ph" style="min-height:52vh"><div class="wrap"><p class="eyebrow num">404</p><h1>這個頁面不在這裡。</h1><p class="lead">網址可能已經變更，或頁面已移除。可以回首頁，或直接查停車據點。</p><div class="ctas" style="justify-content:flex-start"><a class="btn primary" href="index.html">回首頁</a><a class="btn ghost" href="parking.html">查停車據點</a></div><div class="e404"><img src="assets/img/img-404.jpg" alt=""></div></div></section>`
 };
 
+// 先驗證意見箱設定，失敗時不動到既有的 docs/
+{
+  const codes = PARKING.map(p => p.code);
+  if (codes.some(c => typeof c !== 'string' || !/^[a-z0-9-]{1,40}$/.test(c) || c === 'general') || new Set(codes).size !== codes.length) throw new Error('parking.json 的 code 缺漏、格式不符、重複或使用保留字 general');
+  const ep = SITE.feedbackEndpoint || '';
+  if (ep && !/^https:\/\/script\.google\.com\/macros\/s\/[\w-]+\/exec$/.test(ep)) throw new Error('feedbackEndpoint 格式不符');
+}
+
 // build
 fs.rmSync(OUT, { recursive: true, force: true });
 fs.mkdirSync(OUT, { recursive: true });
@@ -608,9 +616,7 @@ fs.writeFileSync(path.join(OUT, 'robots.txt'), `User-agent: *\nAllow: /\nSitemap
   const LOTS = PARKING.map(p => ({ id: p.code, name: p.name, city: p.city }))
     .sort((a, b) => (CITY_ORDER.indexOf(a.city) + 99) % 99 - (CITY_ORDER.indexOf(b.city) + 99) % 99);
   // 場站代碼已印在 QR 立牌上：一經發布不可更改，只能新增
-  if (LOTS.some(l => !/^[a-z0-9-]+$/.test(l.id || '')) || new Set(LOTS.map(l => l.id)).size !== LOTS.length) throw new Error('parking.json 的 code 缺漏、格式不符或重複');
   const ep = SITE.feedbackEndpoint || '';
-  if (ep && !/^https:\/\/script\.google\.com\/macros\/s\/[\w-]+\/exec$/.test(ep)) throw new Error('feedbackEndpoint 格式不符');
   const fbDir = path.join(OUT, 'feedback');
   fs.mkdirSync(fbDir, { recursive: true });
   const lotsJson = JSON.stringify(LOTS).replace(/</g, '\\u003c');

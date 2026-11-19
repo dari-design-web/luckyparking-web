@@ -215,7 +215,8 @@ function handle(e) {
   const get = (k, n) => String(p[k] || '').trim().slice(0, n || 200);
   if (get('website')) return { ok: false, error: 'bot' };          // 機器人填了隱藏欄位
 
-  const sid = get('sid', 40);
+  let sid = get('sid', 40);
+  if (!sid) sid = 'srv-' + Utilities.getUuid().replace(/-/g, '');   // 舊版頁面沒有送出代碼：照常收件
   if (!/^[A-Za-z0-9_-]{10,40}$/.test(sid)) return { ok: false, error: 'sid' };
   const siteId = get('site', 40);
   if (!Object.prototype.hasOwnProperty.call(SITES, siteId)) return { ok: false, error: 'site' };
@@ -236,6 +237,13 @@ function handle(e) {
   if (whenRaw && !/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}$/.test(whenRaw)) return { ok: false, error: 'when' };
   const when = whenRaw.replace('T', ' ');
 
+  // 先做便宜的檢查：重送直接回原案號；超過每小時上限就不再處理照片
+  const cache = CacheService.getScriptCache();
+  const early = cache.get('s_' + sid);
+  if (early) return { ok: true, caseNo: early, dup: true };
+  const hourKey = 'h_' + siteId + '_' + Utilities.formatDate(new Date(), 'Asia/Taipei', 'yyyyMMddHH');
+  if (Number(cache.get(hourKey) || 0) >= HOURLY_LIMIT) return { ok: false, error: 'rate' };
+
   // 照片：最多 3 張，必須是網頁端壓縮後的 JPEG
   if (p.p4) return { ok: false, error: 'photo' };
   const photos = [];
@@ -252,21 +260,19 @@ function handle(e) {
   }
 
   // 同一個送出代碼只建立一次案件；同一場每小時有上限
-  const cache = CacheService.getScriptCache();
   const lock = LockService.getScriptLock();
   if (!lock.tryLock(25000)) return { ok: false, error: 'busy' };
-  let caseNo, row;
+  let caseNo;
   const sh = sheet();
   try {
-    const seen = cache.get('s_' + sid) || findBySid(sh, sid);
+    const seen = findBySid(sh, sid);
     if (seen) return { ok: true, caseNo: seen, dup: true };
-    const hourKey = 'h_' + siteId + '_' + Utilities.formatDate(new Date(), 'Asia/Taipei', 'yyyyMMddHH');
     const n = Number(cache.get(hourKey) || 0);
     if (n >= HOURLY_LIMIT) return { ok: false, error: 'rate' };
     caseNo = nextCaseNo();
     const now = Utilities.formatDate(new Date(), 'Asia/Taipei', 'yyyy-MM-dd HH:mm');
-    sh.appendRow([now, caseNo, siteId, site.name, site.city, type, when, msg, reply ? '需要' : '不需要', name, tel, mail, '未處理', '', photos.length ? '上傳中' : '', '寄送中', sid].map(safe));
-    row = sh.getLastRow();
+    sh.appendRow([now, caseNo, siteId, site.name, site.city, type, when, msg, reply ? '需要' : '不需要', name, tel, mail, '未處理', '', photos.length ? '上傳中' : '', '寄送中 ' + now, sid].map(safe));
+    SpreadsheetApp.flush();
     cache.put('s_' + sid, caseNo, 21600);
     cache.put(hourKey, String(n + 1), 3600);
   } finally {
@@ -279,7 +285,7 @@ function handle(e) {
     const links = blobs.map((b, i) => {
       try { return folder().createFile(b).getUrl(); } catch (err) { console.error(err); return '第 ' + (i + 1) + ' 張未存雲端（見信件附件）'; }
     });
-    sh.getRange(row, COL.photo).setValue(links.join('\n'));
+    setBySid(sh, sid, COL.photo, links.join('\n'));
   }
   let notify = '已寄';
   try {
@@ -288,7 +294,7 @@ function handle(e) {
     console.error(err);
     notify = '待補寄';
   }
-  sh.getRange(row, COL.notify).setValue(notify);
+  setBySid(sh, sid, COL.notify, notify);
   return { ok: true, caseNo: caseNo };
 }
 
@@ -307,7 +313,8 @@ function mailOptions(c, blobs) {
   if (c.reply) {
     lines.push('稱呼：' + (c.name || '（未填）'), '手機：' + (c.tel || '（未留）'), '電子郵件：' + (c.mail || '（未留）'));
   }
-  if (c.photoCount) lines.push('照片：' + c.photoCount + ' 張' + (blobs && blobs.length ? '（見附件）' : '（見試算表「照片」欄連結）'));
+  if (c.photoCount === -1) lines.push('照片：有，但雲端存檔失敗，請查看試算表「照片」欄說明');
+  else if (c.photoCount) lines.push('照片：' + c.photoCount + ' 張' + (blobs && blobs.length ? '（見附件）' : '（見試算表「照片」欄連結）'));
   lines.push('', '來源：線上顧客意見箱。' + (c.mail ? '直接回覆這封信，就會寄給顧客。' : ''), '所有意見都記錄在「顧客意見箱紀錄」試算表，處理後請更新「處理狀態」欄。');
   const o = { to: TO, subject: '【顧客意見】' + c.site.name.replace(/停車場$/, '') + '｜' + c.type + '｜' + c.caseNo, body: lines.join('\n'), name: '大日開發顧客意見箱' };
   if (SITE_CC[c.siteId]) o.cc = SITE_CC[c.siteId];
@@ -316,27 +323,48 @@ function mailOptions(c, blobs) {
   return o;
 }
 
-// 每小時自動執行：補寄「待補寄」的案件（照片改附雲端連結）
+// 每小時自動執行：補寄「待補寄」，以及卡在「寄送中」超過 20 分鐘的案件（照片改附雲端連結）
+// 依「送出代碼」定位每一列，承辦人排序或篩選試算表也不會寫錯列
 function retryMail() {
-  const sh = sheet();
+  const lock = LockService.getScriptLock();
+  if (!lock.tryLock(1000)) return;            // 已有補寄在跑
+  try {
+    const sh = sheet();
+    const last = sh.getLastRow();
+    if (last < 2) return;
+    const rows = sh.getRange(2, 1, last - 1, HEAD.length).getValues();
+    const now = Date.now();
+    rows.forEach(function (r) {
+      const st = String(r[COL.notify - 1]), sid = String(r[COL.sid - 1]);
+      const stuck = /^寄送中 (\d{4}-\d{2}-\d{2} \d{2}:\d{2})$/.exec(st);
+      const due = st === '待補寄' || (stuck && now - new Date(stuck[1].replace(' ', 'T') + ':00+08:00').getTime() > 20 * 60 * 1000);
+      if (!due || !sid) return;
+      const siteId = String(r[2]);
+      const cc = SITE_CC[siteId] ? 1 : 0;
+      if (MailApp.getRemainingDailyQuota() < 1 + cc) return;
+      const site = SITES[siteId] || { name: String(r[3]), city: String(r[4]) };
+      const pc = String(r[COL.photo - 1] || '');
+      const links = pc.split('\n').filter(function (x) { return /^https?:/.test(x); }).length;
+      const photoCount = links || (pc && pc !== '上傳中' ? -1 : 0);
+      setBySid(sh, sid, COL.notify, '補寄中');
+      try {
+        MailApp.sendEmail(mailOptions({ caseNo: r[1], siteId, site, type: r[5], when: r[6], msg: r[7], reply: r[8] === '需要', name: r[9], tel: String(r[10]).replace(/^'/, ''), mail: r[11], photoCount }, null));
+        setBySid(sh, sid, COL.notify, stuck ? '已補寄（原狀態不明，可能重複）' : '已補寄');
+      } catch (err) {
+        console.error(err);
+        setBySid(sh, sid, COL.notify, '待補寄');   // 這一筆下次再試，不影響其他案件
+      }
+    });
+  } finally {
+    lock.releaseLock();
+  }
+}
+
+function setBySid(sh, sid, col, value) {
   const last = sh.getLastRow();
   if (last < 2) return;
-  const rows = sh.getRange(2, 1, last - 1, HEAD.length).getValues();
-  for (let i = 0; i < rows.length; i++) {
-    const r = rows[i];
-    if (r[COL.notify - 1] !== '待補寄') continue;
-    if (MailApp.getRemainingDailyQuota() < 2) break;
-    const siteId = String(r[2]);
-    const site = SITES[siteId] || { name: String(r[3]), city: String(r[4]) };
-    const photoCount = String(r[COL.photo - 1] || '').split('\n').filter(String).length;
-    try {
-      MailApp.sendEmail(mailOptions({ caseNo: r[1], siteId, site, type: r[5], when: r[6], msg: r[7], reply: r[8] === '需要', name: r[9], tel: String(r[10]).replace(/^'/, ''), mail: r[11], photoCount }, null));
-      sh.getRange(i + 2, COL.notify).setValue('已補寄');
-    } catch (err) {
-      console.error(err);
-      break;
-    }
-  }
+  const hit = sh.getRange(2, COL.sid, last - 1, 1).createTextFinder(sid).matchEntireCell(true).findNext();
+  if (hit) sh.getRange(hit.getRow(), col).setValue(safe(value));
 }
 
 function findBySid(sh, sid) {
