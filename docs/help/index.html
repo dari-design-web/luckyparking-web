@@ -90,7 +90,7 @@ textarea:focus-visible,select:focus-visible,input:focus-visible{outline:2px soli
 .composer textarea{min-height:48px;max-height:140px;padding:11px 14px}
 .send{flex:none;width:52px;height:48px;border:0;border-radius:14px;background:var(--blue);color:#fff;cursor:pointer;display:grid;place-items:center}
 .send[disabled]{background:#E3E8EF;color:var(--ink2)}
-.quick{display:flex;gap:8px;margin:8px 0 0;overflow-x:auto}
+.quick{display:flex;flex-wrap:wrap;gap:8px;margin:8px 0 0}
 .quick button{flex:none;min-height:44px;padding:0 14px;border:1.5px solid var(--line);border-radius:999px;background:#fff;font:inherit;font-size:15px;cursor:pointer}
 .card{border:1.5px solid var(--blue);border-radius:18px;padding:18px;margin:14px 0}
 .card .big{font-size:24px;font-weight:700;color:var(--navy);line-height:1.4;margin:0}
@@ -117,7 +117,7 @@ body.kb .emerg{display:none}
 </head>
 <body>
 <header><div class="wrap"><a href="../" aria-label="回大日開發官網首頁"><img src="../assets/img/logo-dari.png" alt="大日開發 DARI GROUP"></a><span class="tag">文字求助</span></div></header>
-<div class="demo" id="demo-bar" hidden>試用版：資料只存在這台裝置。請在同一個瀏覽器另開「管理室端」分頁一起測試。</div>
+<div class="demo" id="demo-bar" hidden>試用版：僅供介面測試，未連線至實際管理室；請勿用於真正求助。</div>
 
 <main>
 <!-- 開始 -->
@@ -156,7 +156,7 @@ body.kb .emerg{display:none}
     <li>已送出</li><li>已接手</li><li>處理中</li><li>已完成</li>
   </ol>
   <div class="status" id="st" role="status"><p class="t" id="st-t"></p><p id="st-p"></p></div>
-  <p class="note" id="keep">請保持此頁開啟，回覆會顯示在這裡。<button type="button" class="linkbtn" id="vib" hidden>開啟震動提醒</button></p>
+  <p class="note" id="keep">請保持此頁開啟，回覆會顯示在這裡。<button type="button" class="linkbtn" id="vib" hidden>支援時開啟震動提醒</button><span id="novib" hidden>此裝置不支援震動；回覆仍顯示於本頁。</span></p>
 
   <div id="escal" hidden>
     <h2 style="font-size:20px;margin:16px 0 6px">也可以直接找現場人員</h2>
@@ -180,6 +180,7 @@ body.kb .emerg{display:none}
     <div class="casebox"><span>案件編號</span><strong id="done-code"></strong></div>
     <button class="ghost" id="again" type="button">仍需要協助</button>
     <p class="err" id="e-again" role="alert"></p>
+    <button class="ghost" id="restart" type="button" hidden style="margin-top:10px">重新開始求助</button>
     <p class="note" style="margin-top:12px">問題還沒解決？按「仍需要協助」，會通知管理室在同一案件繼續處理。</p>
   </div>
 
@@ -196,11 +197,23 @@ body.kb .emerg{display:none}
 
 <div class="emerg" role="note"><div class="wrap"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 7v6M12 16.5v.5"/></svg><span>發生人身危險，請立即使用現場緊急求助或撥打緊急電話。</span></div></div>
 
-<script src="api.js"></script>
+<script>window.HELP_FB = {"apiKey":"AIzaSyDUoIG3FCxiyzixCDwM1m-5w5MF7-Ak4qs","authDomain":"wedding-seating-37b71.firebaseapp.com","projectId":"wedding-seating-37b71","appId":"1:830651084062:web:fc326c270926d742bf2d0f"}; window.HELP_ROLE = 'customer';</script>
+<script src="api.js?v=ac2db4c103"></script>
 <script>
 (function(){
-  var SITES = [{"id":"tpmc","name":"臺北流行音樂中心地下停車場","city":"臺北市"},{"id":"rongxing","name":"榮星花園地下停車場","city":"臺北市"},{"id":"minquan","name":"民權公園地下停車場","city":"臺北市"},{"id":"yonghe","name":"雍和園區地下停車場","city":"臺北市"},{"id":"shezi","name":"社子國小地下停車場","city":"臺北市"},{"id":"jinan","name":"進安公園地下停車場","city":"臺北市"},{"id":"ntsec","name":"國立臺灣科學教育館地下停車場","city":"臺北市"},{"id":"binjiang","name":"濱江國中地下停車場","city":"臺北市"},{"id":"guangci1","name":"廣慈1區社會住宅地下停車場","city":"臺北市"},{"id":"guangci2","name":"廣慈2區社會住宅地下停車場","city":"臺北市"},{"id":"shipai","name":"石牌國小地下停車場","city":"臺北市"},{"id":"zhonghe","name":"中和國小地下停車場","city":"新北市"},{"id":"tucheng-central","name":"土城中央公園地下停車場","city":"新北市"},{"id":"ruifang","name":"瑞芳立體停車場","city":"新北市"},{"id":"jinhe","name":"錦和運動公園地下停車場","city":"新北市"},{"id":"xinggu","name":"興榖國小操場地下停車場","city":"新北市"},{"id":"archives","name":"國家檔案館地下停車場","city":"新北市"},{"id":"xiulang","name":"秀朗國小地下停車場","city":"新北市"},{"id":"fengshu","name":"楓樹腳公園地下停車場","city":"新北市"},{"id":"fuhe","name":"福和國中地下停車場","city":"新北市"},{"id":"lujiang","name":"鷺江立體停車場","city":"新北市"},{"id":"ruifang-back","name":"瑞芳後火車站平面停車場","city":"新北市"},{"id":"tucheng-yanji","name":"土城延吉立體停車場","city":"新北市"},{"id":"tucheng-yusheng","name":"土城裕生立體停車場","city":"新北市"},{"id":"banqiao-hs","name":"板橋高中地下停車場","city":"新北市"},{"id":"siliconvalley","name":"臺北矽谷大樓地下停車場","city":"新北市"},{"id":"guangrong","name":"光榮國小地下停車場","city":"新北市"},{"id":"xiufeng","name":"秀峰段平面停車場","city":"新北市"},{"id":"yangguang","name":"陽光段平面停車場","city":"新北市"},{"id":"jinhe-flat","name":"錦和平面停車場","city":"新北市"},{"id":"linkou-j1","name":"林口機一平面停車場","city":"新北市"},{"id":"tongxing","name":"同興平面停車場","city":"新北市"},{"id":"tw64","name":"台64橋下平面停車場","city":"新北市"},{"id":"shuidui","name":"水碓三路平面停車場","city":"新北市"},{"id":"xinwu","name":"新五平面停車場","city":"新北市"},{"id":"hean","name":"合安路停車場","city":"新北市"},{"id":"nanlin","name":"南林段平面停車場","city":"新北市"},{"id":"yixue","name":"義學立體停車場","city":"新北市"},{"id":"shenao","name":"深澳鐵道自行車","city":"新北市"},{"id":"taoyuan","name":"桃園國際原住民族文化創意產業園區地下停車場","city":"桃園市"},{"id":"xinguang","name":"新光國際金融中心地下停車場","city":"桃園市"},{"id":"tyc-youth","name":"北區青少年活動中心地下停車場","city":"桃園市"},{"id":"keelung-e34","name":"基隆港東三東四停車場","city":"基隆市"}];
-  var API = window.HelpAPI;
+  if (!window.HELP_FB || /[?&]demo=1/.test(location.search)) return;
+  var s = document.createElement('script'); s.src = 'api-fb.js?v=ac2db4c103';
+  s.onerror = function(){ window.dispatchEvent(new Event('helpapi-fail')); };
+  document.head.appendChild(s);
+})();
+</script>
+<script>
+(function(){
+  var ALL_SITES = [{"id":"tpmc","name":"臺北流行音樂中心地下停車場","city":"臺北市"},{"id":"rongxing","name":"榮星花園地下停車場","city":"臺北市"},{"id":"minquan","name":"民權公園地下停車場","city":"臺北市"},{"id":"yonghe","name":"雍和園區地下停車場","city":"臺北市"},{"id":"shezi","name":"社子國小地下停車場","city":"臺北市"},{"id":"jinan","name":"進安公園地下停車場","city":"臺北市"},{"id":"ntsec","name":"國立臺灣科學教育館地下停車場","city":"臺北市"},{"id":"binjiang","name":"濱江國中地下停車場","city":"臺北市"},{"id":"guangci1","name":"廣慈1區社會住宅地下停車場","city":"臺北市"},{"id":"guangci2","name":"廣慈2區社會住宅地下停車場","city":"臺北市"},{"id":"shipai","name":"石牌國小地下停車場","city":"臺北市"},{"id":"zhonghe","name":"中和國小地下停車場","city":"新北市"},{"id":"tucheng-central","name":"土城中央公園地下停車場","city":"新北市"},{"id":"ruifang","name":"瑞芳立體停車場","city":"新北市"},{"id":"jinhe","name":"錦和運動公園地下停車場","city":"新北市"},{"id":"xinggu","name":"興榖國小操場地下停車場","city":"新北市"},{"id":"archives","name":"國家檔案館地下停車場","city":"新北市"},{"id":"xiulang","name":"秀朗國小地下停車場","city":"新北市"},{"id":"fengshu","name":"楓樹腳公園地下停車場","city":"新北市"},{"id":"fuhe","name":"福和國中地下停車場","city":"新北市"},{"id":"lujiang","name":"鷺江立體停車場","city":"新北市"},{"id":"ruifang-back","name":"瑞芳後火車站平面停車場","city":"新北市"},{"id":"tucheng-yanji","name":"土城延吉立體停車場","city":"新北市"},{"id":"tucheng-yusheng","name":"土城裕生立體停車場","city":"新北市"},{"id":"banqiao-hs","name":"板橋高中地下停車場","city":"新北市"},{"id":"siliconvalley","name":"臺北矽谷大樓地下停車場","city":"新北市"},{"id":"guangrong","name":"光榮國小地下停車場","city":"新北市"},{"id":"xiufeng","name":"秀峰段平面停車場","city":"新北市"},{"id":"yangguang","name":"陽光段平面停車場","city":"新北市"},{"id":"jinhe-flat","name":"錦和平面停車場","city":"新北市"},{"id":"linkou-j1","name":"林口機一平面停車場","city":"新北市"},{"id":"tongxing","name":"同興平面停車場","city":"新北市"},{"id":"tw64","name":"台64橋下平面停車場","city":"新北市"},{"id":"shuidui","name":"水碓三路平面停車場","city":"新北市"},{"id":"xinwu","name":"新五平面停車場","city":"新北市"},{"id":"hean","name":"合安路停車場","city":"新北市"},{"id":"nanlin","name":"南林段平面停車場","city":"新北市"},{"id":"yixue","name":"義學立體停車場","city":"新北市"},{"id":"shenao","name":"深澳鐵道自行車","city":"新北市"},{"id":"taoyuan","name":"桃園國際原住民族文化創意產業園區地下停車場","city":"桃園市"},{"id":"xinguang","name":"新光國際金融中心地下停車場","city":"桃園市"},{"id":"tyc-youth","name":"北區青少年活動中心地下停車場","city":"桃園市"},{"id":"keelung-e34","name":"基隆港東三東四停車場","city":"基隆市"}], PILOT = ["minquan"];
+  var LIVE = !!window.HELP_FB && !/[?&]demo=1/.test(location.search);
+  // 正式版只列出已開放文字求助的試辦場站
+  var SITES = LIVE && PILOT ? ALL_SITES.filter(function(s){ return PILOT.indexOf(s.id) >= 0; }) : ALL_SITES;
+  var API = window.HelpAPI || null, DEMO = false;
   var $ = function(id){ return document.getElementById(id); };
   var CATS = [
     ['柵欄沒開', '<path d="M3 20V9M21 20V9M3 12h18M7 12l3-3M13 12l3-3"/>'],
@@ -211,8 +224,6 @@ body.kb .emerg{display:none}
     ['其他', '<circle cx="6" cy="12" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="18" cy="12" r="1"/>']
   ];
   var QUICK = ['好', '我在車上', '我在繳費機旁', '我在出口柵欄前'];
-  var DEMO = API.mode === 'demo';
-  if (DEMO) $('demo-bar').hidden = false;
   function rid(){ var a = new Uint8Array(8); crypto.getRandomValues(a); return Array.prototype.map.call(a, function(b){ return ('0' + b.toString(16)).slice(-2); }).join(''); }
   function store(k, v){ try { if (v == null) localStorage.removeItem(k); else localStorage.setItem(k, v); } catch (e) {} }
   function read(k){ try { return localStorage.getItem(k); } catch (e) { return null; } }
@@ -230,7 +241,8 @@ body.kb .emerg{display:none}
   $('site').onchange = function(){ siteObj = SITES.filter(function(s){ return s.id === $('site').value; })[0] || null; showWhere(); };
   $('dev').oninput = function(){ device = this.value.trim().slice(0, 30); showWhere(); };
   function showWhere(){
-    $('w-site').textContent = siteObj ? siteObj.name : (q.get('s') ? '無法辨識這個場站，請重新選擇' : '尚未選擇場站');
+    var known = ALL_SITES.some(function(s){ return s.id === q.get('s'); });
+    $('w-site').textContent = siteObj ? siteObj.name : !q.get('s') ? '尚未選擇場站' : known ? '這個場站尚未開放文字求助，如需現場服務，請洽各場站管理室。' : '無法辨識這個場站，請重新選擇';
     $('w-dev').textContent = device ? '位置：' + device : '';
   }
   showWhere();
@@ -255,12 +267,16 @@ body.kb .emerg{display:none}
     var text = $('first').value.trim();
     if (!siteObj) { $('e-start').textContent = '請先選擇所在的場站。'; $('pick').hidden = false; $('city').focus(); return; }
     if (text.length < 2) { $('e-start').textContent = '請選一個狀況，或輸入您的狀況。'; $('first').focus(); return; }
+    if (!API) { $('e-start').textContent = loadFailed ? '目前無法連線，請使用現場求助，或依指標前往管理室。' : '連線中，請稍候再按一次。'; return; }
     var sig = siteObj.id + '\n' + device + '\n' + text;
     if (!op || op.sig !== sig) { op = { sig: sig, cid: rid() }; store('dari-help-op', JSON.stringify(op)); }
     var btn = this; btn.disabled = true; btn.firstChild.textContent = '送出中… ';
     API.createCase({ site: siteObj.id, siteName: siteObj.name, device: device, category: cat || '其他', text: text, clientId: op.cid })
       .then(function(c){ store('dari-help-case', c.id); store('dari-help-op', null); op = null; openCase(c.id); })
-      .catch(function(){ $('e-start').textContent = '連線中斷，尚未送出；請再按一次，或使用現場求助。'; })
+      .catch(function(e){
+        var c = e && e.code;
+        $('e-start').textContent = c === 'too_fast' ? '剛剛已送出過一件，請等 30 秒後再按一次。' : c === 'denied' ? '系統暫時無法收件，請使用現場求助，或依指標前往管理室。' : '連線中斷，尚未送出；請再按一次，或使用現場求助。';
+      })
       .then(function(){ btn.disabled = false; btn.firstChild.textContent = '開始文字求助 '; });
   };
   try { op = JSON.parse(read('dari-help-op')); } catch (e) {}
@@ -275,7 +291,7 @@ body.kb .emerg{display:none}
     if (unsub) unsub();
     unsub = API.watchCase(id, render);
     setTimeout(function(){ $('c-head').focus(); }, 50);
-    if ('vibrate' in navigator) $('vib').hidden = false;
+    if ('vibrate' in navigator) $('vib').hidden = false; else $('novib').hidden = false;
   }
   $('vib').onclick = function(){ vibOn = true; try { navigator.vibrate(120); } catch (e) {} this.textContent = '震動提醒已開啟'; this.disabled = true; };
 
@@ -287,7 +303,7 @@ body.kb .emerg{display:none}
     var idx = { new: 0, accepted: 1, working: 2, closed: 4 }[c.status];
     Array.prototype.forEach.call($('steps').children, function(li, i){ li.className = i < idx ? 'done' : i === idx ? 'now' : ''; if (i === idx) li.setAttribute('aria-current', 'step'); else li.removeAttribute('aria-current'); });
     var t = '', p = '案件 ' + c.code, cls = 'status';
-    if (c.status === 'new' && c.escalated) { t = '已通知備援人員' + (DEMO ? '（試用版模擬）' : ''); p += '　尚未代表備援已接手。'; cls += ' warn'; }
+    if (c.status === 'new' && c.escalated) { t = DEMO ? '備援通知模擬，未實際通知人員。' : '已送出備援通知，尚待人員確認。'; cls += ' warn'; }
     else if (c.status === 'new' && c.escalateFailed) { t = '暫時無法通知備援'; p += '　請使用現場求助，或依指標前往管理室。'; cls += ' warn'; }
     else if (c.status === 'new') { t = c.cycle > 1 ? '已再次通知管理室，尚待人員接手' : '已收到，尚待人員接手'; }
     else if (c.status === 'accepted') { t = '管理員已接手'; cls += ' ok'; }
@@ -300,7 +316,12 @@ body.kb .emerg{display:none}
     $('escal').hidden = !(waiting && (c.escalated || c.escalateFailed));
     $('cardd').hidden = !(waiting && !c.escalated && !c.escalateFailed);
     $('done').hidden = c.status !== 'closed'; $('composer').hidden = c.status === 'closed';
-    if (c.status === 'closed') { $('done-result').textContent = c.result ? '管理室：' + c.result : ''; $('done-code').textContent = c.code; }
+    if (c.status === 'closed') {
+      // 只有管理室確認問題排除時才說「協助已完成」，其餘只說對話結束
+      var solved = /^(問題已排除|已於現場確認問題排除)/.test(c.result || '');
+      $('done-title').textContent = solved ? '本次協助已完成' : '本次對話已結束';
+      $('done-result').textContent = c.result ? '管理室處理結果：' + c.result : ''; $('done-code').textContent = c.code;
+    }
     drawLog(c);
     var theirs = c.messages.filter(function(m){ return m.from === 'staff'; }).length;
     if ((lastTheirs >= 0 && theirs > lastTheirs) || (lastStatus && lastStatus !== c.status)) {
@@ -369,12 +390,16 @@ body.kb .emerg{display:none}
     var btn = this; btn.disabled = true; $('e-again').textContent = '';
     API.reopen(caseId, '我仍需要協助', current && current.cycle, rid())
       .then(function(){ $('c-head').focus(); })
-      .catch(function(){ $('e-again').textContent = '連線中斷，尚未送出；請再按一次，或使用現場求助。'; })
+      .catch(function(e){
+        if (e && (e.code === 'expired' || e.code === 'denied')) { $('e-again').textContent = '此案件已結束超過 30 分鐘，請重新開始求助。'; $('restart').hidden = false; }
+        else $('e-again').textContent = '連線中斷，尚未送出；請再按一次，或使用現場求助。';
+      })
       .then(function(){ btn.disabled = false; });
   };
+  $('restart').onclick = function(){ store('dari-help-case', null); location.reload(); };
 
   // 試用版：本輪排隊 3 分鐘仍沒人接手，模擬「已通知備援」（正式版由伺服器排程判斷，不靠這個頁面）
-  if (DEMO) setInterval(function(){ if (current && current.status === 'new' && !current.escalated && Date.now() - current.queuedAt > 3 * 60 * 1000) API.markEscalated(current.id, current.cycle).catch(function(){}); }, 15000);
+  setInterval(function(){ if (!DEMO) return; if (current && current.status === 'new' && !current.escalated && Date.now() - current.queuedAt > 3 * 60 * 1000) API.markEscalated(current.id, current.cycle).catch(function(){}); }, 15000);
 
   // 底部緊急提示的高度，給輸入框留位置；手機鍵盤打開時暫時收起緊急提示，讓輸入框有空間
   var em = document.querySelector('.emerg');
@@ -387,11 +412,27 @@ body.kb .emerg{display:none}
   if (window.visualViewport) window.visualViewport.addEventListener('resize', emh);
   document.addEventListener('focusin', emh); document.addEventListener('focusout', function(){ setTimeout(emh, 50); });
 
+  // 資料介面載入完成後：顯示試用版提示、接續先前的案件
+  var loadFailed = false;
+  function failLoad(){ if (API) return; loadFailed = true; $('e-start').textContent = '目前無法連線，請使用現場求助，或依指標前往管理室。'; }
+  window.addEventListener('helpapi-fail', failLoad);
+  setTimeout(failLoad, 20000);
+  function ready(){
+    API = window.HelpAPI; DEMO = API.mode === 'demo';
+    if (DEMO) $('demo-bar').hidden = false;
+    if ($('e-start').textContent.indexOf('連線中') === 0 || loadFailed) $('e-start').textContent = '';
+    resume();
+  }
+  if (API) setTimeout(ready, 0); else window.addEventListener('helpapi', ready, { once: true });
+
   // 重新整理後接續原案件：同一場站、且未結案或結案未滿 30 分鐘才自動接續；
   // 掃了別場的 QR，則在開始頁上方提供「回到先前的求助」
+  function resume(){
   var saved = read('dari-help-case');
   if (saved) {
+    var done = false;
     var off = API.watchCase(saved, function(c){
+      if (done) return; done = true;
       setTimeout(function(){ off(); }, 0);
       if (!c) { store('dari-help-case', null); return; }
       var stale = c.status === 'closed' && Date.now() - c.closedAt > 30 * 60 * 1000;
@@ -400,6 +441,7 @@ body.kb .emerg{display:none}
       $('resume').hidden = false; $('resume-t').textContent = '您在「' + c.siteName + '」有一則' + (c.status === 'closed' ? '剛結束' : '進行中') + '的求助。';
       $('resume-b').onclick = function(){ openCase(c.id); };
     });
+  }
   }
 })();
 </script>

@@ -29,6 +29,12 @@
   function uid() { return Date.now().toString(36) + Math.random().toString(36).slice(2, 8); }
   function today() { var d = new Date(); return d.getFullYear() + ('0' + (d.getMonth() + 1)).slice(-2) + ('0' + d.getDate()).slice(-2); }
   function clone(x) { return JSON.parse(JSON.stringify(x)); }
+  // 與正式版相同的摘要欄位：open（未結案）、custCount（客人訊息數）、lastCustomerText（最後一則客人訊息）
+  function derive(c) {
+    var cm = c.messages.filter(function (m) { return m.from === 'customer'; });
+    c.open = c.status !== 'closed'; c.custCount = cm.length; c.lastCustomerText = cm.length ? cm[cm.length - 1].text : '';
+    return c;
+  }
   function fail(code) { var e = new Error(code); e.code = code; throw e; }
   // 每個寫入都「重新讀取 → 檢查 → 寫回」，錯誤一律轉成被拒絕的 Promise（含本機空間不足）
   function tx(fn) {
@@ -70,7 +76,7 @@
     },
     watchCase: function (id, cb) {
       var last = '';
-      function run() { var c = load().cases[id]; var s = JSON.stringify(c || null); if (s !== last) { last = s; cb(c ? clone(c) : null); } }
+      function run() { var c = load().cases[id]; var s = JSON.stringify(c || null); if (s !== last) { last = s; cb(c ? derive(clone(c)) : null); } }
       run(); return on(run);
     },
     // 傳訊息：同一個 clientMsgId 只收一次（已收過就直接回成功）；已結案拒收；管理室只有目前的接手裝置能回覆
@@ -88,13 +94,15 @@
         return true;
       });
     },
-    // 管理室：試用版不驗證密碼；正式版改為個人帳號登入，後端只回傳本場案件
+    // 管理室：試用版選場站即可、不驗證密碼；正式版為帳號密碼登入，場站由後台指定
     staffLogin: function (site, name) { return Promise.resolve({ site: site, name: name || '值班人員' }); },
+    staffSession: function () { return Promise.resolve(null); },
+    staffLogout: function () { return Promise.resolve(); },
     watchSite: function (site, cb) {
       var last = '';
       function run() {
         var db = load(), list = Object.keys(db.cases).map(function (k) { return db.cases[k]; }).filter(function (c) { return c.site === site; });
-        var s = JSON.stringify(list); if (s !== last) { last = s; cb(clone(list)); }
+        var s = JSON.stringify(list); if (s !== last) { last = s; cb(clone(list).map(derive)); }
       }
       run(); return on(run);
     },
@@ -126,7 +134,7 @@
         if (!active(c)) fail(c.status === 'closed' ? 'closed' : 'not_new');
         if (c.acceptedDev !== dev || (ver != null && c.assignVer !== ver)) fail('not_assignee');
         c.status = 'closed'; c.closedAt = Date.now(); c.result = String(result).slice(0, 100);
-        sys(c, '本次協助已完成');
+        sys(c, /^(問題已排除|已於現場確認問題排除)/.test(result) ? '本次協助已完成' : '本次對話已結束');
         return true;
       });
     },
@@ -149,12 +157,17 @@
       return tx(function (db) {
         var c = get(db, id);
         if (c.status !== 'new' || c.escalated || (cycle != null && c.cycle !== cycle)) return false;
-        c.escalated = true; sys(c, '已通知備援人員（試用版模擬）');
+        c.escalated = true; sys(c, '備援通知模擬，未實際通知人員');
         return true;
       });
     },
     resetDemo: function () { try { localStorage.removeItem(KEY); } catch (e) {} if (bc) bc.postMessage('changed'); notify(); }
   };
 
-  global.HelpAPI = demo;
+  // 沒有 Firebase 設定、或網址加上 ?demo=1 時使用試用版
+  global.HelpDemo = demo;
+  if (!global.HELP_FB || /[?&]demo=1/.test(location.search)) {
+    global.HelpAPI = demo;
+    setTimeout(function () { global.dispatchEvent(new Event('helpapi')); }, 0);
+  }
 })(window);

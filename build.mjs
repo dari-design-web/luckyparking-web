@@ -632,8 +632,20 @@ fs.writeFileSync(path.join(OUT, 'robots.txt'), `User-agent: *\nAllow: /\nSitemap
   // 文字求助：客人端 help/?s=場站代碼&d=設備位置；管理室端 help/staff/
   const helpDir = path.join(OUT, 'help');
   fs.mkdirSync(path.join(helpDir, 'staff'), { recursive: true });
+  // 有 helpFirebase 設定就用正式版（Firebase），否則用試用版；網址加 ?demo=1 可強制試用版
+  const fb = SITE.helpFirebase || null;
+  if (fb && !(fb.apiKey && fb.projectId && fb.appId)) throw new Error('helpFirebase 設定不完整');
+  const fbJson = fb ? JSON.stringify({ apiKey: fb.apiKey, authDomain: fb.authDomain, projectId: fb.projectId, appId: fb.appId }).replace(/</g, '\\u003c') : 'null';
+  const bundle = path.join(ROOT, 'src/apps/help-fb.bundle.js');
+  if (fb && !fs.existsSync(bundle)) throw new Error('缺少 src/apps/help-fb.bundle.js，請先執行 node tools/bundle-help.mjs');
+  const helpVer = crypto.createHash('sha256').update(fs.readFileSync(path.join(ROOT, 'src/apps/help-api.js'))).update(fb ? fs.readFileSync(bundle) : '').digest('hex').slice(0, 10);
+  // 正式版只開放 helpSites 列出的試辦場站（有管理室帳號的場站）；試用版開放全部場站
+  const pilot = SITE.helpSites || null;
+  if (pilot) pilot.forEach(c => { if (!LOTS.some(l => l.id === c)) throw new Error('helpSites 有不存在的場站代碼：' + c); });
+  const helpPage = f => fs.readFileSync(path.join(ROOT, f), 'utf8').replace('__SITES__', () => lotsJson).replace('__PILOT__', () => JSON.stringify(pilot)).replace('__FBCONFIG__', () => fbJson).replace(/__V__/g, helpVer);
   fs.copyFileSync(path.join(ROOT, 'src/apps/help-api.js'), path.join(helpDir, 'api.js'));
-  fs.writeFileSync(path.join(helpDir, 'index.html'), fs.readFileSync(path.join(ROOT, 'src/apps/help.html'), 'utf8').replace('__SITES__', () => lotsJson));
-  fs.writeFileSync(path.join(helpDir, 'staff', 'index.html'), fs.readFileSync(path.join(ROOT, 'src/apps/help-staff.html'), 'utf8').replace('__SITES__', () => lotsJson));
+  if (fb) fs.copyFileSync(bundle, path.join(helpDir, 'api-fb.js'));
+  fs.writeFileSync(path.join(helpDir, 'index.html'), helpPage('src/apps/help.html'));
+  fs.writeFileSync(path.join(helpDir, 'staff', 'index.html'), helpPage('src/apps/help-staff.html'));
 }
 console.log('built', Object.keys(pages).length, 'pages →', OUT);

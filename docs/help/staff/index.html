@@ -28,7 +28,7 @@ h2{font-size:20px;margin:0 0 10px}
 h1:focus,h2:focus{outline:none}
 .box{background:#fff;border:1px solid var(--rule);border-radius:18px;padding:18px}
 label.f{display:block;font-weight:700;margin:14px 0 6px}
-select,input[type=text],textarea{width:100%;font:inherit;color:inherit;border:1.5px solid var(--line);border-radius:14px;padding:12px 16px;background:#fff;min-height:52px}
+select,input[type=text],input[type=email],input[type=password],textarea{width:100%;font:inherit;color:inherit;border:1.5px solid var(--line);border-radius:14px;padding:12px 16px;background:#fff;min-height:52px}
 select{appearance:none;-webkit-appearance:none;background:#fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' fill='none' stroke='%23121A26' stroke-width='2'%3E%3Cpath d='M5 8l5 5 5-5'/%3E%3C/svg%3E") no-repeat right 14px center;padding-right:44px}
 textarea{resize:none;display:block}
 :focus-visible{outline:2px solid var(--blue);outline-offset:3px}
@@ -40,7 +40,8 @@ textarea{resize:none;display:block}
 .btn[disabled]{background:#E3E8EF;color:var(--ink2);border-color:#E3E8EF;cursor:default}
 .muted{color:var(--ink2)}
 .small{font-size:14px}
-.err{color:var(--err);font-weight:500}
+.err{color:var(--err);font-weight:500;font-size:16px;line-height:1.5}
+#e-dlg:not(:empty){margin-top:8px}
 .err:empty{display:none}
 .alertset{display:flex;flex-wrap:wrap;gap:12px;align-items:center;background:var(--warn);border:1.5px solid #F1C7A6;border-radius:18px;padding:14px 18px;margin:0 0 14px}
 .alertset.on{background:var(--okbg);border-color:#B9DCC8}
@@ -106,6 +107,12 @@ dialog::backdrop{background:rgba(18,26,38,.45)}
 .reset{display:inline-flex;min-height:44px;align-items:center;background:none;border:0;color:var(--ink2);font:inherit;font-size:14px;text-decoration:underline;cursor:pointer;padding:0}
 .vh{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 [hidden]{display:none!important}
+@media (max-width:959px){
+  #v-work.in-detail .counts{display:none}
+  #v-work.in-detail .alertset{padding:8px 14px;margin-bottom:10px}
+  #v-work.in-detail .alertset .small{display:none}
+  #v-work.in-detail .alertset .btn{min-height:44px;padding:0 14px;font-size:15px}
+}
 @media (min-width:960px){
   .cols{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.5fr);gap:20px;align-items:start}
   #v-detail{position:sticky;top:76px}
@@ -117,29 +124,40 @@ dialog::backdrop{background:rgba(18,26,38,.45)}
 <body>
 <div class="vh" id="live" role="status"></div>
 <div class="top"><div class="in"><b>管理室</b><span class="scope" id="scope">文字求助</span><button type="button" class="out" id="logout" hidden>登出</button></div></div>
-<div class="demo" id="demo-bar" hidden>試用版：資料只存在這台裝置，不需密碼。請在同一個瀏覽器另開客人端分頁一起測試。</div>
+<div class="demo" id="demo-bar" hidden>試用版：僅供介面測試，未連線至實際管理室。資料只存在這個瀏覽器，請另開客人端分頁一起測試。</div>
 
 <!-- 登入 -->
 <div class="page" id="v-login">
   <div class="box" style="max-width:520px;margin:12px auto">
     <h1 id="login-title" tabindex="-1">管理室登入</h1>
     <p class="muted" style="margin:0">登入後只會看到本場的文字求助案件。</p>
-    <label class="f" for="city">縣市</label>
-    <select id="city"><option value="">選縣市</option></select>
-    <label class="f" for="site">場站</label>
-    <select id="site" disabled><option value="">選場站</option></select>
-    <label class="f" for="who">值班人員稱呼</label>
+    <form id="login-form" onsubmit="return false">
+    <div id="login-demo" hidden>
+      <label class="f" for="city">縣市</label>
+      <select id="city"><option value="">選縣市</option></select>
+      <label class="f" for="site">場站</label>
+      <select id="site" disabled><option value="">選場站</option></select>
+    </div>
+    <div id="login-fb" hidden>
+      <label class="f" for="email">帳號</label>
+      <input type="email" id="email" autocomplete="username" inputmode="email" placeholder="例：minquan@staff.dari-help.tw">
+      <label class="f" for="pw">密碼</label>
+      <input type="password" id="pw" autocomplete="current-password">
+    </div>
+    <p class="muted small" id="login-wait">連線中…</p>
+    <label class="f" for="who">值班人員稱呼（選填）</label>
     <input type="text" id="who" maxlength="12" placeholder="例：王先生、早班">
     <p class="err" id="e-login" role="alert"></p>
     <div style="height:16px"></div>
-    <button class="btn wide big" type="button" id="login">登入</button>
+    <button class="btn wide big" type="submit" id="login" disabled>登入</button>
+    </form>
   </div>
 </div>
 
 <!-- 工作區 -->
 <div class="page" id="v-work" hidden>
   <div class="alertset" id="alertset" role="status">
-    <div class="t"><b id="al-t">請先開啟接案提醒</b><span class="small muted" id="al-p">開啟後，新案件與客人新訊息會發出聲音與震動。手機請保持此頁開啟、不要鎖定螢幕。</span></div>
+    <div class="t"><b id="al-t">請先測試接案提醒</b><span class="small muted" id="al-p">本頁保持前景且裝置支援時，可播放提醒聲。震動與系統通知依裝置及設定而定；請先測試，再開始值守。</span></div>
     <button class="btn orange" type="button" id="al-btn">開啟並測試提醒</button>
   </div>
   <div class="counts" aria-label="本場案件數">
@@ -201,19 +219,31 @@ dialog::backdrop{background:rgba(18,26,38,.45)}
   <div class="acts"><button class="btn line" type="button" id="dlg-cancel">取消</button><button class="btn" type="button" id="dlg-ok">確認結案</button></div>
 </dialog>
 
-<script src="../api.js"></script>
+<script>window.HELP_FB = {"apiKey":"AIzaSyDUoIG3FCxiyzixCDwM1m-5w5MF7-Ak4qs","authDomain":"wedding-seating-37b71.firebaseapp.com","projectId":"wedding-seating-37b71","appId":"1:830651084062:web:fc326c270926d742bf2d0f"}; window.HELP_ROLE = 'staff';</script>
+<script src="../api.js?v=ac2db4c103"></script>
 <script>
 (function(){
-  var SITES = [{"id":"tpmc","name":"臺北流行音樂中心地下停車場","city":"臺北市"},{"id":"rongxing","name":"榮星花園地下停車場","city":"臺北市"},{"id":"minquan","name":"民權公園地下停車場","city":"臺北市"},{"id":"yonghe","name":"雍和園區地下停車場","city":"臺北市"},{"id":"shezi","name":"社子國小地下停車場","city":"臺北市"},{"id":"jinan","name":"進安公園地下停車場","city":"臺北市"},{"id":"ntsec","name":"國立臺灣科學教育館地下停車場","city":"臺北市"},{"id":"binjiang","name":"濱江國中地下停車場","city":"臺北市"},{"id":"guangci1","name":"廣慈1區社會住宅地下停車場","city":"臺北市"},{"id":"guangci2","name":"廣慈2區社會住宅地下停車場","city":"臺北市"},{"id":"shipai","name":"石牌國小地下停車場","city":"臺北市"},{"id":"zhonghe","name":"中和國小地下停車場","city":"新北市"},{"id":"tucheng-central","name":"土城中央公園地下停車場","city":"新北市"},{"id":"ruifang","name":"瑞芳立體停車場","city":"新北市"},{"id":"jinhe","name":"錦和運動公園地下停車場","city":"新北市"},{"id":"xinggu","name":"興榖國小操場地下停車場","city":"新北市"},{"id":"archives","name":"國家檔案館地下停車場","city":"新北市"},{"id":"xiulang","name":"秀朗國小地下停車場","city":"新北市"},{"id":"fengshu","name":"楓樹腳公園地下停車場","city":"新北市"},{"id":"fuhe","name":"福和國中地下停車場","city":"新北市"},{"id":"lujiang","name":"鷺江立體停車場","city":"新北市"},{"id":"ruifang-back","name":"瑞芳後火車站平面停車場","city":"新北市"},{"id":"tucheng-yanji","name":"土城延吉立體停車場","city":"新北市"},{"id":"tucheng-yusheng","name":"土城裕生立體停車場","city":"新北市"},{"id":"banqiao-hs","name":"板橋高中地下停車場","city":"新北市"},{"id":"siliconvalley","name":"臺北矽谷大樓地下停車場","city":"新北市"},{"id":"guangrong","name":"光榮國小地下停車場","city":"新北市"},{"id":"xiufeng","name":"秀峰段平面停車場","city":"新北市"},{"id":"yangguang","name":"陽光段平面停車場","city":"新北市"},{"id":"jinhe-flat","name":"錦和平面停車場","city":"新北市"},{"id":"linkou-j1","name":"林口機一平面停車場","city":"新北市"},{"id":"tongxing","name":"同興平面停車場","city":"新北市"},{"id":"tw64","name":"台64橋下平面停車場","city":"新北市"},{"id":"shuidui","name":"水碓三路平面停車場","city":"新北市"},{"id":"xinwu","name":"新五平面停車場","city":"新北市"},{"id":"hean","name":"合安路停車場","city":"新北市"},{"id":"nanlin","name":"南林段平面停車場","city":"新北市"},{"id":"yixue","name":"義學立體停車場","city":"新北市"},{"id":"shenao","name":"深澳鐵道自行車","city":"新北市"},{"id":"taoyuan","name":"桃園國際原住民族文化創意產業園區地下停車場","city":"桃園市"},{"id":"xinguang","name":"新光國際金融中心地下停車場","city":"桃園市"},{"id":"tyc-youth","name":"北區青少年活動中心地下停車場","city":"桃園市"},{"id":"keelung-e34","name":"基隆港東三東四停車場","city":"基隆市"}];
-  var API = window.HelpAPI;
+  if (!window.HELP_FB || /[?&]demo=1/.test(location.search)) return;
+  var s = document.createElement('script'); s.src = '../api-fb.js?v=ac2db4c103';
+  s.onerror = function(){ window.dispatchEvent(new Event('helpapi-fail')); };
+  document.head.appendChild(s);
+})();
+</script>
+<script>
+(function(){
+  var ALL_SITES = [{"id":"tpmc","name":"臺北流行音樂中心地下停車場","city":"臺北市"},{"id":"rongxing","name":"榮星花園地下停車場","city":"臺北市"},{"id":"minquan","name":"民權公園地下停車場","city":"臺北市"},{"id":"yonghe","name":"雍和園區地下停車場","city":"臺北市"},{"id":"shezi","name":"社子國小地下停車場","city":"臺北市"},{"id":"jinan","name":"進安公園地下停車場","city":"臺北市"},{"id":"ntsec","name":"國立臺灣科學教育館地下停車場","city":"臺北市"},{"id":"binjiang","name":"濱江國中地下停車場","city":"臺北市"},{"id":"guangci1","name":"廣慈1區社會住宅地下停車場","city":"臺北市"},{"id":"guangci2","name":"廣慈2區社會住宅地下停車場","city":"臺北市"},{"id":"shipai","name":"石牌國小地下停車場","city":"臺北市"},{"id":"zhonghe","name":"中和國小地下停車場","city":"新北市"},{"id":"tucheng-central","name":"土城中央公園地下停車場","city":"新北市"},{"id":"ruifang","name":"瑞芳立體停車場","city":"新北市"},{"id":"jinhe","name":"錦和運動公園地下停車場","city":"新北市"},{"id":"xinggu","name":"興榖國小操場地下停車場","city":"新北市"},{"id":"archives","name":"國家檔案館地下停車場","city":"新北市"},{"id":"xiulang","name":"秀朗國小地下停車場","city":"新北市"},{"id":"fengshu","name":"楓樹腳公園地下停車場","city":"新北市"},{"id":"fuhe","name":"福和國中地下停車場","city":"新北市"},{"id":"lujiang","name":"鷺江立體停車場","city":"新北市"},{"id":"ruifang-back","name":"瑞芳後火車站平面停車場","city":"新北市"},{"id":"tucheng-yanji","name":"土城延吉立體停車場","city":"新北市"},{"id":"tucheng-yusheng","name":"土城裕生立體停車場","city":"新北市"},{"id":"banqiao-hs","name":"板橋高中地下停車場","city":"新北市"},{"id":"siliconvalley","name":"臺北矽谷大樓地下停車場","city":"新北市"},{"id":"guangrong","name":"光榮國小地下停車場","city":"新北市"},{"id":"xiufeng","name":"秀峰段平面停車場","city":"新北市"},{"id":"yangguang","name":"陽光段平面停車場","city":"新北市"},{"id":"jinhe-flat","name":"錦和平面停車場","city":"新北市"},{"id":"linkou-j1","name":"林口機一平面停車場","city":"新北市"},{"id":"tongxing","name":"同興平面停車場","city":"新北市"},{"id":"tw64","name":"台64橋下平面停車場","city":"新北市"},{"id":"shuidui","name":"水碓三路平面停車場","city":"新北市"},{"id":"xinwu","name":"新五平面停車場","city":"新北市"},{"id":"hean","name":"合安路停車場","city":"新北市"},{"id":"nanlin","name":"南林段平面停車場","city":"新北市"},{"id":"yixue","name":"義學立體停車場","city":"新北市"},{"id":"shenao","name":"深澳鐵道自行車","city":"新北市"},{"id":"taoyuan","name":"桃園國際原住民族文化創意產業園區地下停車場","city":"桃園市"},{"id":"xinguang","name":"新光國際金融中心地下停車場","city":"桃園市"},{"id":"tyc-youth","name":"北區青少年活動中心地下停車場","city":"桃園市"},{"id":"keelung-e34","name":"基隆港東三東四停車場","city":"基隆市"}], PILOT = ["minquan"];
+  var LIVE = !!window.HELP_FB && !/[?&]demo=1/.test(location.search);
+  // 正式版只列出已開放文字求助的試辦場站
+  var SITES = LIVE && PILOT ? ALL_SITES.filter(function(s){ return PILOT.indexOf(s.id) >= 0; }) : ALL_SITES;
+  var API = null, DEMO = false;
   var $ = function(id){ return document.getElementById(id); };
   function rid(){ var a = new Uint8Array(8); crypto.getRandomValues(a); return Array.prototype.map.call(a, function(b){ return ('0' + b.toString(16)).slice(-2); }).join(''); }
   var TPL = ['我會到現場協助，請在安全處等候。', '請依指標到管理室，可使用筆談。', '已處理完成，可以離場。'];
   var TPL_GATE = '請稍候，我將依權限協助處理柵欄。';
-  var RESULTS = ['已協助處理，可正常離場', '已到現場協助', '已請客人至管理室處理', '客人已自行解決或離開'];
+  // 只有確認問題排除的兩項，客人端才顯示「本次協助已完成」；其餘顯示「本次對話已結束」並保留「仍需要協助」
+  var RESULTS = ['問題已排除，可正常離場', '已於現場確認問題排除', '已轉管理室接續處理', '客人已離開，未確認是否排除'];
   var STATUS = { new: ['new', '新案件・尚未接手'], accepted: ['acc', '已接手'], working: ['work', '處理中'], closed: ['closed', '已結案'] };
-  var DEMO = API.mode === 'demo';
-  if (DEMO) { $('demo-bar').hidden = false; $('reset').hidden = false; }
+
   // 持續存在的狀態播報區：只在有意義的變化時更新
   function say(t){ var l = $('live'); l.textContent = ''; setTimeout(function(){ l.textContent = t; }, 60); }
 
@@ -223,16 +253,32 @@ dialog::backdrop{background:rgba(18,26,38,.45)}
   Object.keys(groups).forEach(function(c){ var o = document.createElement('option'); o.value = c; o.textContent = c; $('city').appendChild(o); });
   function fillSites(c){ var sel = $('site'); sel.length = 1; sel.disabled = !c; (groups[c] || []).forEach(function(s){ var o = document.createElement('option'); o.value = s.id; o.textContent = s.name; sel.appendChild(o); }); }
   $('city').onchange = function(){ fillSites(this.value); };
-  var me = null; try { me = JSON.parse(localStorage.getItem('dari-help-staff')); } catch (e) {}
+  var me = null, savedWho = ''; try { me = JSON.parse(localStorage.getItem('dari-help-staff')); savedWho = (me && me.who) || ''; } catch (e) {}
+  $('who').value = savedWho;
+  function siteName(id){ var s = SITES.filter(function(x){ return x.id === id; })[0]; return s ? s.name : id; }
+  function saveMe(){ try { localStorage.setItem('dari-help-staff', JSON.stringify(me)); } catch (e) {} }
   // 這個分頁（裝置）的代號：用來分辨是誰接手；每個分頁各自一個
   var DEV = null; try { DEV = sessionStorage.getItem('dari-help-dev'); if (!DEV) { DEV = rid(); sessionStorage.setItem('dari-help-dev', DEV); } } catch (e) { DEV = rid(); }
+  var LOGIN_ERR = { bad_login: '帳號或密碼不正確。', no_staff: '這個帳號尚未設定場站，請聯絡管理者。', too_many: '嘗試次數過多，請稍後再試。', offline: '連線中斷，請確認網路後再試。' };
   $('login').onclick = function(){
-    var s = SITES.filter(function(x){ return x.id === $('site').value; })[0];
     $('e-login').textContent = '';
-    if (!s) { $('e-login').textContent = '請選擇場站。'; ($('city').value ? $('site') : $('city')).focus(); return; }
-    API.staffLogin(s.id, $('who').value.trim()).then(function(u){ me = { site: s.id, siteName: s.name, name: u.name }; try { localStorage.setItem('dari-help-staff', JSON.stringify(me)); } catch (e) {} start(); });
+    var who = $('who').value.trim().slice(0, 12), btn = this;
+    if (DEMO) {
+      var s = SITES.filter(function(x){ return x.id === $('site').value; })[0];
+      if (!s) { $('e-login').textContent = '請選擇場站。'; ($('city').value ? $('site') : $('city')).focus(); return; }
+      API.staffLogin(s.id, who).then(function(u){ me = { site: s.id, siteName: s.name, name: u.name, who: who }; saveMe(); start(); });
+      return;
+    }
+    var email = $('email').value.trim(), pw = $('pw').value;
+    if (!email || !pw) { $('e-login').textContent = '請輸入帳號與密碼。'; (email ? $('pw') : $('email')).focus(); return; }
+    btn.disabled = true; btn.textContent = '登入中…';
+    API.staffLogin(email, pw).then(function(u){
+      $('pw').value = '';
+      me = { uid: u.uid, site: u.site, siteName: siteName(u.site), name: who || u.name || '管理室', who: who }; saveMe(); start();
+    }).catch(function(e){ $('e-login').textContent = LOGIN_ERR[e && e.code] || '無法登入，請稍後再試。'; $('pw').focus(); })
+      .then(function(){ btn.disabled = false; btn.textContent = '登入'; });
   };
-  $('logout').onclick = function(){ try { localStorage.removeItem('dari-help-staff'); } catch (e) {} drafts = {}; location.reload(); };
+  $('logout').onclick = function(){ try { localStorage.removeItem('dari-help-staff'); } catch (e) {} drafts = {}; Promise.resolve(API && API.staffLogout()).then(function(){ location.reload(); }); };
 
   // 提醒：聲音、震動、系統通知（皆需使用者先按一次按鈕才能啟用）
   var ac = null, alertsOn = false, wake = null;
@@ -266,10 +312,10 @@ dialog::backdrop{background:rgba(18,26,38,.45)}
         screen ? '螢幕：此頁開著時會保持亮著' : '螢幕：無法保持常亮，請調長自動鎖定時間'
       ];
       $('alertset').className = 'alertset on';
-      $('al-t').textContent = '接案提醒已開啟';
-      $('al-p').textContent = lines.join('；') + '。手機鎖定或切到其他 App 時，網頁可能無法發出聲音，請盡量讓此頁保持在前景。';
+      $('al-t').textContent = '提醒測試結果';
+      $('al-p').textContent = lines.join('；') + '。手機鎖定或切到其他 App 時，網頁可能無法發出聲音；值守時請讓此頁保持在前景。';
       $('al-btn').textContent = '再測試一次';
-      say('接案提醒已開啟。' + lines.join('，'));
+      say('提醒測試結果：' + lines.join('，'));
     });
   };
 
@@ -278,7 +324,7 @@ dialog::backdrop{background:rgba(18,26,38,.45)}
     $('v-login').hidden = true; $('v-work').hidden = false; $('logout').hidden = false;
     $('scope').textContent = me.siteName + '｜本場案件';
     document.title = '管理室｜' + me.siteName;
-    unsub = API.watchSite(me.site, onCases);
+    unsub = API.watchSite(me.site, onCases, function(e){ say('連線中斷：' + (e.code === 'denied' ? '此帳號沒有本場權限，請重新登入。' : '正在重新連線。')); $('al-p').textContent = e.code === 'denied' ? '此帳號沒有本場權限，請登出後重新登入。' : '連線中斷，請確認網路。'; });
   }
   function onCases(list){
     cases = list;
@@ -288,14 +334,14 @@ dialog::backdrop{background:rgba(18,26,38,.45)}
       if (waiting.length) { var oldest = Math.min.apply(null, waiting.map(function(c){ return c.queuedAt; })); say('目前有 ' + waiting.length + ' 件待接手，最久已等 ' + ago(oldest).replace('前', '') + '。'); }
     } else {
       list.forEach(function(c){
-        var cust = c.messages.filter(function(m){ return m.from === 'customer'; }).length;
+        var cust = c.custCount || 0;
         if (!seen[c.id] && c.status === 'new') ring('新的文字求助', (c.device || '未填位置') + '｜' + c.category);
         else if (seen[c.id] && c.status === 'new' && seen[c.id] !== 'new') ring('客人再次求助', (c.device || '未填位置'));
         else if (seenMsg[c.id] != null && cust > seenMsg[c.id] && c.status !== 'new' && c.acceptedDev === DEV) ring('客人有新訊息', c.device || '');
       });
     }
-    seen = {}; list.forEach(function(c){ seen[c.id] = c.status; seenMsg[c.id] = c.messages.filter(function(m){ return m.from === 'customer'; }).length; });
-    drawList(); if (sel) drawDetail();
+    seen = {}; list.forEach(function(c){ seen[c.id] = c.status; seenMsg[c.id] = c.custCount || 0; });
+    drawList();
   }
   function ring(title, where){
     if (alertsOn) { beep(); buzz(); }
@@ -324,12 +370,11 @@ dialog::backdrop{background:rgba(18,26,38,.45)}
       b.type = 'button'; b.className = 'case' + (c.status === 'new' ? ' new' : ''); b.dataset.id = c.id; b.setAttribute('aria-current', sel === c.id ? 'true' : 'false');
       var row = document.createElement('div'); row.className = 'row';
       var chip = document.createElement('span'); chip.className = 'chip ' + STATUS[c.status][0]; chip.textContent = STATUS[c.status][1]; row.appendChild(chip);
-      if (c.status === 'new' && c.escalated) { var e = document.createElement('span'); e.className = 'chip esc'; e.textContent = '已逾時・已通知備援'; row.appendChild(e); }
+      if (c.status === 'new' && c.escalated) { var e = document.createElement('span'); e.className = 'chip esc'; e.textContent = DEMO ? '已逾時・備援通知（模擬）' : '已逾時・已送出備援通知'; row.appendChild(e); }
       if (c.cycle > 1 && c.status === 'new') { var r = document.createElement('span'); r.className = 'chip esc'; r.textContent = '客人再次求助'; row.appendChild(r); }
       var age = document.createElement('span'); age.className = 'age'; age.dataset.t = c.status === 'closed' ? c.closedAt : c.queuedAt; age.textContent = ago(+age.dataset.t); row.appendChild(age);
       var dev = document.createElement('p'); dev.className = 'dev'; dev.textContent = (c.device || '未填位置') + '｜' + c.category;
-      var last = c.messages.filter(function(m){ return m.from === 'customer'; }).slice(-1)[0];
-      var pre = document.createElement('p'); pre.className = 'pre'; pre.textContent = last ? last.text : '';
+      var pre = document.createElement('p'); pre.className = 'pre'; pre.textContent = c.lastCustomerText || '';
       b.appendChild(row); b.appendChild(dev); b.appendChild(pre);
       b.onclick = function(){ open(c.id); };
       li.appendChild(b); ul.appendChild(li);
@@ -343,11 +388,12 @@ dialog::backdrop{background:rgba(18,26,38,.45)}
   setInterval(function(){ Array.prototype.forEach.call(document.querySelectorAll('.case .age'), function(a){ a.textContent = ago(+a.dataset.t); }); }, 30000);
 
   // 案件詳細
-  var pending = {}, drafts = {}, shown = {}, overArm = '';
+  var pending = {}, drafts = {}, shown = {}, overArm = '', detail = null, unDetail = null;
   function open(id){
+    if (sel !== id) { if (unDetail) unDetail(); detail = undefined; unDetail = API.watchCase(id, function(c){ detail = c; if (sel === id) drawDetail(); }); }
     if (sel && sel !== id) drafts[sel] = $('d-draft').value;
     if (sel !== id) { $('d-msgs').innerHTML = ''; shown = {}; overArm = ''; resetOver(); $('e-accept').textContent = ''; $('e-reply').textContent = ''; }
-    sel = id; $('v-detail').hidden = false;
+    sel = id; $('v-detail').hidden = false; $('v-work').classList.add('in-detail');
     $('d-draft').value = drafts[id] || '';
     if (!matchMedia('(min-width:960px)').matches) $('v-list').hidden = true;
     drawList(); drawDetail(true);
@@ -355,7 +401,7 @@ dialog::backdrop{background:rgba(18,26,38,.45)}
   }
   $('back').onclick = function(){
     var id = sel; if (id) drafts[id] = $('d-draft').value;
-    sel = null; $('v-detail').hidden = true; $('v-list').hidden = false; drawList();
+    sel = null; if (unDetail) unDetail(); unDetail = null; detail = null; $('v-work').classList.remove('in-detail'); $('v-detail').hidden = true; $('v-list').hidden = false; drawList();
     var b = document.querySelector('.case[data-id="' + id + '"]') || document.querySelector('.case'); if (b) b.focus(); else $('list-title').focus();
   };
   function bubble(cls, head, text){
@@ -365,8 +411,8 @@ dialog::backdrop{background:rgba(18,26,38,.45)}
   }
   var lastState = {};
   function drawDetail(first){
-    var c = cases.filter(function(x){ return x.id === sel; })[0];
-    if (!c) { $('v-detail').hidden = true; $('v-list').hidden = false; sel = null; if ($('dlg').open) $('dlg').close(); return; }
+    var c = detail && detail.id === sel ? detail : null;
+    if (!c) { if (detail === undefined && sel) return; $('v-detail').hidden = true; $('v-list').hidden = false; sel = null; if ($('dlg').open) $('dlg').close(); return; }
     $('d-title').textContent = c.code;
     $('d-chip').className = 'chip ' + STATUS[c.status][0]; $('d-chip').textContent = STATUS[c.status][1];
     $('d-dev').textContent = c.device || '未填位置';
@@ -382,7 +428,7 @@ dialog::backdrop{background:rgba(18,26,38,.45)}
     });
     drawPending(c);
     if (stick) log.scrollTop = log.scrollHeight;
-    var isMine = !!c.acceptedDev && c.acceptedDev === DEV;
+    var isMine = !!c.acceptedDev && c.acceptedDev === DEV && (DEMO || !me.uid || c.acceptedUid === me.uid);
     var activeCase = c.status === 'accepted' || c.status === 'working';
     $('d-gate').hidden = c.status !== 'new';
     $('d-taken').hidden = !(activeCase && !isMine);
@@ -423,7 +469,7 @@ dialog::backdrop{background:rgba(18,26,38,.45)}
   };
   function resetOver(){ var b = $('d-over'); b.textContent = '原接手人員無法處理？改由我接手'; }
   $('d-over').onclick = function(){
-    var c = cases.filter(function(x){ return x.id === sel; })[0]; if (!c) return;
+    var c = detail; if (!c) return;
     if (overArm !== c.id + '|' + c.assignVer) { overArm = c.id + '|' + c.assignVer; this.textContent = '再按一次，確認改由我接手'; return; }
     overArm = ''; resetOver();
     API.takeover(c.id, me.name, DEV, c.assignVer).then(function(r){
@@ -448,14 +494,14 @@ dialog::backdrop{background:rgba(18,26,38,.45)}
 
   // 結案：視窗綁定開啟當下的案件與接手版本
   var dlgFor = null;
-  RESULTS.forEach(function(r){ var l = document.createElement('label'), i2 = document.createElement('input'); i2.type = 'radio'; i2.name = 'res'; i2.value = r; l.appendChild(i2); l.appendChild(document.createTextNode(r)); $('dlg-r').appendChild(l); });
+  RESULTS.forEach(function(r){ var l = document.createElement('label'), i2 = document.createElement('input'); i2.type = 'radio'; i2.name = 'res'; i2.value = r; i2.onchange = function(){ $('e-dlg').textContent = ''; }; l.appendChild(i2); l.appendChild(document.createTextNode(r)); $('dlg-r').appendChild(l); });
   $('d-close').onclick = function(){
-    var c = cases.filter(function(x){ return x.id === sel; })[0]; if (!c) return;
+    var c = detail; if (!c) return;
     dlgFor = { id: c.id, ver: c.assignVer };
     $('e-dlg').textContent = ''; $('dlg-note').value = ''; Array.prototype.forEach.call(document.querySelectorAll('[name=res]'), function(x){ x.checked = false; });
     $('dlg').showModal(); document.querySelector('[name=res]').focus();
   };
-  $('dlg').addEventListener('close', function(){ var c = cases.filter(function(x){ return x.id === sel; })[0]; if (c && c.status !== 'closed' && !$('d-reply').hidden) $('d-close').focus(); else $('d-title').focus(); });
+  $('dlg').addEventListener('close', function(){ var c = detail; if (c && c.status !== 'closed' && !$('d-reply').hidden) $('d-close').focus(); else $('d-title').focus(); });
   $('dlg-cancel').onclick = function(){ $('dlg').close(); };
   $('dlg-ok').onclick = function(){
     var r = document.querySelector('[name=res]:checked');
@@ -470,7 +516,23 @@ dialog::backdrop{background:rgba(18,26,38,.45)}
   // 試用資料清除（按兩次確認）
   $('reset').onclick = function(){ if (this.dataset.armed) { API.resetDemo(); this.dataset.armed = ''; this.textContent = '已清除試用資料'; } else { this.dataset.armed = 1; this.textContent = '再按一次確認清除'; } };
 
-  if (me && SITES.some(function(s){ return s.id === me.site; })) start(); else $('login-title').focus();
+  // 資料介面載入完成後再決定顯示哪一種登入
+  function ready(){
+    API = window.HelpAPI; DEMO = API.mode === 'demo';
+    if (DEMO) { $('demo-bar').hidden = false; $('reset').hidden = false; }
+    $('login-wait').hidden = true; $('login').disabled = false;
+    $('login-demo').hidden = !DEMO; $('login-fb').hidden = DEMO;
+    if (DEMO) {
+      if (me && SITES.some(function(s){ return s.id === me.site; })) start(); else $('login-title').focus();
+      return;
+    }
+    API.staffSession().then(function(u){
+      if (!u) { $('login-title').focus(); return; }
+      me = { uid: u.uid, site: u.site, siteName: siteName(u.site), name: savedWho || u.name || '管理室', who: savedWho }; saveMe(); start();
+    }).catch(function(e){ $('e-login').textContent = LOGIN_ERR[e && e.code] || '請重新登入。'; $('login-title').focus(); });
+  }
+  window.addEventListener('helpapi-fail', function(){ if (!API) $('login-wait').textContent = '無法連線，請確認網路後重新整理。'; });
+  if (window.HelpAPI) setTimeout(ready, 0); else window.addEventListener('helpapi', ready, { once: true });
 })();
 </script>
 </body>

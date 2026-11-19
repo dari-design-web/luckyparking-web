@@ -213,14 +213,14 @@ footer .wrap{color:var(--ink2);padding-top:30px;padding-bottom:40px;font-size:15
   </div>
 
   <div class="field" role="group" aria-labelledby="when-lbl">
-    <div class="row"><span class="lbl" id="when-lbl">發生時間</span><span class="req">預設為現在</span></div>
+    <div class="row"><span class="lbl" id="when-lbl">發生時間</span><span class="req">預設為填單時間</span></div>
     <div class="whenshow" id="when-show"><b id="when-text"></b><button type="button" class="linkbtn" id="when-edit">更改時間</button></div>
     <div class="whenpick" id="when-pick" hidden>
       <select id="w-date" aria-label="發生日期"></select>
       <select id="w-h" aria-label="發生時間：時"></select><span aria-hidden="true">：</span>
       <select id="w-m" aria-label="發生時間：分"></select>
     </div>
-    <p class="hint" id="when-hint">以 15 分鐘為單位；還沒到的時間無法選擇。</p>
+    <p class="hint" id="when-hint">預設時間向前取整至 15 分鐘；可更改實際發生時間，還沒到的時間無法選擇。</p>
     <p class="err" id="e-when"></p>
   </div>
 

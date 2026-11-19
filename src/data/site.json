@@ -30,5 +30,20 @@
   "formEndpoint": "https://script.google.com/macros/s/AKfycbxclrprm8GAu6zHktSy_338aM4tKMbQNyF5ei8B03YpSSi3wVLmQ2lmh7ihYgBqsB8/exec",
   "feedbackEndpoint": "https://script.google.com/macros/s/AKfycbwJkjrkHEZ1fXCS1XjmEpKZ_IYsEtoW9h8JpcOoEYwQXTMSjDYYnLwiYwqKO8hhP2nl/exec",
   "feedbackTo": "dari25420001@gmail.com",
-  "feedbackExtra": [{"code": "shenao", "name": "深澳鐵道自行車", "city": "新北市"}]
+  "feedbackExtra": [
+    {
+      "code": "shenao",
+      "name": "深澳鐵道自行車",
+      "city": "新北市"
+    }
+  ],
+  "helpFirebase": {
+    "apiKey": "AIzaSyDUoIG3FCxiyzixCDwM1m-5w5MF7-Ak4qs",
+    "authDomain": "wedding-seating-37b71.firebaseapp.com",
+    "projectId": "wedding-seating-37b71",
+    "appId": "1:830651084062:web:fc326c270926d742bf2d0f"
+  },
+  "helpSites": [
+    "minquan"
+  ]
 }

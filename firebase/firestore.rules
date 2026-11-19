@@ -1,0 +1,157 @@
+rules_version = '2';
+// 大日開發｜文字求助 Firestore 安全規則
+// 客人：匿名登入，只能建立與讀寫自己的案件；管理室：電子郵件／密碼登入，staff/{uid} 指定場站，只能讀寫本場案件。
+// 所有未列出的路徑一律拒絕。逾時通知備援由 Google Apps Script 以專案擁有者權限寫入（不受本規則限制）。
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function signedIn() { return request.auth != null; }
+    function anon() { return signedIn() && request.auth.token.firebase.sign_in_provider == 'anonymous'; }
+    function pw() { return signedIn() && request.auth.token.firebase.sign_in_provider == 'password'; }
+    function staffPath() { return /databases/$(database)/documents/staff/$(request.auth.uid); }
+    function isStaff(site) {
+      return pw() && exists(staffPath()) && get(staffPath()).data.active == true && get(staffPath()).data.site == site;
+    }
+    function str(v, min, max) { return v is string && v.size() >= min && v.size() <= max; }
+    function casePath(id) { return /databases/$(database)/documents/cases/$(id); }
+    function msgPath(id, mid) { return /databases/$(database)/documents/cases/$(id)/messages/$(mid); }
+    function gatePath() { return /databases/$(database)/documents/gates/$(request.auth.uid); }
+    function gapOk(prev, sec) { return prev == null || request.time >= prev + duration.value(sec, 's'); }
+    function validMid(mid) { return mid is string && mid.matches('^[A-Za-z0-9]{8,40}$'); }
+    function newMsg(id, mid, text) {
+      return validMid(mid) && !exists(msgPath(id, mid)) && getAfter(msgPath(id, mid)).data.text == text;
+    }
+    function newStaffMsg(id, mid) {
+      return validMid(mid) && !exists(msgPath(id, mid)) && getAfter(msgPath(id, mid)).data.from == 'staff';
+    }
+
+    // 管理室帳號資料：只能讀自己的；新增、修改只在 Firebase 主控台進行
+    match /staff/{uid} {
+      allow get: if pw() && request.auth.uid == uid;
+    }
+
+    // 客人建案頻率：同一個匿名身分 30 秒內只能建立一件
+    match /gates/{uid} {
+      allow get: if anon() && request.auth.uid == uid;
+      allow create, update: if anon() && request.auth.uid == uid
+        && request.resource.data.keys().hasOnly(['lastCaseAt'])
+        && request.resource.data.lastCaseAt == request.time
+        && (resource == null || request.time >= resource.data.lastCaseAt + duration.value(30, 's'));
+    }
+
+    match /cases/{id} {
+      function owner(c) { return anon() && c.customerUid == request.auth.uid; }
+
+      // 讀：客人讀自己的、管理室讀本場的；客人可查自己尚未建立的案件 ID（重送時判斷是否已建立）
+      function ownMissingId() {
+        let suffix = id.split('_')[id.split('_').size() - 1];
+        return suffix.matches('^[a-f0-9]{16}$') && id == request.auth.uid + '_' + suffix;
+      }
+      allow get: if (resource == null && anon() && ownMissingId())
+        || (resource != null && (owner(resource.data) || isStaff(resource.data.site)));
+      allow list: if isStaff(resource.data.site);
+
+      // 客人建立案件：欄位完整、初始值正確，並在同一筆寫入中建立第一則訊息與建案頻率紀錄
+      allow create: if anon() && validCreate(request.resource.data);
+      function validCreate(b) {
+        return b.keys().hasOnly(['customerUid', 'clientId', 'code', 'site', 'siteName', 'device', 'category',
+            'status', 'open', 'cycle', 'createdAt', 'queuedAt', 'acceptedAt', 'acceptedBy', 'acceptedUid', 'acceptedDev',
+            'assignVer', 'workingAt', 'closedAt', 'closedDay', 'result', 'escalated', 'escalateFailed',
+            'custCount', 'lastCustomerText', 'lastCustomerAt', 'lastCustomerMsg', 'lastStaffAt', 'lastStaffMsg'])
+          && b.keys().size() == 29
+          && b.customerUid == request.auth.uid
+          && b.clientId is string && b.clientId.matches('^[a-f0-9]{16}$')
+          && id == request.auth.uid + '_' + b.clientId
+          && str(b.code, 1, 24)
+          && b.site is string && b.site.matches('^[a-z0-9-]{1,40}$')
+          && str(b.siteName, 1, 60) && str(b.device, 0, 30)
+          && b.category in ['柵欄沒開', '繳費失敗', '優惠沒生效', '找不到車', '需要人來現場', '其他']
+          && b.status == 'new' && b.open == true && b.cycle == 1
+          && b.createdAt == request.time && b.queuedAt == request.time
+          && b.acceptedAt == null && b.acceptedBy == '' && b.acceptedUid == '' && b.acceptedDev == '' && b.assignVer == 0
+          && b.workingAt == null && b.closedAt == null && b.closedDay == '' && b.result == ''
+          && b.escalated == false && b.escalateFailed == false
+          && b.custCount == 1 && str(b.lastCustomerText, 1, 500) && b.lastCustomerAt == request.time
+          && b.lastCustomerMsg == b.clientId && b.lastStaffAt == null && b.lastStaffMsg == ''
+          && getAfter(gatePath()).data.lastCaseAt == request.time
+          && newMsg(id, b.clientId, b.lastCustomerText);
+      }
+
+      allow update: if (owner(resource.data) && customerUpdate(resource.data, request.resource.data))
+        || (isStaff(resource.data.site) && staffUpdate(resource.data, request.resource.data));
+
+      function customerUpdate(a, b) {
+        let k = b.diff(a).affectedKeys();
+        // 傳訊息（未結案），或「仍需要協助」（結案 30 分鐘內開新的一輪）
+        return gapOk(a.lastCustomerAt, 1)
+          && b.custCount == a.custCount + 1 && str(b.lastCustomerText, 1, 500) && b.lastCustomerAt == request.time
+          && newMsg(id, b.lastCustomerMsg, b.lastCustomerText)
+          && (
+            (a.status != 'closed' && k.hasOnly(['custCount', 'lastCustomerText', 'lastCustomerAt', 'lastCustomerMsg']))
+            || (a.status == 'closed' && request.time < a.closedAt + duration.value(30, 'm')
+              && k.hasOnly(['status', 'open', 'cycle', 'queuedAt', 'acceptedAt', 'acceptedBy', 'acceptedUid', 'acceptedDev',
+                'workingAt', 'closedAt', 'closedDay', 'result', 'escalated', 'escalateFailed',
+                'custCount', 'lastCustomerText', 'lastCustomerAt', 'lastCustomerMsg'])
+              && b.status == 'new' && b.open == true && b.cycle == a.cycle + 1 && b.queuedAt == request.time
+              && b.acceptedAt == null && b.acceptedBy == '' && b.acceptedUid == '' && b.acceptedDev == ''
+              && b.workingAt == null && b.closedAt == null && b.closedDay == '' && b.result == ''
+              && b.escalated == false && b.escalateFailed == false)
+          );
+      }
+
+      function staffUpdate(a, b) {
+        let k = b.diff(a).affectedKeys();
+        let live = a.status in ['accepted', 'working'];
+        // 依序為：接手（只有待接手的案件，先接先贏）、改由我接手、回覆（第一則回覆時轉為處理中）、結案
+        return (a.status == 'new' && b.status == 'accepted'
+            && k.hasOnly(['status', 'acceptedAt', 'acceptedBy', 'acceptedUid', 'acceptedDev', 'assignVer'])
+            && b.acceptedAt == request.time && str(b.acceptedBy, 1, 20) && b.acceptedUid == request.auth.uid
+            && str(b.acceptedDev, 8, 40) && b.assignVer == a.assignVer + 1)
+          || (live && b.status == a.status
+            && k.hasOnly(['acceptedBy', 'acceptedUid', 'acceptedDev', 'assignVer'])
+            && str(b.acceptedBy, 1, 20) && b.acceptedUid == request.auth.uid
+            && str(b.acceptedDev, 8, 40) && b.assignVer == a.assignVer + 1)
+          || (live && a.acceptedUid == request.auth.uid
+            && k.hasOnly(['status', 'workingAt', 'lastStaffAt', 'lastStaffMsg'])
+            && b.lastStaffAt == request.time && gapOk(a.lastStaffAt, 1) && newStaffMsg(id, b.lastStaffMsg)
+            && ((a.status == 'accepted' && b.status == 'working' && b.workingAt == request.time)
+              || (a.status == 'working' && b.status == 'working' && b.workingAt == a.workingAt)))
+          || (live && a.acceptedUid == request.auth.uid && b.status == 'closed'
+            && k.hasOnly(['status', 'open', 'closedAt', 'closedDay', 'result'])
+            && b.open == false && b.closedAt == request.time
+            && b.closedDay is string && b.closedDay.matches('^[0-9]{8}$') && str(b.result, 1, 100));
+      }
+
+      // 訊息：只能新增，不能修改或刪除
+      match /messages/{mid} {
+        function canSee() {
+          let c = get(casePath(id)).data;
+          return (anon() && c.customerUid == request.auth.uid) || isStaff(c.site);
+        }
+        allow read: if canSee();
+        allow create: if validMsg(request.resource.data, getAfter(casePath(id)).data);
+        // 系統訊息必須對應同一筆寫入中真的發生的狀態變化
+        function sysOk(text, before, after) {
+          return (text == '管理室已接手' && before.status == 'new' && after.status == 'accepted')
+            || (text == '已改由其他管理員協助' && before.status in ['accepted', 'working']
+              && after.status == before.status && after.assignVer == before.assignVer + 1)
+            || (text in ['本次協助已完成', '本次對話已結束'] && before.status in ['accepted', 'working'] && after.status == 'closed');
+        }
+        function validMsg(m, c) {
+          return m.keys().hasOnly(['from', 'text', 'at', 'cycle', 'uid', 'dev'])
+            && m.keys().hasAll(['from', 'text', 'at', 'cycle', 'uid'])
+            && m.at == request.time && m.uid == request.auth.uid && m.cycle == c.cycle
+            && str(m.text, 1, 500) && mid.matches('^[A-Za-z0-9]{8,40}$')
+            && (
+              (m.from == 'customer' && anon() && c.customerUid == request.auth.uid
+                && c.lastCustomerMsg == mid && c.lastCustomerAt == request.time && !('dev' in m))
+              || (m.from == 'staff' && isStaff(c.site) && c.acceptedUid == request.auth.uid
+                && m.dev == c.acceptedDev && c.lastStaffAt == request.time && c.lastStaffMsg == mid)
+              || (m.from == 'system' && isStaff(c.site) && !('dev' in m)
+                && sysOk(m.text, get(casePath(id)).data, c))
+            );
+        }
+      }
+    }
+  }
+}
