@@ -1,0 +1,396 @@
+<!doctype html>
+<html lang="zh-Hant-TW">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#1B4A83">
+<title>管理室｜文字求助</title>
+<link rel="icon" href="../../assets/img/favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap">
+<style>
+:root{--blue:#2561A9;--navy:#1B4A83;--ink:#121A26;--ink2:#516173;--line:#8794A5;--rule:#DCE3EB;--soft:#F6F8FB;--info:#EEF4FB;--orange:#EF7836;--newbg:#FFF1E8;--newink:#9A3F0C;--warn:#FFF4E8;--warnink:#7A3E10;--err:#AA2836;--errbg:#FFF1F1;--ok:#176444;--okbg:#EAF6EF}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--soft);color:var(--ink);font:16px/1.6 "Noto Sans TC","PingFang TC","Microsoft JhengHei",system-ui,sans-serif;min-height:100dvh}
+.top{background:var(--navy);color:#fff;position:sticky;top:0;z-index:10}
+.top .in{max-width:1180px;margin:0 auto;display:flex;align-items:center;gap:12px;min-height:60px;padding:6px 20px}
+.top b{font-size:18px}
+.top .scope{font-size:14px;color:#D6E3F3}
+.top .out{margin-left:auto;min-height:44px;padding:0 14px;border:1.5px solid #9DB6D6;border-radius:12px;background:none;color:#fff;font:inherit;cursor:pointer}
+.demo{background:#FFF6DD;color:#6B4E00;font-size:14px;padding:8px 20px;text-align:center}
+.page{max-width:1180px;margin:0 auto;padding:16px 20px 40px}
+h1{font-size:24px;margin:8px 0 12px}
+h2{font-size:20px;margin:0 0 10px}
+h1:focus,h2:focus{outline:none}
+.box{background:#fff;border:1px solid var(--rule);border-radius:18px;padding:18px}
+label.f{display:block;font-weight:700;margin:14px 0 6px}
+select,input[type=text],textarea{width:100%;font:inherit;color:inherit;border:1.5px solid var(--line);border-radius:14px;padding:12px 16px;background:#fff;min-height:52px}
+select{appearance:none;-webkit-appearance:none;background:#fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' fill='none' stroke='%23121A26' stroke-width='2'%3E%3Cpath d='M5 8l5 5 5-5'/%3E%3C/svg%3E") no-repeat right 14px center;padding-right:44px}
+textarea{resize:none;display:block}
+:focus-visible{outline:2px solid var(--blue);outline-offset:3px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:52px;padding:0 20px;border:0;border-radius:14px;background:var(--blue);color:#fff;font:inherit;font-weight:700;cursor:pointer}
+.btn.wide{width:100%}
+.btn.big{min-height:60px;font-size:19px}
+.btn.line{background:#fff;color:var(--blue);border:1.5px solid var(--blue)}
+.btn.orange{background:var(--orange);color:#1F1206}
+.btn[disabled]{background:#E3E8EF;color:var(--ink2);border-color:#E3E8EF;cursor:default}
+.muted{color:var(--ink2)}
+.small{font-size:14px}
+.err{color:var(--err);font-weight:500}
+.err:empty{display:none}
+.alertset{display:flex;flex-wrap:wrap;gap:12px;align-items:center;background:var(--warn);border:1.5px solid #F1C7A6;border-radius:18px;padding:14px 18px;margin:0 0 14px}
+.alertset.on{background:var(--okbg);border-color:#B9DCC8}
+.alertset .t{flex:1 1 260px}
+.alertset b{display:block;color:var(--warnink)}
+.alertset.on b{color:var(--ok)}
+.counts{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:0 0 14px}
+.counts div{background:#fff;border:1px solid var(--rule);border-radius:16px;padding:10px 14px}
+.counts span{display:block;font-size:14px;color:var(--ink2)}
+.counts strong{font-size:28px;line-height:1.2;font-variant-numeric:tabular-nums}
+.counts .n strong{color:var(--newink)}
+.cols{display:block}
+.list{display:flex;flex-direction:column;gap:10px;margin:0;padding:0;list-style:none}
+.case{display:block;width:100%;text-align:left;background:#fff;border:1.5px solid var(--rule);border-radius:18px;padding:14px 16px;font:inherit;color:inherit;cursor:pointer}
+.case.new{border-color:var(--orange);box-shadow:0 0 0 3px #FCE3D3}
+.case[aria-current=true]{border-color:var(--blue);box-shadow:0 0 0 3px #D3E2F4}
+.case .row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.chip{display:inline-flex;align-items:center;min-height:28px;padding:0 10px;border-radius:999px;font-size:14px;font-weight:700}
+.chip.new{background:var(--newbg);color:var(--newink)}
+.chip.acc,.chip.work{background:var(--info);color:var(--navy)}
+.chip.closed{background:#EEF1F4;color:var(--ink2)}
+.chip.esc{background:var(--errbg);color:var(--err)}
+.case .dev{font-weight:700;font-size:17px;margin:6px 0 0}
+.case .pre{color:var(--ink2);margin:2px 0 0;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.case .age{margin-left:auto;font-size:14px;color:var(--ink2);font-variant-numeric:tabular-nums}
+.empty{background:#fff;border:1px dashed var(--line);border-radius:18px;padding:28px;text-align:center;color:var(--ink2)}
+.filter{display:flex;gap:8px;margin:0 0 10px}
+.filter button{min-height:44px;padding:0 14px;border:1.5px solid var(--line);border-radius:999px;background:#fff;font:inherit;cursor:pointer}
+.filter button[aria-pressed=true]{background:var(--navy);border-color:var(--navy);color:#fff}
+/* 詳細 */
+.lnk{display:inline-flex;align-items:center;min-height:44px;background:none;border:0;padding:0;color:var(--blue);font:inherit;font-weight:500;text-decoration:underline;text-underline-offset:3px;cursor:pointer}
+.back{display:inline-flex;align-items:center;min-height:44px;gap:6px;background:none;border:0;padding:0;color:var(--blue);font:inherit;font-weight:700;cursor:pointer}
+.dhead{display:flex;flex-wrap:wrap;gap:8px 14px;align-items:baseline;margin:4px 0 10px}
+.dhead h2{margin:0}
+.meta{display:grid;grid-template-columns:auto 1fr;gap:4px 14px;margin:0 0 12px;font-size:15px}
+.meta dt{color:var(--ink2)}
+.meta dd{margin:0;font-weight:500}
+.log{display:flex;flex-direction:column;gap:10px;padding:12px;background:var(--soft);border-radius:16px;min-height:160px;max-height:52vh;overflow:auto}
+.msg{max-width:84%;padding:10px 14px;border-radius:16px;white-space:pre-wrap;word-break:break-word;line-height:1.55}
+.msg small{display:block;font-size:13px;color:var(--ink2);margin-bottom:2px}
+.msg.cust{align-self:flex-start;background:#fff;border:1px solid var(--rule);border-bottom-left-radius:6px}
+.msg.me{align-self:flex-end;background:var(--blue);color:#fff;border-bottom-right-radius:6px}
+.msg.me small{color:#DCE8F7}
+.msg.sys{align-self:center;color:var(--ink2);font-size:14px;padding:2px 8px}
+.msg.fail{background:var(--errbg);color:var(--err)}
+.msg .retry{display:inline-flex;min-height:36px;align-items:center;background:none;border:0;color:var(--err);font:inherit;font-weight:700;text-decoration:underline;cursor:pointer;padding:0}
+.gate{background:var(--newbg);border-radius:16px;padding:16px;margin:12px 0}
+.gate p{margin:0 0 10px;color:var(--newink);font-weight:500}
+.tpl{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0 8px}
+.tpl button{min-height:44px;padding:6px 14px;border:1.5px solid var(--line);border-radius:14px;background:#fff;font:inherit;font-size:15px;text-align:left;cursor:pointer;line-height:1.4}
+.compose{display:flex;gap:10px;align-items:flex-end}
+.compose textarea{min-height:52px;max-height:160px}
+.compose .btn{flex:none}
+.closebar{margin:14px 0 0;border-top:1px solid var(--rule);padding-top:14px}
+.taken{background:var(--info);border-radius:16px;padding:14px 16px;margin:12px 0;color:var(--navy);font-weight:700}
+dialog{border:0;border-radius:20px;padding:22px;max-width:440px;width:calc(100% - 40px)}
+dialog::backdrop{background:rgba(18,26,38,.45)}
+.radios{display:flex;flex-direction:column;gap:8px;margin:8px 0}
+.radios label{display:flex;align-items:center;gap:10px;min-height:48px;padding:0 14px;border:1.5px solid var(--line);border-radius:14px;cursor:pointer}
+.radios input{width:20px;height:20px;accent-color:var(--blue)}
+.acts{display:flex;gap:10px;margin-top:16px}
+.acts .btn{flex:1}
+.reset{display:inline-flex;min-height:44px;align-items:center;background:none;border:0;color:var(--ink2);font:inherit;font-size:14px;text-decoration:underline;cursor:pointer;padding:0}
+[hidden]{display:none!important}
+@media (min-width:960px){
+  .cols{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.5fr);gap:20px;align-items:start}
+  #v-detail{position:sticky;top:76px}
+  #v-detail .back{display:none}
+  .log{max-height:46vh}
+}
+</style>
+</head>
+<body>
+<div class="top"><div class="in"><b>管理室</b><span class="scope" id="scope">文字求助</span><button type="button" class="out" id="logout" hidden>登出</button></div></div>
+<div class="demo" id="demo-bar" hidden>試用版：資料只存在這台裝置，不需密碼。請在同一個瀏覽器另開客人端分頁一起測試。</div>
+
+<!-- 登入 -->
+<div class="page" id="v-login">
+  <div class="box" style="max-width:520px;margin:12px auto">
+    <h1 id="login-title" tabindex="-1">管理室登入</h1>
+    <p class="muted" style="margin:0">登入後只會看到本場的文字求助案件。</p>
+    <label class="f" for="city">縣市</label>
+    <select id="city"><option value="">選縣市</option></select>
+    <label class="f" for="site">場站</label>
+    <select id="site" disabled><option value="">選場站</option></select>
+    <label class="f" for="who">值班人員稱呼</label>
+    <input type="text" id="who" maxlength="12" placeholder="例：王先生、早班">
+    <p class="err" id="e-login" role="alert"></p>
+    <div style="height:16px"></div>
+    <button class="btn wide big" type="button" id="login">登入</button>
+  </div>
+</div>
+
+<!-- 工作區 -->
+<div class="page" id="v-work" hidden>
+  <div class="alertset" id="alertset" role="status">
+    <div class="t"><b id="al-t">請先開啟接案提醒</b><span class="small muted" id="al-p">開啟後，新案件與客人新訊息會發出聲音與震動。手機請保持此頁開啟、不要鎖定螢幕。</span></div>
+    <button class="btn orange" type="button" id="al-btn">開啟並測試提醒</button>
+  </div>
+  <div class="counts" aria-label="本場案件數">
+    <div class="n"><span>待接手</span><strong id="n-new">0</strong></div>
+    <div><span>處理中</span><strong id="n-work">0</strong></div>
+    <div><span>今日已結案</span><strong id="n-closed">0</strong></div>
+  </div>
+  <div class="cols">
+    <section id="v-list" aria-labelledby="list-title">
+      <h2 id="list-title">本場案件</h2>
+      <div class="filter" role="group" aria-label="篩選">
+        <button type="button" data-f="open" aria-pressed="true">進行中</button>
+        <button type="button" data-f="closed" aria-pressed="false">已結案</button>
+      </div>
+      <ul class="list" id="list"></ul>
+      <p class="empty" id="empty" hidden>目前沒有進行中的案件。</p>
+    </section>
+
+    <section id="v-detail" class="box" hidden aria-labelledby="d-title">
+      <button type="button" class="back" id="back">← 回案件列表</button>
+      <div class="dhead"><h2 id="d-title" tabindex="-1"></h2><span class="chip" id="d-chip"></span></div>
+      <dl class="meta">
+        <dt>位置</dt><dd id="d-dev"></dd>
+        <dt>狀況</dt><dd id="d-cat"></dd>
+        <dt>送出</dt><dd id="d-time"></dd>
+      </dl>
+      <div class="log" id="d-log" role="log" aria-label="對談內容" aria-live="polite"></div>
+
+      <div class="gate" id="d-gate" hidden>
+        <p>接手後才能回覆。接手後，客人會看到「管理員已接手」。</p>
+        <button class="btn wide big" type="button" id="d-accept">接手此案件</button>
+        <p class="err" id="e-accept" role="alert" style="margin-top:8px"></p>
+      </div>
+      <div class="taken" id="d-taken" hidden><span id="d-taken-t"></span><div><button type="button" class="lnk" id="d-over">原接手人員無法處理？改由我接手</button></div></div>
+
+      <div id="d-reply" hidden>
+        <div class="tpl" id="d-tpl" aria-label="常用回覆（點選後放入輸入框，可修改再送出）"></div>
+        <div class="compose">
+          <label class="hp" for="d-draft" style="position:absolute;left:-9999px">回覆內容</label>
+          <textarea id="d-draft" rows="2" maxlength="500" placeholder="輸入回覆…"></textarea>
+          <button class="btn" type="button" id="d-send">送出</button>
+        </div>
+        <div class="closebar"><button class="btn line wide" type="button" id="d-close">結案並確認處理結果</button></div>
+      </div>
+      <p class="muted small" id="d-closed-note" hidden></p>
+    </section>
+  </div>
+  <p style="margin-top:28px"><button type="button" class="reset" id="reset" hidden>清除試用資料</button></p>
+</div>
+
+<dialog id="dlg" aria-labelledby="dlg-t">
+  <h2 id="dlg-t">確認處理結果</h2>
+  <p class="muted small" style="margin:0">結案後，客人會看到「本次協助已完成」與下方結果。</p>
+  <div class="radios" id="dlg-r"></div>
+  <label class="f" for="dlg-note" style="margin-top:6px">補充說明（選填，客人看得到）</label>
+  <input type="text" id="dlg-note" maxlength="60">
+  <p class="err" id="e-dlg" role="alert"></p>
+  <div class="acts"><button class="btn line" type="button" id="dlg-cancel">取消</button><button class="btn" type="button" id="dlg-ok">確認結案</button></div>
+</dialog>
+
+<script src="../api.js"></script>
+<script>
+(function(){
+  var SITES = [{"id":"tpmc","name":"臺北流行音樂中心地下停車場","city":"臺北市"},{"id":"rongxing","name":"榮星花園地下停車場","city":"臺北市"},{"id":"minquan","name":"民權公園地下停車場","city":"臺北市"},{"id":"yonghe","name":"雍和園區地下停車場","city":"臺北市"},{"id":"shezi","name":"社子國小地下停車場","city":"臺北市"},{"id":"jinan","name":"進安公園地下停車場","city":"臺北市"},{"id":"ntsec","name":"國立臺灣科學教育館地下停車場","city":"臺北市"},{"id":"binjiang","name":"濱江國中地下停車場","city":"臺北市"},{"id":"guangci1","name":"廣慈1區社會住宅地下停車場","city":"臺北市"},{"id":"guangci2","name":"廣慈2區社會住宅地下停車場","city":"臺北市"},{"id":"shipai","name":"石牌國小地下停車場","city":"臺北市"},{"id":"zhonghe","name":"中和國小地下停車場","city":"新北市"},{"id":"tucheng-central","name":"土城中央公園地下停車場","city":"新北市"},{"id":"ruifang","name":"瑞芳立體停車場","city":"新北市"},{"id":"jinhe","name":"錦和運動公園地下停車場","city":"新北市"},{"id":"xinggu","name":"興榖國小操場地下停車場","city":"新北市"},{"id":"archives","name":"國家檔案館地下停車場","city":"新北市"},{"id":"xiulang","name":"秀朗國小地下停車場","city":"新北市"},{"id":"fengshu","name":"楓樹腳公園地下停車場","city":"新北市"},{"id":"fuhe","name":"福和國中地下停車場","city":"新北市"},{"id":"lujiang","name":"鷺江立體停車場","city":"新北市"},{"id":"ruifang-back","name":"瑞芳後火車站平面停車場","city":"新北市"},{"id":"tucheng-yanji","name":"土城延吉立體停車場","city":"新北市"},{"id":"tucheng-yusheng","name":"土城裕生立體停車場","city":"新北市"},{"id":"banqiao-hs","name":"板橋高中地下停車場","city":"新北市"},{"id":"siliconvalley","name":"臺北矽谷大樓地下停車場","city":"新北市"},{"id":"guangrong","name":"光榮國小地下停車場","city":"新北市"},{"id":"xiufeng","name":"秀峰段平面停車場","city":"新北市"},{"id":"yangguang","name":"陽光段平面停車場","city":"新北市"},{"id":"jinhe-flat","name":"錦和平面停車場","city":"新北市"},{"id":"linkou-j1","name":"林口機一平面停車場","city":"新北市"},{"id":"tongxing","name":"同興平面停車場","city":"新北市"},{"id":"tw64","name":"台64橋下平面停車場","city":"新北市"},{"id":"shuidui","name":"水碓三路平面停車場","city":"新北市"},{"id":"xinwu","name":"新五平面停車場","city":"新北市"},{"id":"hean","name":"合安路停車場","city":"新北市"},{"id":"nanlin","name":"南林段平面停車場","city":"新北市"},{"id":"yixue","name":"義學立體停車場","city":"新北市"},{"id":"shenao","name":"深澳鐵道自行車","city":"新北市"},{"id":"taoyuan","name":"桃園國際原住民族文化創意產業園區地下停車場","city":"桃園市"},{"id":"xinguang","name":"新光國際金融中心地下停車場","city":"桃園市"},{"id":"tyc-youth","name":"北區青少年活動中心地下停車場","city":"桃園市"},{"id":"keelung-e34","name":"基隆港東三東四停車場","city":"基隆市"}];
+  var API = window.HelpAPI;
+  var $ = function(id){ return document.getElementById(id); };
+  function rid(){ var a = new Uint8Array(8); crypto.getRandomValues(a); return Array.prototype.map.call(a, function(b){ return ('0' + b.toString(16)).slice(-2); }).join(''); }
+  var TPL = ['我會到現場協助，請在安全處等候。', '請依指標到管理室，可使用筆談。', '已處理完成，可以離場。'];
+  var TPL_GATE = '請稍候，我將依權限協助處理柵欄。';
+  var RESULTS = ['已協助處理，可正常離場', '已到現場協助', '已請客人至管理室處理', '客人已自行解決或離開'];
+  var STATUS = { new: ['new', '新案件・尚未接手'], accepted: ['acc', '已接手'], working: ['work', '處理中'], closed: ['closed', '已結案'] };
+  if (API.mode === 'demo') { $('demo-bar').hidden = false; $('reset').hidden = false; }
+
+  // 登入（試用版：選場站即可；正式版：各場帳號密碼，由後端限定只能讀本場）
+  var groups = {};
+  SITES.forEach(function(s){ (groups[s.city] = groups[s.city] || []).push(s); });
+  Object.keys(groups).forEach(function(c){ var o = document.createElement('option'); o.value = c; o.textContent = c; $('city').appendChild(o); });
+  function fillSites(c){ var sel = $('site'); sel.length = 1; sel.disabled = !c; (groups[c] || []).forEach(function(s){ var o = document.createElement('option'); o.value = s.id; o.textContent = s.name; sel.appendChild(o); }); }
+  $('city').onchange = function(){ fillSites(this.value); };
+  var me = null; try { me = JSON.parse(localStorage.getItem('dari-help-staff')); } catch (e) {}
+  var DEV = null; try { DEV = localStorage.getItem('dari-help-dev'); if (!DEV) { DEV = rid(); localStorage.setItem('dari-help-dev', DEV); } } catch (e) { DEV = rid(); }
+  $('login').onclick = function(){
+    var s = SITES.filter(function(x){ return x.id === $('site').value; })[0];
+    $('e-login').textContent = '';
+    if (!s) { $('e-login').textContent = '請選擇場站。'; ($('city').value ? $('site') : $('city')).focus(); return; }
+    API.staffLogin(s.id, $('who').value.trim()).then(function(u){ me = { site: s.id, siteName: s.name, name: u.name }; try { localStorage.setItem('dari-help-staff', JSON.stringify(me)); } catch (e) {} start(); });
+  };
+  $('logout').onclick = function(){ try { localStorage.removeItem('dari-help-staff'); } catch (e) {} location.reload(); };
+
+  // 提醒：聲音、震動、系統通知（皆需使用者先按一次按鈕才能啟用）
+  var ac = null, alertsOn = false, wake = null;
+  function beep(){
+    if (!ac) return;
+    try { ac.resume(); var t = ac.currentTime; [0, 0.32, 0.64].forEach(function(d){ var o = ac.createOscillator(), g = ac.createGain(); o.type = 'sine'; o.frequency.value = 1046; g.gain.setValueAtTime(0.0001, t + d); g.gain.exponentialRampToValueAtTime(0.4, t + d + 0.02); g.gain.exponentialRampToValueAtTime(0.0001, t + d + 0.24); o.connect(g); g.connect(ac.destination); o.start(t + d); o.stop(t + d + 0.26); }); } catch (e) {}
+  }
+  function buzz(){ try { navigator.vibrate && navigator.vibrate([200, 100, 200, 100, 200]); } catch (e) {} }
+  function sysNote(title, body){ try { if (window.Notification && Notification.permission === 'granted' && document.hidden) new Notification(title, { body: body, tag: 'dari-help', renotify: true }); } catch (e) {} }
+  function holdScreen(){ try { if (navigator.wakeLock && !document.hidden) navigator.wakeLock.request('screen').then(function(w){ wake = w; }).catch(function(){}); } catch (e) {} }
+  document.addEventListener('visibilitychange', function(){ if (!document.hidden) { document.title = '管理室｜文字求助'; if (alertsOn && !wake) holdScreen(); } else wake = null; });
+  $('al-btn').onclick = function(){
+    try { ac = ac || new (window.AudioContext || window.webkitAudioContext)(); } catch (e) {}
+    alertsOn = true; beep(); buzz(); holdScreen();
+    var done = function(){
+      $('alertset').className = 'alertset on';
+      $('al-t').textContent = '接案提醒已開啟';
+      var perm = window.Notification ? Notification.permission : 'unsupported';
+      $('al-p').textContent = '剛才應有聽到提示音' + ('vibrate' in navigator ? '並感到震動' : '') + '。' + (perm === 'granted' ? '切到其他畫面時也會跳出通知。' : '此裝置未允許系統通知，請保持此頁在最前面。') + '若沒聽到，請調高音量後再按一次。';
+      $('al-btn').textContent = '再測試一次';
+    };
+    if (window.Notification && Notification.permission === 'default') Notification.requestPermission().then(done, done); else done();
+  };
+
+  var cases = [], sel = null, filter = 'open', seen = null, seenMsg = {}, unsub = null;
+  function start(){
+    $('v-login').hidden = true; $('v-work').hidden = false; $('logout').hidden = false;
+    $('scope').textContent = me.siteName + '｜本場案件';
+    document.title = '管理室｜' + me.siteName;
+    unsub = API.watchSite(me.site, onCases);
+  }
+  function onCases(list){
+    cases = list;
+    // 新案件、客人新訊息提醒（第一次載入不提醒）
+    if (seen) {
+      list.forEach(function(c){
+        var cust = c.messages.filter(function(m){ return m.from === 'customer'; }).length;
+        if (!seen[c.id] && c.status === 'new') ring('新的文字求助', c.device || c.category, c);
+        else if (seen[c.id] && c.status === 'new' && seen[c.id] !== 'new') ring('客人再次求助', c.device || c.category, c);
+        else if (seenMsg[c.id] != null && cust > seenMsg[c.id] && c.status !== 'new') ring('客人有新訊息', c.messages[c.messages.length - 1].text, c);
+      });
+    }
+    seen = {}; list.forEach(function(c){ seen[c.id] = c.status; seenMsg[c.id] = c.messages.filter(function(m){ return m.from === 'customer'; }).length; });
+    drawList(); if (sel) drawDetail();
+  }
+  function ring(title, body, c){
+    if (alertsOn) { beep(); buzz(); }
+    sysNote(title + '｜' + me.siteName, body);
+    if (document.hidden) document.title = '（' + title + '）管理室';
+  }
+
+  function ago(t){ var m = Math.floor((Date.now() - t) / 60000); return m < 1 ? '剛剛' : m < 60 ? m + ' 分鐘前' : Math.floor(m / 60) + ' 小時前'; }
+  function hm(t){ var d = new Date(t); return ('0' + d.getHours()).slice(-2) + ':' + ('0' + d.getMinutes()).slice(-2); }
+  function isToday(t){ var a = new Date(t), b = new Date(); return a.toDateString() === b.toDateString(); }
+  var ORDER = { new: 0, accepted: 1, working: 1, closed: 2 };
+  function drawList(){
+    $('n-new').textContent = cases.filter(function(c){ return c.status === 'new'; }).length;
+    $('n-work').textContent = cases.filter(function(c){ return c.status === 'accepted' || c.status === 'working'; }).length;
+    $('n-closed').textContent = cases.filter(function(c){ return c.status === 'closed' && isToday(c.closedAt); }).length;
+    var show = cases.filter(function(c){ return filter === 'closed' ? c.status === 'closed' : c.status !== 'closed'; });
+    show.sort(function(a, b){ return filter === 'closed' ? b.closedAt - a.closedAt : (ORDER[a.status] - ORDER[b.status]) || (a.createdAt - b.createdAt); });
+    var ul = $('list'); ul.innerHTML = '';
+    $('empty').hidden = show.length > 0;
+    $('empty').textContent = filter === 'closed' ? '還沒有已結案的案件。' : '目前沒有進行中的案件。';
+    show.forEach(function(c){
+      var li = document.createElement('li'), b = document.createElement('button');
+      b.type = 'button'; b.className = 'case' + (c.status === 'new' ? ' new' : ''); b.setAttribute('aria-current', sel === c.id ? 'true' : 'false');
+      var row = document.createElement('div'); row.className = 'row';
+      var chip = document.createElement('span'); chip.className = 'chip ' + STATUS[c.status][0]; chip.textContent = STATUS[c.status][1]; row.appendChild(chip);
+      if (c.status === 'new' && c.escalated) { var e = document.createElement('span'); e.className = 'chip esc'; e.textContent = '已逾時・已通知備援'; row.appendChild(e); }
+      if (c.reopened && c.status === 'new') { var r = document.createElement('span'); r.className = 'chip esc'; r.textContent = '客人再次求助'; row.appendChild(r); }
+      var age = document.createElement('span'); age.className = 'age'; age.textContent = ago(c.status === 'closed' ? c.closedAt : c.createdAt); row.appendChild(age);
+      var dev = document.createElement('p'); dev.className = 'dev'; dev.textContent = (c.device || '未填位置') + '｜' + c.category;
+      var last = c.messages.filter(function(m){ return m.from === 'customer'; }).slice(-1)[0];
+      var pre = document.createElement('p'); pre.className = 'pre'; pre.textContent = last ? last.text : '';
+      b.appendChild(row); b.appendChild(dev); b.appendChild(pre);
+      b.onclick = function(){ open(c.id); };
+      li.appendChild(b); ul.appendChild(li);
+    });
+  }
+  Array.prototype.forEach.call(document.querySelectorAll('.filter button'), function(b){
+    b.onclick = function(){ filter = b.dataset.f; Array.prototype.forEach.call(document.querySelectorAll('.filter button'), function(x){ x.setAttribute('aria-pressed', x === b ? 'true' : 'false'); }); drawList(); };
+  });
+  setInterval(function(){ if (cases.length) drawList(); }, 30000);
+
+  // 案件詳細
+  var pending = {};
+  function open(id){
+    sel = id; $('v-detail').hidden = false;
+    if (!matchMedia('(min-width:960px)').matches) $('v-list').hidden = true;
+    drawList(); drawDetail(true);
+    $('d-title').focus();
+  }
+  $('back').onclick = function(){ var id = sel; sel = null; $('v-detail').hidden = true; $('v-list').hidden = false; drawList(); var b = document.querySelector('.case[aria-current=true]') || document.querySelector('.case'); if (b) b.focus(); };
+  function drawDetail(first){
+    var c = cases.filter(function(x){ return x.id === sel; })[0];
+    if (!c) { $('v-detail').hidden = true; $('v-list').hidden = false; sel = null; return; }
+    $('d-title').textContent = c.code;
+    $('d-chip').className = 'chip ' + STATUS[c.status][0]; $('d-chip').textContent = STATUS[c.status][1];
+    $('d-dev').textContent = c.device || '未填位置';
+    $('d-cat').textContent = c.category;
+    $('d-time').textContent = hm(c.createdAt) + '（' + ago(c.createdAt) + '）';
+    var log = $('d-log'), stick = log.scrollHeight - log.scrollTop - log.clientHeight < 60 || first;
+    log.innerHTML = '';
+    c.messages.forEach(function(m){
+      var d = document.createElement('div');
+      d.className = 'msg ' + (m.from === 'customer' ? 'cust' : m.from === 'staff' ? 'me' : 'sys');
+      if (m.from !== 'system') { var s = document.createElement('small'); s.textContent = (m.from === 'customer' ? '客人' : '管理室') + '　' + hm(m.at); d.appendChild(s); }
+      d.appendChild(document.createTextNode(m.text)); log.appendChild(d);
+    });
+    Object.keys(pending).forEach(function(k){
+      var p = pending[k]; if (p.id !== c.id) return;
+      if (c.messages.some(function(m){ return m.clientMsgId === k; })) { delete pending[k]; return; }
+      var d = document.createElement('div'); d.className = 'msg me' + (p.fail ? ' fail' : '');
+      var s = document.createElement('small'); s.textContent = p.fail ? '尚未送出' : '傳送中…'; d.appendChild(s);
+      d.appendChild(document.createTextNode(p.text));
+      if (p.fail) { var b = document.createElement('button'); b.type = 'button'; b.className = 'retry'; b.textContent = '重新傳送'; b.onclick = function(){ reply(p.text, k); }; d.appendChild(document.createElement('br')); d.appendChild(b); }
+      log.appendChild(d);
+    });
+    if (stick) log.scrollTop = log.scrollHeight;
+    var isMine = !!c.acceptedDev && c.acceptedDev === DEV;
+    $('d-gate').hidden = c.status !== 'new';
+    $('d-taken').hidden = !(c.status !== 'new' && c.status !== 'closed' && !isMine);
+    $('d-taken-t').textContent = '此案件已由「' + (c.acceptedBy || '其他人員') + '」接手。';
+    $('d-reply').hidden = !(isMine && c.status !== 'closed');
+    $('d-closed-note').hidden = c.status !== 'closed';
+    $('d-closed-note').textContent = c.status === 'closed' ? '已於 ' + hm(c.closedAt) + ' 結案：' + (c.result || '') : '';
+    // 範本：柵欄、繳費類才顯示「依權限協助處理柵欄」
+    var tpl = TPL.slice(); if (c.category === '柵欄沒開' || c.category === '繳費失敗') tpl.splice(1, 0, TPL_GATE);
+    var box = $('d-tpl'); if (box.dataset.k !== c.id + c.category) { box.dataset.k = c.id + c.category; box.innerHTML = ''; tpl.forEach(function(t){ var b = document.createElement('button'); b.type = 'button'; b.textContent = t; b.onclick = function(){ $('d-draft').value = t; $('d-draft').focus(); }; box.appendChild(b); }); }
+  }
+  $('d-accept').onclick = function(){
+    var btn = this, id = sel; btn.disabled = true; $('e-accept').textContent = '';
+    API.accept(id, me.name, DEV).then(function(r){
+      if (r.ok) { drawDetail(); $('d-draft').focus(); }
+      else { $('e-accept').textContent = '已由「' + (r.by || '其他人員') + '」接手，無法重複接手。'; }
+    }).catch(function(){ $('e-accept').textContent = '連線中斷，尚未接手；請再按一次。'; }).then(function(){ btn.disabled = false; });
+  };
+  $('d-over').onclick = function(){
+    if (!this.dataset.armed) { this.dataset.armed = 1; this.textContent = '再按一次，確認改由我接手'; return; }
+    var btn = this; btn.dataset.armed = ''; btn.textContent = '原接手人員無法處理？改由我接手';
+    API.takeover(sel, me.name, DEV).then(function(r){ if (r.ok) { drawDetail(); $('d-draft').focus(); } });
+  };
+  function reply(text, k){
+    var id = sel; k = k || rid(); pending[k] = { id: id, text: text, fail: false }; drawDetail();
+    API.sendMessage(id, 'staff', text, k).catch(function(){ pending[k].fail = true; drawDetail(); });
+  }
+  $('d-send').onclick = function(){ var t = $('d-draft'), v = t.value.trim(); if (!v) { t.focus(); return; } reply(v); t.value = ''; t.focus(); };
+  $('d-draft').addEventListener('keydown', function(e){ if (e.key === 'Enter' && (e.ctrlKey || e.metaKey) && !e.isComposing) { e.preventDefault(); $('d-send').click(); } });
+
+  // 結案
+  RESULTS.forEach(function(r, i){ var l = document.createElement('label'), i2 = document.createElement('input'); i2.type = 'radio'; i2.name = 'res'; i2.value = r; l.appendChild(i2); l.appendChild(document.createTextNode(r)); $('dlg-r').appendChild(l); });
+  $('d-close').onclick = function(){ $('e-dlg').textContent = ''; $('dlg-note').value = ''; Array.prototype.forEach.call(document.querySelectorAll('[name=res]'), function(x){ x.checked = false; }); $('dlg').showModal(); };
+  $('dlg-cancel').onclick = function(){ $('dlg').close(); $('d-close').focus(); };
+  $('dlg-ok').onclick = function(){
+    var r = document.querySelector('[name=res]:checked');
+    if (!r) { $('e-dlg').textContent = '請選擇處理結果。'; document.querySelector('[name=res]').focus(); return; }
+    var note = $('dlg-note').value.trim(), btn = this; btn.disabled = true;
+    API.close(sel, r.value + (note ? '（' + note + '）' : '')).then(function(){ $('dlg').close(); $('d-title').focus(); }).catch(function(){ $('e-dlg').textContent = '連線中斷，尚未結案；請再按一次。'; }).then(function(){ btn.disabled = false; });
+  };
+
+  // 試用資料清除（按兩次確認）
+  $('reset').onclick = function(){ if (this.dataset.armed) { API.resetDemo(); this.dataset.armed = ''; this.textContent = '已清除試用資料'; } else { this.dataset.armed = 1; this.textContent = '再按一次確認清除'; } };
+
+  if (me && SITES.some(function(s){ return s.id === me.site; })) start(); else $('login-title').focus();
+})();
+</script>
+</body>
+</html>

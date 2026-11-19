@@ -628,5 +628,12 @@ fs.writeFileSync(path.join(OUT, 'robots.txt'), `User-agent: *\nAllow: /\nSitemap
   fs.writeFileSync(path.join(ROOT, 'apps-script/feedback.gs'), fs.readFileSync(path.join(ROOT, 'src/apps/feedback.gs'), 'utf8')
     .replace('__SITES__', () => JSON.stringify(gsSites, null, 1))
     .replace('__TO__', () => JSON.stringify(SITE.feedbackTo || SITE.email)));
+
+  // 文字求助：客人端 help/?s=場站代碼&d=設備位置；管理室端 help/staff/
+  const helpDir = path.join(OUT, 'help');
+  fs.mkdirSync(path.join(helpDir, 'staff'), { recursive: true });
+  fs.copyFileSync(path.join(ROOT, 'src/apps/help-api.js'), path.join(helpDir, 'api.js'));
+  fs.writeFileSync(path.join(helpDir, 'index.html'), fs.readFileSync(path.join(ROOT, 'src/apps/help.html'), 'utf8').replace('__SITES__', () => lotsJson));
+  fs.writeFileSync(path.join(helpDir, 'staff', 'index.html'), fs.readFileSync(path.join(ROOT, 'src/apps/help-staff.html'), 'utf8').replace('__SITES__', () => lotsJson));
 }
 console.log('built', Object.keys(pages).length, 'pages →', OUT);
