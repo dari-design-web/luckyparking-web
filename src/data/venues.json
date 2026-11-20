@@ -152,7 +152,10 @@
    "https://smiletaiwan.cw.com.tw/article/9080"
   ],
   "todo": false,
-  "imgNote": "實景"
+  "imgNote": "實景",
+  "video": "assets/video/v-zhouri.mp4",
+  "poster": "assets/img/venues/v-zhouri-poster.jpg",
+  "videoNote": "依實景照片製作"
  },
  {
   "id": "railbike",
