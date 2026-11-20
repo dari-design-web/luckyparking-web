@@ -4,7 +4,7 @@
  *
  * 資料結構
  *   staff/{uid}                      管理室帳號對應的場站：{ site, active, name, account, role? }（由管理後端建立）
- *   presence/{site}                  值守狀態：{ away, since, by }（管理室按「暫時離開／我回來了」）
+ *   presence/{site}                  值守狀態：{ away, since, by, msg? }（管理室按「暫時離開／我回來了」；msg 是暫離時給客人的自動回覆）
  *   gates/{uid}                      客人建案頻率：{ lastCaseAt }
  *   cases/{uid_clientId}             案件（欄位見 CASE_FIELDS）
  *   cases/{id}/messages/{msgId}      訊息：{ from, text, at, cycle, uid, dev? }，建立後不可修改
@@ -302,7 +302,7 @@ import {
     // 值守狀態：沒有資料視為值守中；讀不到時回傳 { away:false, unknown:true }
     watchPresence: function (site, cb) {
       let off = null, stopped = false;
-      const conv = s => { if (!s.exists()) return { away: false, since: 0, by: '' }; const d = s.data({ serverTimestamps: 'estimate' }); return { away: d.away === true, since: ms(d.since), by: d.by || '' }; };
+      const conv = s => { if (!s.exists()) return { away: false, since: 0, by: '' }; const d = s.data({ serverTimestamps: 'estimate' }); return { away: d.away === true, since: ms(d.since), by: d.by || '', msg: typeof d.msg === 'string' ? d.msg : '' }; };
       me().then(() => { if (stopped) return; off = onSnapshot(doc(db, 'presence', site), s => cb(conv(s)), () => cb({ away: false, unknown: true })); }).catch(() => cb({ away: false, unknown: true }));
       return () => { stopped = true; if (off) off(); };
     },
@@ -311,13 +311,30 @@ import {
       let off = null, stopped = false;
       me().then(() => {
         if (stopped) return;
-        off = onSnapshot(collection(db, 'presence'), s => { const o = {}; s.docs.forEach(d => { const v = d.data({ serverTimestamps: 'estimate' }); o[d.id] = { away: v.away === true, since: ms(v.since), by: v.by || '' }; }); cb(o); }, e => { if (onErr) onErr(wrap(e)); });
+        off = onSnapshot(collection(db, 'presence'), s => { const o = {}; s.docs.forEach(d => { const v = d.data({ serverTimestamps: 'estimate' }); o[d.id] = { away: v.away === true, since: ms(v.since), by: v.by || '', msg: typeof v.msg === 'string' ? v.msg : '' }; }); cb(o); }, e => { if (onErr) onErr(wrap(e)); });
       }).catch(e => { if (onErr) onErr(wrap(e)); });
       return () => { stopped = true; if (off) off(); };
     },
-    setPresence: async function (site, away, by) {
-      try { await me(); await setDoc(doc(db, 'presence', site), { away: !!away, since: serverTimestamp(), by: clip(by, 20) || '管理室' }); return true; }
+    setPresence: async function (site, away, by, msg) {
+      const p = { away: !!away, since: serverTimestamp(), by: clip(by, 20) || '管理室' }, m = clip(String(msg || '').replace(/\s+/g, ' '), 100);
+      if (away && m.length >= 2) p.msg = m;
+      try { await me(); await setDoc(doc(db, 'presence', site), p); return true; }
       catch (e) { throw wrap(e); }
+    },
+
+    // 暫離中處理案件時自動恢復值守：只在暫離狀態仍是「同一次暫離」時才改回（避免蓋掉其他裝置後來設定的暫離）
+    clearAway: async function (site, since, by) {
+      try {
+        await me();
+        return await runTransaction(db, async t => {
+          const ref = doc(db, 'presence', site), s = await t.get(ref);
+          if (!s.exists()) return false;
+          const d = s.data();
+          if (d.away !== true || Math.abs(ms(d.since) - since) > 1000) return false;
+          t.set(ref, { away: false, since: serverTimestamp(), by: clip(by, 20) || '管理室' });
+          return true;
+        });
+      } catch (e) { throw wrap(e); }
     },
 
     // 管理後端（Google Apps Script）：帳號管理與備援通知設定，只有管理員能用

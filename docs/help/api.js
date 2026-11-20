@@ -189,8 +189,11 @@
       function run() { var p = load().presence; var s = JSON.stringify(p); if (s !== last) { last = s; cb(clone(p)); } }
       run(); return on(run);
     },
-    setPresence: function (site, away, by) {
-      return tx(function (db) { db.presence[site] = { away: !!away, since: Date.now(), by: String(by || '管理室').slice(0, 20) }; return true; });
+    clearAway: function (site, since, by) {
+      return tx(function (db) { var p = db.presence[site]; if (!p || !p.away || Math.abs(p.since - since) > 1000) return false; db.presence[site] = { away: false, since: Date.now(), by: String(by || '管理室').slice(0, 20) }; return true; });
+    },
+    setPresence: function (site, away, by, msg) {
+      return tx(function (db) { var p = { away: !!away, since: Date.now(), by: String(by || '管理室').slice(0, 20) }; msg = String(msg || '').trim().slice(0, 100); if (away && msg) p.msg = msg; db.presence[site] = p; return true; });
     },
     // 試用版模擬管理後端：帳號與備援設定只存在這個瀏覽器，不會真的建立帳號或寄信
     admin: function (action, d) {

@@ -56,8 +56,9 @@ service cloud.firestore {
       allow get: if signedIn();
       allow list: if isAdmin();
       allow create, update: if canOperate(site) && site.matches('^[a-z0-9-]{1,40}$')
-        && request.resource.data.keys().hasOnly(['away', 'since', 'by'])
+        && request.resource.data.keys().hasOnly(['away', 'since', 'by', 'msg'])
         && request.resource.data.away is bool
+        && (!('msg' in request.resource.data) || (request.resource.data.away == true && str(request.resource.data.msg, 2, 100)))
         && request.resource.data.since == request.time
         && str(request.resource.data.by, 1, 20)
         && (resource == null || request.time >= resource.data.since + duration.value(2, 's'));

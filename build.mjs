@@ -648,6 +648,9 @@ fs.writeFileSync(path.join(OUT, 'robots.txt'), `User-agent: *\nAllow: /\nSitemap
   const helpPage = f => fs.readFileSync(path.join(ROOT, f), 'utf8').replace('__SITES__', () => lotsJson).replace('__PILOT__', () => JSON.stringify(pilot)).replace('__FBCONFIG__', () => fbJson).replace('__ADMINAPI__', () => JSON.stringify(adminApi)).replace(/__V__/g, helpVer);
   fs.copyFileSync(path.join(ROOT, 'src/apps/help-api.js'), path.join(helpDir, 'api.js'));
   fs.copyFileSync(path.join(ROOT, 'src/apps/help-garage.svg'), path.join(helpDir, 'garage.svg'));   // 自繪停車場背景插畫
+  // 日光版（GPT S25 方向 B）背景：客人端庭院、登入門廊、管理端橫幅（GPT 原創向量，無文字／人物／車牌／商標）
+  for (const [src, dst] of [['help-day-court.svg', 'day-court.svg'], ['help-day-porch.svg', 'day-porch.svg'], ['help-day-banner.svg', 'day-banner.svg']])
+    fs.copyFileSync(path.join(ROOT, 'src/apps', src), path.join(helpDir, dst));
   if (fb) fs.copyFileSync(bundle, path.join(helpDir, 'api-fb.js'));
   fs.writeFileSync(path.join(helpDir, 'index.html'), helpPage('src/apps/help.html'));
   fs.writeFileSync(path.join(helpDir, 'staff', 'index.html'), helpPage('src/apps/help-staff.html'));

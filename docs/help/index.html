@@ -5,6 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content">
 <meta name="robots" content="noindex">
 <meta name="theme-color" content="#0B1C33">
+<script>/* 外觀：預設深色（概念 A）；?theme=day 切換日光版（方向 B），?theme=night 切回，會記住 */
+(function(){try{var q=new URLSearchParams(location.search).get('theme');if(q==='day'||q==='night')localStorage.setItem('dari-help-theme',q);if((q||localStorage.getItem('dari-help-theme'))==='day'){document.documentElement.classList.add('day');document.querySelector('meta[name=theme-color]').content='#FFFFFF';}}catch(e){}})();</script>
 <title>文字求助｜大日開發 Lucky Parking</title>
 <link rel="icon" href="../assets/img/favicon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -201,6 +203,15 @@ header .tag{color:var(--lane)}
   .primary::after,.send::after,.ghost::after,.fxr{display:none}
   .cat:hover span,.primary:active,.send:active,.ghost:active{transform:none}
 }
+/* 對話紀錄固定高度，在框內往下捲動；頁面不再隨訊息一直變長（Dari 14:54） */
+.logbox{height:clamp(160px,min(40dvh,calc(100dvh - var(--dockh,220px) - 96px)),440px);overflow-y:auto;overscroll-behavior:contain;background:var(--soft);border:1px solid var(--rule);border-radius:14px;padding:12px 12px 4px;margin:0 0 10px;scroll-padding-bottom:12px}
+.logbox .log{padding:0 0 10px}
+.logbox .msg{flex:none}
+.logbox .msg.them{background:#fff;border:1px solid var(--rule)}
+.auto{display:flex;flex-direction:column;padding:0 0 10px}
+.auto:empty{padding:0}
+.logbox .msg.autor{align-self:flex-start;background:var(--amber);color:#3D2A08;border:1px dashed #C99245}
+.msg.autor small{color:var(--amberink);font-weight:700}
 [hidden]{display:none!important}
 /* 電腦版：整面大畫面，標題在畫面上，白色卡片與底部操作區連成一張 */
 @media (min-width:960px){
@@ -214,6 +225,74 @@ header .tag{color:var(--lane)}
   .dock{width:100%;max-width:560px;margin:0 auto 32px;border:0;border-radius:0 0 24px 24px;box-shadow:0 40px 80px -30px rgba(0,0,0,.6)}
   .dock .wrap{padding:0 28px}
 }
+/* ───── 方向 B「日光停車庭院」（GPT S25 提案；網址加 ?theme=day 切換，供與深色版比較） ─────
+   明亮紙色底＋GPT 原創停車庭院插畫；藍色是閱讀與操作色，橘色只用在邊線與必要提醒。按鈕特效沿用。 */
+html.day{--paper:#F5F1E8;--bline:#D9E1E2;--btext:#142C40;--bmuted:#4E6374;--bctl:#7B8D9B}
+html.day body{background:var(--paper);color:var(--btext)}
+html.day header{background:#fff;border-bottom:1px solid var(--bline)}
+html.day header img{filter:none}
+html.day header .tag{color:var(--navy);font-weight:700}
+html.day .demo{background:#FFF6DD;color:#6B4E00}
+html.day .stage{background:#DBEAF4 url(day-court.svg) 56% 36%/1100px auto no-repeat;height:500px}
+html.day .stage::after{background:linear-gradient(180deg,rgba(245,241,232,0) 62%,var(--paper))}
+html.day body.in-chat .stage{height:230px;background-position:58% 44%;background-size:900px auto}
+html.day .hero{background:rgba(245,241,232,.95);border:1px solid #E4DCCD;border-radius:22px;padding:20px 22px 18px;margin:20px 0 0;box-shadow:0 18px 40px -28px rgba(20,44,64,.55)}
+html.day #v-start h1{color:var(--navy);font-size:36px;line-height:1.25;margin:0 0 8px}
+html.day #v-start .lead{color:var(--bmuted);margin:0}
+html.day .p{box-shadow:none}
+html.day .where{border:1px solid var(--bline);box-shadow:0 16px 32px -22px rgba(20,44,64,.5)}
+html.day .where span{color:var(--bmuted)}
+html.day #v-chat .casehead{border:1px solid var(--bline);box-shadow:0 16px 32px -22px rgba(20,44,64,.5)}
+html.day #v-chat .casehead::before{box-shadow:none}
+html.day #v-chat .casehead span{color:var(--bmuted)}
+html.day .catlbl{color:var(--btext)}
+html.day .cat span{background:#fff;border:1px solid var(--bctl);color:var(--navy)}
+html.day .cat span svg{background:var(--info)}
+html.day .cat input:checked + span{background:var(--blue);border-color:var(--blue);color:#fff}
+html.day .cat input:checked + span svg{background:rgba(255,255,255,.18)}
+html.day .cat input:checked + span::after{content:"✓";width:auto;height:auto;top:8px;right:12px;background:none;box-shadow:none;color:#fff;font-weight:700}
+html.day textarea,html.day select,html.day input[type=text]{border:1px solid var(--bctl);border-radius:12px}
+html.day .primary{background:linear-gradient(180deg,#2E6FBE,#2561A9);color:#fff;box-shadow:0 12px 26px -12px rgba(37,97,169,.9)}
+html.day .primary:not([disabled]){animation:beaconDay 2.8s ease-in-out infinite}
+@keyframes beaconDay{0%,100%{box-shadow:0 12px 26px -12px rgba(37,97,169,.9),0 0 0 0 rgba(37,97,169,.35)}50%{box-shadow:0 12px 26px -12px rgba(37,97,169,.9),0 0 0 12px rgba(37,97,169,0)}}
+html.day .primary[disabled]{background:#E3E8EF;color:var(--ink2);box-shadow:none;animation:none}
+html.day .dock{border-top:1px solid var(--bline)}
+html.day .emerg{background:#FFF0DF;color:#8A3F0C}
+html.day .steps li.done::before,html.day .steps li.now::before{background:var(--blue);border-color:var(--blue);color:#fff;box-shadow:0 0 0 5px rgba(37,97,169,.15)}
+html.day .steps li.done::after{background:var(--blue)}
+html.day .steps li.now{color:var(--navy)}
+html.day .status{background:#fff;border:1px solid var(--bline)}
+html.day .status.ok{background:var(--okbg);border-color:#CDE6D7}
+html.day .status.warn{background:#FFF0DF;border-color:#F1C9A2}
+html.day .status.warn .t{color:#8A3F0C}
+html.day .status.warn::before{background:var(--orange)}
+html.day .logbox{background:#fff;border-color:var(--bline)}
+html.day .logbox .msg.them{background:var(--info);border-color:#D6E3F2}
+html.day .logbox .msg.autor{background:#FFF0DF;border-color:#E2A46A}
+html.day .msg.autor small{color:#8A3F0C}
+@media (max-width:959px){
+  html.day .sheet{background:var(--paper);border-radius:22px 22px 0 0}
+}
+@media (min-width:960px){
+  html.day body{background:var(--paper)}
+  html.day .stage,html.day body.in-chat .stage{position:fixed;inset:0;height:auto;background-size:cover;background-position:28% 62%}
+  html.day .stage::after{background:linear-gradient(90deg,rgba(245,241,232,0) 45%,rgba(245,241,232,.4))}
+  html.day header{background:rgba(255,255,255,.97)}
+  /* 開始頁：左邊標語、右邊功能卡（場站→狀況→送出連成一張） */
+  html.day body:not(.in-chat) main{flex:0 0 auto}
+  html.day body:not(.in-chat) header .wrap{max-width:1180px}
+  html.day body:not(.in-chat) #v-start{max-width:1180px;display:grid;grid-template-columns:minmax(0,1fr) 500px;grid-template-areas:"hero resume" "hero where" "hero sheet";column-gap:56px;align-items:start;padding:0 20px}
+  html.day #v-start > .hero{grid-area:hero;margin-top:40px;max-width:560px;padding:32px 34px 28px}
+  html.day #v-start > #resume{grid-area:resume;margin-top:40px}
+  html.day #v-start > .where{grid-area:where;margin-top:40px;border-radius:22px 22px 0 0;box-shadow:none;border-bottom:1px solid var(--rule);padding:18px 28px}
+  html.day #v-start > #resume:not([hidden]) ~ .where{margin-top:12px}
+  html.day #v-start > .sheet{grid-area:sheet;background:#fff;border-radius:0;margin:0;padding:20px 28px 8px;border:1px solid var(--bline);border-top:0;border-bottom:0}
+  html.day #v-start h1{font-size:54px}
+  html.day #v-start .lead{font-size:18px}
+  html.day body:not(.in-chat) .dock{max-width:500px;margin:0 max(20px,calc((100% - 1180px) / 2 + 20px)) 32px auto;border:1px solid var(--bline);border-top:0;border-radius:0 0 22px 22px;box-shadow:0 40px 80px -40px rgba(20,44,64,.5)}
+  html.day body.in-chat .dock{border:1px solid var(--bline);border-top:0;box-shadow:0 40px 80px -40px rgba(20,44,64,.5)}
+  html.day #v-chat .sheet{background:#fff;border:1px solid var(--bline);border-bottom:0}
+}
 </style>
 </head>
 <body>
@@ -225,8 +304,10 @@ header .tag{color:var(--lane)}
 <!-- 開始 -->
 <section class="wrap" id="v-start">
   <div class="status warn" id="resume" hidden style="margin-top:16px"><p class="t" id="resume-t"></p><button type="button" class="linkbtn" id="resume-b">回到先前的求助</button></div>
+  <div class="hero">
   <h1 id="start-title" tabindex="-1">不用說，也能問。</h1>
   <p class="lead">聽不到、不方便說話，都可以用文字和管理室對談。</p>
+  </div>
   <div class="where" id="where">
     <i class="p" aria-hidden="true">P</i>
     <b id="w-site">尚未選擇場站</b><span id="w-dev"></span>
@@ -284,9 +365,12 @@ header .tag{color:var(--lane)}
     <button class="ghost" id="restart" type="button" hidden style="margin-top:10px">重新開始求助</button>
     <p class="note" style="margin-top:12px">問題還沒解決？按「仍需要協助」，會通知管理室在同一案件繼續處理。</p>
   </div>
-  <button type="button" class="logtoggle" id="logtoggle" aria-expanded="false" aria-controls="log" hidden>查看本次對話紀錄</button>
-  <div class="log" id="log" role="log" aria-label="對談內容"></div>
-  <div class="log pend" id="pend"></div>
+  <button type="button" class="logtoggle" id="logtoggle" aria-expanded="false" aria-controls="logbox" hidden>查看本次對話紀錄</button>
+  <div class="logbox" id="logbox" tabindex="0" role="region" aria-label="對話紀錄（可上下捲動）">
+    <div class="log" id="log" role="log" aria-label="對談內容"></div>
+    <div class="log pend" id="pend"></div>
+    <div class="auto" id="auto" role="status"></div>
+  </div>
   </div>
 </section>
 </main>
@@ -312,11 +396,11 @@ header .tag{color:var(--lane)}
 </div>
 
 <script>window.HELP_FB = {"apiKey":"AIzaSyDUoIG3FCxiyzixCDwM1m-5w5MF7-Ak4qs","authDomain":"wedding-seating-37b71.firebaseapp.com","projectId":"wedding-seating-37b71","appId":"1:830651084062:web:fc326c270926d742bf2d0f"}; window.HELP_ROLE = 'customer';</script>
-<script src="api.js?v=e71f4c6528"></script>
+<script src="api.js?v=3d5ae41812"></script>
 <script>
 (function(){
   if (!window.HELP_FB || /[?&]demo=1/.test(location.search)) return;
-  var s = document.createElement('script'); s.src = 'api-fb.js?v=e71f4c6528';
+  var s = document.createElement('script'); s.src = 'api-fb.js?v=3d5ae41812';
   s.onerror = function(){ window.dispatchEvent(new Event('helpapi-fail')); };
   document.head.appendChild(s);
 })();
@@ -418,14 +502,35 @@ header .tag{color:var(--lane)}
   var caseId = null, current = null, unsub = null, shown = {}, pending = {};
   var vibOn = false, lastTheirs = -1, lastStatus = '', lastSt = '';
   // 該場值守狀態：管理室按了「暫時離開」時，提示客人已通知備援
-  var away = false, presSite = '', unPres = null;
+  var away = false, awayMsg = '', awaySince = 0, presSite = '', unPres = null;
+  var AWAY_DEFAULT = '目前管理員場內巡邏中，請耐心等候，我們會盡快回覆您。';
   function watchAway(site){
     if (presSite === site || !API.watchPresence) return;
-    if (unPres) unPres(); presSite = site; away = false;
-    unPres = API.watchPresence(site, function(p){ var a = !!(p && p.away); if (a !== away) { away = a; if (current) render(current); } });
+    if (unPres) unPres(); presSite = site; away = false; awayMsg = ''; awaySince = 0;
+    unPres = API.watchPresence(site, function(p){
+      var a = !!(p && p.away), m = a && p.msg || '', t = a && p.since || 0;
+      if (a !== away || m !== awayMsg || t !== awaySince) { away = a; awayMsg = m; awaySince = t; if (current) render(current); }
+    });
+  }
+  // 管理室暫離時的自動回覆：接在客人最新一則訊息後面（只在畫面上顯示，不存成對話紀錄）；
+  // 暫離後已有人員接手或回覆（例如跨場管理員），就不再自動回覆
+  function drawAuto(c){
+    var box = $('auto'), last = null, staffNow = false, since = awaySince || 0;
+    if (away && c.status !== 'closed') c.messages.forEach(function(m){
+      if (m.cycle && m.cycle !== c.cycle) return;
+      if (m.from === 'customer') last = m;
+      if (m.at > since && (m.from === 'staff' || (m.from === 'system' && /接手|已改由/.test(m.text)))) staffNow = true;
+    });
+    var on = away && c.status !== 'closed' && !!last && !staffNow;
+    var key = on ? (awayMsg || AWAY_DEFAULT) + '|' + last.id : '';
+    if (box.dataset.k === key) return false;
+    box.dataset.k = key; box.innerHTML = '';
+    if (!on) return false;
+    box.appendChild(bubble('them autor', '自動回覆　' + fmt(Math.max(last.at, awaySince || 0)), awayMsg || AWAY_DEFAULT));
+    return true;
   }
   function openCase(id){
-    caseId = id; current = null; shown = {}; pending = {}; $('log').innerHTML = ''; $('pend').innerHTML = '';
+    caseId = id; current = null; shown = {}; pending = {}; $('log').innerHTML = ''; $('pend').innerHTML = ''; $('auto').innerHTML = ''; delete $('auto').dataset.k;
     $('dock-start').hidden = true; $('composer').hidden = false;
     lastTheirs = -1; lastStatus = ''; lastSt = ''; delete $('done').dataset.focused; delete $('logtoggle').dataset.user;
     $('v-start').hidden = true; $('v-chat').hidden = false; document.body.classList.add('in-chat');
@@ -466,8 +571,8 @@ header .tag{color:var(--lane)}
     $('done').hidden = c.status !== 'closed'; $('composer').hidden = c.status === 'closed';
     $('steps').hidden = c.status === 'closed';
     $('logtoggle').hidden = c.status !== 'closed';
-    if (c.status !== 'closed') { $('log').hidden = false; $('pend').hidden = false; }
-    else if (!$('logtoggle').dataset.user) { $('log').hidden = true; $('pend').hidden = true; $('logtoggle').setAttribute('aria-expanded', 'false'); $('logtoggle').textContent = '查看本次對話紀錄'; }
+    if (c.status !== 'closed') { $('logbox').hidden = false; }
+    else if (!$('logtoggle').dataset.user) { $('logbox').hidden = true; $('logtoggle').setAttribute('aria-expanded', 'false'); $('logtoggle').textContent = '查看本次對話紀錄'; }
     if (c.status === 'closed') {
       // 只有管理室確認問題排除時才說「協助已完成」，其餘只說對話結束
       var solved = /^(問題已排除|已於現場確認問題排除)/.test(c.result || '');
@@ -488,7 +593,19 @@ header .tag{color:var(--lane)}
   }
   document.addEventListener('visibilitychange', function(){ if (!document.hidden) document.title = '文字求助｜大日開發 Lucky Parking'; });
 
-  function atBottom(){ return window.innerHeight + window.scrollY >= document.body.scrollHeight - 120; }
+  function atBottom(){ var b = $('logbox'); return b.scrollHeight - b.scrollTop - b.clientHeight < 80; }
+  // 捲到最新：框內捲到底；框的底部若被下方輸入區蓋住，頁面再往下捲一點讓最新訊息露出
+  function toBottom(){
+    var b = $('logbox'); b.scrollTop = b.scrollHeight;
+    if (b.hidden || !b.offsetParent) return true;
+    var r = b.getBoundingClientRect(), d = $('dock').getBoundingClientRect(), lim = Math.min(d.top, window.innerHeight) - 8;
+    if (r.bottom > lim) window.scrollBy(0, Math.min(r.bottom - lim, Math.max(0, r.top - 70)));
+    return b.getBoundingClientRect().bottom <= Math.min($('dock').getBoundingClientRect().top, window.innerHeight) + 2;
+  }
+  // 對話框高度跟著底部輸入區的高度調整，讓最新訊息不被蓋住
+  function dockH(){ document.documentElement.style.setProperty('--dockh', $('dock').offsetHeight + 'px'); }
+  if (window.ResizeObserver) new ResizeObserver(dockH).observe($('dock')); else window.addEventListener('resize', dockH);
+  dockH();
   function bubble(cls, head, text){
     var d = document.createElement('div'); d.className = 'msg ' + cls;
     if (head) { var s = document.createElement('small'); s.textContent = head; d.appendChild(s); }
@@ -505,9 +622,10 @@ header .tag{color:var(--lane)}
       if (m.clientMsgId && pending[m.clientMsgId]) { delete pending[m.clientMsgId]; }
     });
     drawPending();
-    if (added) {
+    var auto = drawAuto(c);
+    if (added || auto) {
       // 自己送出的訊息一律捲到最新；對方的新訊息只在使用者正在看最新內容時才自動捲動，否則顯示提示
-      if (stick || !fromThem) { window.scrollTo(0, document.body.scrollHeight); $('newmsg').hidden = true; }
+      if (stick || (added && !fromThem)) $('newmsg').hidden = toBottom();
       else $('newmsg').hidden = false;
     }
   }
@@ -525,11 +643,11 @@ header .tag{color:var(--lane)}
       box.appendChild(d);
     });
   }
-  $('newmsg').onclick = function(){ window.scrollTo(0, document.body.scrollHeight); this.hidden = true; var last = $('log').lastElementChild; if (last) { last.tabIndex = -1; last.focus(); } };
-  window.addEventListener('scroll', function(){ if (atBottom()) $('newmsg').hidden = true; });
+  $('newmsg').onclick = function(){ toBottom(); this.hidden = true; var all = $('logbox').querySelectorAll('.msg'), last = all[all.length - 1]; if (last) { last.tabIndex = -1; last.focus({ preventScroll: true }); } };
+  $('logbox').addEventListener('scroll', function(){ if (atBottom()) $('newmsg').hidden = true; });
 
   function send(text, k){
-    var id = caseId; k = k || rid(); pending[k] = { text: text, state: '' }; drawPending();
+    var id = caseId; k = k || rid(); pending[k] = { text: text, state: '' }; drawPending(); toBottom();
     API.sendMessage(id, 'customer', text, k).catch(function(e){ if (!pending[k] || id !== caseId) return; pending[k].state = e && e.code === 'closed' ? 'closed' : 'fail'; drawPending(); });
   }
   function reopenWith(text, k){
@@ -566,7 +684,7 @@ header .tag{color:var(--lane)}
       })
       .then(function(){ btn.disabled = false; });
   };
-  $('logtoggle').onclick = function(){ var open = $('log').hidden; $('log').hidden = !open; $('pend').hidden = !open; this.dataset.user = 1; this.setAttribute('aria-expanded', open ? 'true' : 'false'); this.textContent = open ? '收合對話紀錄' : '查看本次對話紀錄'; };
+  $('logtoggle').onclick = function(){ var open = $('logbox').hidden; $('logbox').hidden = !open; if (open) setTimeout(toBottom, 0); this.dataset.user = 1; this.setAttribute('aria-expanded', open ? 'true' : 'false'); this.textContent = open ? '收合對話紀錄' : '查看本次對話紀錄'; };
   $('restart').onclick = function(){ store('dari-help-case', null); location.reload(); };
 
   // 試用版：管理室暫離、或本輪排隊超過設定時間仍沒人接手，模擬「已通知備援」（正式版由伺服器排程判斷，不靠這個頁面）
