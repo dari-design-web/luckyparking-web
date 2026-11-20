@@ -641,8 +641,11 @@ fs.writeFileSync(path.join(OUT, 'robots.txt'), `User-agent: *\nAllow: /\nSitemap
   const helpVer = crypto.createHash('sha256').update(fs.readFileSync(path.join(ROOT, 'src/apps/help-api.js'))).update(fb ? fs.readFileSync(bundle) : '').digest('hex').slice(0, 10);
   // 正式版只開放 helpSites 列出的試辦場站（有管理室帳號的場站）；試用版開放全部場站
   const pilot = SITE.helpSites || null;
+  // 管理後端（Google Apps Script 網頁應用程式）網址：帳號管理與備援通知；未設定時管理員頁面顯示「尚未安裝」
+  const adminApi = SITE.helpAdminApi || null;
+  if (adminApi && !/^https:\/\/script\.google\.com\/macros\/s\/[A-Za-z0-9_-]+\/exec$/.test(adminApi)) throw new Error('helpAdminApi 網址格式不正確');
   if (pilot) pilot.forEach(c => { if (!LOTS.some(l => l.id === c)) throw new Error('helpSites 有不存在的場站代碼：' + c); });
-  const helpPage = f => fs.readFileSync(path.join(ROOT, f), 'utf8').replace('__SITES__', () => lotsJson).replace('__PILOT__', () => JSON.stringify(pilot)).replace('__FBCONFIG__', () => fbJson).replace(/__V__/g, helpVer);
+  const helpPage = f => fs.readFileSync(path.join(ROOT, f), 'utf8').replace('__SITES__', () => lotsJson).replace('__PILOT__', () => JSON.stringify(pilot)).replace('__FBCONFIG__', () => fbJson).replace('__ADMINAPI__', () => JSON.stringify(adminApi)).replace(/__V__/g, helpVer);
   fs.copyFileSync(path.join(ROOT, 'src/apps/help-api.js'), path.join(helpDir, 'api.js'));
   if (fb) fs.copyFileSync(bundle, path.join(helpDir, 'api-fb.js'));
   fs.writeFileSync(path.join(helpDir, 'index.html'), helpPage('src/apps/help.html'));

@@ -18,8 +18,13 @@
   var bc = ('BroadcastChannel' in global) ? new BroadcastChannel(KEY) : null;
 
   function load() {
-    try { return JSON.parse(localStorage.getItem(KEY)) || { seq: 0, cases: {} }; }
-    catch (e) { return { seq: 0, cases: {} }; }
+    var db; try { db = JSON.parse(localStorage.getItem(KEY)); } catch (e) {}
+    db = db || { seq: 0, cases: {} };
+    db.presence = db.presence || {};
+    db.accounts = db.accounts || [{ uid: 'demo-minquan', account: 'minquan', name: '民權公園管理室', site: 'minquan', role: '', active: true, disabled: false, createdAt: Date.now(), lastLoginAt: 0 }];
+    db.settings = db.settings || { timeoutMin: 3, defaultEmails: [], sites: {} };
+    db.log = db.log || [];
+    return db;
   }
   function notify() { listeners.slice().forEach(function (fn) { try { fn(); } catch (e) { console.error(e); } }); }
   global.addEventListener('storage', function (e) { if (e.key === KEY) notify(); });
@@ -166,9 +171,52 @@
         var c = get(db, id);
         if (c.status !== 'new' || c.escalated || (cycle != null && c.cycle !== cycle)) return false;
         c.escalated = true; sys(c, '備援通知模擬，未實際通知人員');
+        db.log.unshift({ t: Date.now(), text: '備援通知（模擬）｜' + c.siteName + '｜' + (c.device || '未填位置') }); db.log = db.log.slice(0, 30);
         return true;
       });
     },
+    // 值守狀態（試用版存在本機）
+    watchPresence: function (site, cb) {
+      var last = '';
+      function run() { var p = load().presence[site] || { away: false, since: 0, by: '' }; var s = JSON.stringify(p); if (s !== last) { last = s; cb(clone(p)); } }
+      run(); return on(run);
+    },
+    watchAllPresence: function (cb) {
+      var last = '';
+      function run() { var p = load().presence; var s = JSON.stringify(p); if (s !== last) { last = s; cb(clone(p)); } }
+      run(); return on(run);
+    },
+    setPresence: function (site, away, by) {
+      return tx(function (db) { db.presence[site] = { away: !!away, since: Date.now(), by: String(by || '管理室').slice(0, 20) }; return true; });
+    },
+    // 試用版模擬管理後端：帳號與備援設定只存在這個瀏覽器，不會真的建立帳號或寄信
+    admin: function (action, d) {
+      d = d || {};
+      return tx(function (db) {
+        var acc = function (uid) { var a = db.accounts.filter(function (x) { return x.uid === uid; })[0]; if (!a) fail('notfound'); if (a.role === 'admin') fail('protected'); return a; };
+        var log = function (t) { db.log.unshift({ t: Date.now(), text: t }); db.log = db.log.slice(0, 30); };
+        var pwOk = function (p) { if (typeof p !== 'string' || p.length < 8 || p.length > 64) fail('weak_password'); };
+        if (action === 'whoami') return { ok: true, demo: true };
+        if (action === 'listAccounts') return { ok: true, accounts: clone(db.accounts) };
+        if (action === 'createAccount') {
+          var a = String(d.account || '').trim().toLowerCase();
+          if (!/^[a-z0-9][a-z0-9._-]{2,29}$/.test(a) || a === 'admin') fail('bad_account');
+          if (db.accounts.some(function (x) { return x.account === a; })) fail('exists');
+          pwOk(d.password);
+          var n = { uid: 'demo-' + uid(), account: a, name: String(d.name || '').slice(0, 20), site: d.site, role: '', active: true, disabled: false, createdAt: Date.now(), lastLoginAt: 0 };
+          db.accounts.push(n); log('建立帳號 ' + a); return { ok: true, uid: n.uid };
+        }
+        if (action === 'updateAccount') { var u = acc(d.uid); u.name = String(d.name || u.name).slice(0, 20); u.site = d.site || u.site; log('修改帳號 ' + u.account); return { ok: true }; }
+        if (action === 'setPassword') { var u2 = acc(d.uid); pwOk(d.password); log('重設密碼 ' + u2.account); return { ok: true }; }
+        if (action === 'setActive') { var u3 = acc(d.uid); u3.active = !!d.active; u3.disabled = !d.active; log((d.active ? '啟用' : '停用') + '帳號 ' + u3.account); return { ok: true }; }
+        if (action === 'getSettings') return { ok: true, settings: clone(db.settings), quota: 100, lastRun: Date.now(), triggerOk: true, log: clone(db.log), demo: true };
+        if (action === 'saveSettings') { db.settings = clone(d.settings); log('更新備援通知設定'); return { ok: true }; }
+        if (action === 'testEmail') { log('寄送測試信（模擬）'); return { ok: true, sent: (d.to || []).length, demo: true }; }
+        fail('bad_action');
+      });
+    },
+    openSites: function () { return Promise.resolve(null); },
+    demoTimeoutMin: function () { return load().settings.timeoutMin || 3; },
     resetDemo: function () { try { localStorage.removeItem(KEY); } catch (e) {} if (bc) bc.postMessage('changed'); notify(); }
   };
 

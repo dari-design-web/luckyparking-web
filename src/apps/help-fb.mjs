@@ -3,7 +3,8 @@
  * 頁面需先設定 window.HELP_FB（Firebase 設定）與 window.HELP_ROLE（customer／staff）。
  *
  * 資料結構
- *   staff/{uid}                      管理室帳號對應的場站：{ site, active, name }（只在主控台建立）
+ *   staff/{uid}                      管理室帳號對應的場站：{ site, active, name, account, role? }（由管理後端建立）
+ *   presence/{site}                  值守狀態：{ away, since, by }（管理室按「暫時離開／我回來了」）
  *   gates/{uid}                      客人建案頻率：{ lastCaseAt }
  *   cases/{uid_clientId}             案件（欄位見 CASE_FIELDS）
  *   cases/{id}/messages/{msgId}      訊息：{ from, text, at, cycle, uid, dev? }，建立後不可修改
@@ -12,7 +13,7 @@
 import { initializeApp } from 'firebase/app';
 import { getAuth, signInAnonymously, signInWithEmailAndPassword, signOut, onAuthStateChanged } from 'firebase/auth';
 import {
-  getFirestore, doc, collection, query, where, orderBy, onSnapshot, runTransaction, serverTimestamp, getDoc
+  getFirestore, doc, collection, query, where, orderBy, onSnapshot, runTransaction, serverTimestamp, getDoc, setDoc
 } from 'firebase/firestore';
 
 (function () {
@@ -26,7 +27,7 @@ import {
   const TS = ['createdAt', 'queuedAt', 'acceptedAt', 'workingAt', 'closedAt', 'lastCustomerAt', 'lastStaffAt'];
 
   function fail(code, cause) { const e = new Error(code); e.code = code; e.mine = true; if (cause) e.cause = cause; return e; }
-  const OWN = ['notfound', 'closed', 'not_new', 'not_assignee', 'changed', 'expired', 'too_fast', 'no_login', 'no_staff'];
+  const OWN = ['notfound', 'closed', 'not_new', 'not_assignee', 'changed', 'expired', 'too_fast', 'no_login', 'no_staff', 'no_backend'];
   function wrap(e) {
     const c = (e && e.code) || '';
     if (e && e.mine) return e;
@@ -282,6 +283,52 @@ import {
         });
         return true;
       } catch (e) { throw wrap(e); }
+    },
+
+    // 已開放文字求助的場站（有啟用中管理室帳號的場站；由管理後端維護）；讀不到回傳 null
+    openSites: async function () {
+      try { const s = await getDoc(doc(db, 'config', 'public')); const v = s.exists() ? s.data().openSites : null; return Array.isArray(v) ? v.filter(x => typeof x === 'string') : null; }
+      catch (e) { return null; }
+    },
+
+    // 值守狀態：沒有資料視為值守中；讀不到時回傳 { away:false, unknown:true }
+    watchPresence: function (site, cb) {
+      let off = null, stopped = false;
+      const conv = s => { if (!s.exists()) return { away: false, since: 0, by: '' }; const d = s.data({ serverTimestamps: 'estimate' }); return { away: d.away === true, since: ms(d.since), by: d.by || '' }; };
+      me().then(() => { if (stopped) return; off = onSnapshot(doc(db, 'presence', site), s => cb(conv(s)), () => cb({ away: false, unknown: true })); }).catch(() => cb({ away: false, unknown: true }));
+      return () => { stopped = true; if (off) off(); };
+    },
+    // 管理員：各場值守狀態 { site: { away, since, by } }
+    watchAllPresence: function (cb, onErr) {
+      let off = null, stopped = false;
+      me().then(() => {
+        if (stopped) return;
+        off = onSnapshot(collection(db, 'presence'), s => { const o = {}; s.docs.forEach(d => { const v = d.data({ serverTimestamps: 'estimate' }); o[d.id] = { away: v.away === true, since: ms(v.since), by: v.by || '' }; }); cb(o); }, e => { if (onErr) onErr(wrap(e)); });
+      }).catch(e => { if (onErr) onErr(wrap(e)); });
+      return () => { stopped = true; if (off) off(); };
+    },
+    setPresence: async function (site, away, by) {
+      try { await me(); await setDoc(doc(db, 'presence', site), { away: !!away, since: serverTimestamp(), by: clip(by, 20) || '管理室' }); return true; }
+      catch (e) { throw wrap(e); }
+    },
+
+    // 管理後端（Google Apps Script）：帳號管理與備援通知設定，只有管理員能用
+    // 以目前登入者的 ID token 證明身分；後端再查 staff/{uid}.role 是否為 admin
+    admin: async function (action, data) {
+      const ep = window.HELP_ADMIN_API;
+      if (!ep) throw fail('no_backend');
+      const u = await me();
+      let tok;
+      try { tok = await u.getIdToken(); } catch (e) { throw wrap(e); }
+      let r, j;
+      const ctl = window.AbortController ? new AbortController() : null;
+      const timer = setTimeout(() => { if (ctl) ctl.abort(); }, 45000);
+      try { r = await fetch(ep, { method: 'POST', body: JSON.stringify(Object.assign({}, data || {}, { action: action, idToken: tok })), signal: ctl ? ctl.signal : undefined }); }
+      catch (e) { clearTimeout(timer); throw fail('offline', e); }
+      clearTimeout(timer);
+      try { j = await r.json(); } catch (e) { throw fail('backend_error', e); }
+      if (!j || !j.ok) { const e = fail((j && j.error) || 'backend_error'); e.mine = true; throw e; }
+      return j;
     },
 
     // 逾時通知備援由伺服器排程負責，瀏覽器不能寫入

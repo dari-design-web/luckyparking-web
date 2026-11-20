@@ -223,11 +223,11 @@ header a{display:inline-flex;align-items:center;min-height:44px}
 </div>
 
 <script>window.HELP_FB = {"apiKey":"AIzaSyDUoIG3FCxiyzixCDwM1m-5w5MF7-Ak4qs","authDomain":"wedding-seating-37b71.firebaseapp.com","projectId":"wedding-seating-37b71","appId":"1:830651084062:web:fc326c270926d742bf2d0f"}; window.HELP_ROLE = 'customer';</script>
-<script src="api.js?v=a95919c12e"></script>
+<script src="api.js?v=3aabe777fc"></script>
 <script>
 (function(){
   if (!window.HELP_FB || /[?&]demo=1/.test(location.search)) return;
-  var s = document.createElement('script'); s.src = 'api-fb.js?v=a95919c12e';
+  var s = document.createElement('script'); s.src = 'api-fb.js?v=3aabe777fc';
   s.onerror = function(){ window.dispatchEvent(new Event('helpapi-fail')); };
   document.head.appendChild(s);
 })();
@@ -275,6 +275,20 @@ header a{display:inline-flex;align-items:center;min-height:44px}
   }
   showWhere();
   if (!siteObj) { $('pick').hidden = false; $('where').hidden = !q.get('s'); }
+  // 正式版：開放的場站以後台設定為準（有啟用中管理室帳號的場站），讀不到時沿用網頁內建清單
+  function setOpen(ids){
+    var had = siteObj;
+    SITES = ALL_SITES.filter(function(s){ return ids.indexOf(s.id) >= 0; });
+    groups = Object.create(null);
+    SITES.forEach(function(s){ (groups[s.city] = groups[s.city] || []).push(s); });
+    var cv = $('city').value; $('city').length = 1;
+    Object.keys(groups).forEach(function(c){ var o = document.createElement('option'); o.value = c; o.textContent = c; $('city').appendChild(o); });
+    if (groups[cv]) { $('city').value = cv; var sv = $('site').value; fillSites(cv); $('site').value = sv; } else fillSites('');
+    siteObj = SITES.filter(function(s){ return s.id === (had ? had.id : q.get('s')); })[0] || null;
+    showWhere();
+    if (!siteObj) { $('pick').hidden = false; $('where').hidden = !q.get('s'); }
+    else if (!had) { $('pick').hidden = true; $('where').hidden = false; }
+  }
   $('fix-where').onclick = function(){ $('pick').hidden = false; $('pick-t').textContent = '更改所在場站與位置'; if (siteObj) { $('city').value = siteObj.city; fillSites(siteObj.city); $('site').value = siteObj.id; } $('dev').value = device; $('city').focus(); };
 
   // 狀況按鈕：選了會放進輸入框，仍由使用者按「開始」
@@ -312,6 +326,13 @@ header a{display:inline-flex;align-items:center;min-height:44px}
   // 對談
   var caseId = null, current = null, unsub = null, shown = {}, pending = {};
   var vibOn = false, lastTheirs = -1, lastStatus = '', lastSt = '';
+  // 該場值守狀態：管理室按了「暫時離開」時，提示客人已通知備援
+  var away = false, presSite = '', unPres = null;
+  function watchAway(site){
+    if (presSite === site || !API.watchPresence) return;
+    if (unPres) unPres(); presSite = site; away = false;
+    unPres = API.watchPresence(site, function(p){ var a = !!(p && p.away); if (a !== away) { away = a; if (current) render(current); } });
+  }
   function openCase(id){
     caseId = id; current = null; shown = {}; pending = {}; $('log').innerHTML = ''; $('pend').innerHTML = '';
     $('dock-start').hidden = true; $('composer').hidden = false;
@@ -327,14 +348,15 @@ header a{display:inline-flex;align-items:center;min-height:44px}
   function fmt(t){ var d = new Date(t); return ('0' + d.getHours()).slice(-2) + ':' + ('0' + d.getMinutes()).slice(-2); }
   function render(c){
     if (!c) { store('dari-help-case', null); if (unsub) unsub(); unsub = null; $('v-chat').hidden = true; $('v-start').hidden = false; $('dock-start').hidden = false; $('composer').hidden = true; return; }
-    current = c;
+    current = c; watchAway(c.site);
     $('c-site').textContent = c.siteName; $('c-dev').textContent = c.device || '';
     var idx = { new: 0, accepted: 1, working: 2, closed: 4 }[c.status];
     $('steps').children[3].textContent = c.status === 'closed' && !/^(問題已排除|已於現場確認問題排除)/.test(c.result || '') ? '已結束' : '已完成';
     Array.prototype.forEach.call($('steps').children, function(li, i){ li.className = i < idx ? 'done' : i === idx ? 'now' : ''; if (i === idx) li.setAttribute('aria-current', 'step'); else li.removeAttribute('aria-current'); });
     var t = '', p = '案件 ' + c.code, cls = 'status';
-    if (c.status === 'new' && c.escalated) { t = DEMO ? '備援通知模擬，未實際通知人員。' : '已送出備援通知，尚待人員確認。'; cls += ' warn'; }
+    if (c.status === 'new' && c.escalated) { t = DEMO ? '備援通知模擬，未實際通知人員。' : away ? '管理室人員暫離，已通知備援，尚待人員確認。' : '已送出備援通知，尚待人員確認。'; cls += ' warn'; }
     else if (c.status === 'new' && c.escalateFailed) { t = '暫時無法送出備援通知'; p += '　請改用現場實體求助，或向現場人員出示筆談卡。'; cls += ' warn'; }
+    else if (c.status === 'new' && away) { t = '管理室人員暫離，正在通知備援人員'; cls += ' warn'; }
     else if (c.status === 'new') { t = c.cycle > 1 ? '已再次通知管理室，尚待人員接手' : '已收到，尚待人員接手'; }
     else if (c.status === 'accepted') { t = '管理員已接手'; cls += ' ok'; }
     else if (c.status === 'working') { t = '管理員已接手・正在處理'; cls += ' ok'; }
@@ -343,8 +365,9 @@ header a{display:inline-flex;align-items:center;min-height:44px}
     if (t + p !== lastSt) { st.className = cls; $('st-t').textContent = t; $('st-p').textContent = p; lastSt = t + p; }
     st.hidden = c.status === 'closed'; $('keep').hidden = c.status === 'closed';
     var waiting = c.status === 'new';
-    $('escal').hidden = !(waiting && (c.escalated || c.escalateFailed));
-    $('cardd').hidden = !(waiting && !c.escalated && !c.escalateFailed);
+    var urgent = waiting && (c.escalated || c.escalateFailed || away);
+    $('escal').hidden = !urgent;
+    $('cardd').hidden = !(waiting && !urgent);
     $('done').hidden = c.status !== 'closed'; $('composer').hidden = c.status === 'closed';
     $('steps').hidden = c.status === 'closed';
     $('logtoggle').hidden = c.status !== 'closed';
@@ -438,8 +461,12 @@ header a{display:inline-flex;align-items:center;min-height:44px}
   $('logtoggle').onclick = function(){ var open = $('log').hidden; $('log').hidden = !open; $('pend').hidden = !open; this.dataset.user = 1; this.setAttribute('aria-expanded', open ? 'true' : 'false'); this.textContent = open ? '收合對話紀錄' : '查看本次對話紀錄'; };
   $('restart').onclick = function(){ store('dari-help-case', null); location.reload(); };
 
-  // 試用版：本輪排隊 3 分鐘仍沒人接手，模擬「已通知備援」（正式版由伺服器排程判斷，不靠這個頁面）
-  setInterval(function(){ if (!DEMO) return; if (current && current.status === 'new' && !current.escalated && Date.now() - current.queuedAt > 3 * 60 * 1000) API.markEscalated(current.id, current.cycle).catch(function(){}); }, 15000);
+  // 試用版：管理室暫離、或本輪排隊超過設定時間仍沒人接手，模擬「已通知備援」（正式版由伺服器排程判斷，不靠這個頁面）
+  setInterval(function(){
+    if (!DEMO || !current || current.status !== 'new' || current.escalated) return;
+    var lim = (API.demoTimeoutMin ? API.demoTimeoutMin() : 3) * 60 * 1000;
+    if (away || Date.now() - current.queuedAt > lim) API.markEscalated(current.id, current.cycle).catch(function(){});
+  }, 15000);
 
   // 手機鍵盤打開（正在輸入）時暫時收起底部緊急提示，讓輸入框有空間；收起鍵盤後恢復
   function emh(){
@@ -460,6 +487,7 @@ header a{display:inline-flex;align-items:center;min-height:44px}
     API = window.HelpAPI; DEMO = API.mode === 'demo';
     if (DEMO) $('demo-bar').hidden = false;
     if ($('e-start').textContent.indexOf('連線中') === 0 || loadFailed) $('e-start').textContent = '';
+    if (LIVE && API.openSites) API.openSites().then(function(ids){ if (ids) setOpen(ids); });
     resume();
   }
   if (API) setTimeout(ready, 0); else window.addEventListener('helpapi', ready, { once: true });

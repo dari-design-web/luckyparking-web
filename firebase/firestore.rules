@@ -1,8 +1,9 @@
 rules_version = '2';
 // 大日開發｜文字求助 Firestore 安全規則
-// 客人：匿名登入，只能建立與讀寫自己的案件；管理室：電子郵件／密碼登入，staff/{uid} 指定場站，只能讀寫本場案件；
-// 管理員：staff/{uid}.role == 'admin'，可讀取各場案件與對話，但不能接手、回覆或結案。
-// 所有未列出的路徑一律拒絕。逾時通知備援由 Google Apps Script 以專案擁有者權限寫入（不受本規則限制）。
+// 客人：匿名登入，只能建立與讀寫自己的案件；管理室：帳號密碼登入，staff/{uid} 指定場站，只能讀寫本場案件；
+// 管理員：staff/{uid}.role == 'admin'，可讀寫各場案件（接手、回覆、結案）與各場值守狀態。
+// 帳號建立、停用與備援通知由「管理後端」（Google Apps Script，專案擁有者權限，不受本規則限制）處理。
+// 所有未列出的路徑一律拒絕。
 service cloud.firestore {
   match /databases/{database}/documents {
 
@@ -26,13 +27,33 @@ service cloud.firestore {
     function newMsg(id, mid, text) {
       return validMid(mid) && !exists(msgPath(id, mid)) && getAfter(msgPath(id, mid)).data.text == text;
     }
+    // 可以操作某場案件的人：該場管理室，或管理員
+    function canOperate(site) { return isStaff(site) || isAdmin(); }
     function newStaffMsg(id, mid) {
       return validMid(mid) && !exists(msgPath(id, mid)) && getAfter(msgPath(id, mid)).data.from == 'staff';
     }
 
-    // 管理室帳號資料：只能讀自己的；新增、修改只在 Firebase 主控台進行
+    // 管理室帳號資料：只能讀自己的；新增、修改由管理後端處理
     match /staff/{uid} {
       allow get: if pw() && request.auth.uid == uid;
+    }
+
+    // 公開設定：已開放文字求助的場站清單（由管理後端寫入），任何人可讀
+    match /config/{name} {
+      allow get: if name == 'public';
+    }
+
+    // 值守狀態：管理室按「暫時離開／我回來了」；暫離時新求助會立即通知備援
+    // 已登入者（含客人匿名身分）可讀單一場站；管理員可列出全部
+    match /presence/{site} {
+      allow get: if signedIn();
+      allow list: if isAdmin();
+      allow create, update: if canOperate(site) && site.matches('^[a-z0-9-]{1,40}$')
+        && request.resource.data.keys().hasOnly(['away', 'since', 'by'])
+        && request.resource.data.away is bool
+        && request.resource.data.since == request.time
+        && str(request.resource.data.by, 1, 20)
+        && (resource == null || request.time >= resource.data.since + duration.value(2, 's'));
     }
 
     // 客人建案頻率：同一個匿名身分 30 秒內只能建立一件
@@ -47,7 +68,7 @@ service cloud.firestore {
     match /cases/{id} {
       function owner(c) { return anon() && c.customerUid == request.auth.uid; }
 
-      // 讀：客人讀自己的、管理室讀本場的；客人可查自己尚未建立的案件 ID（重送時判斷是否已建立）
+      // 讀：客人讀自己的、管理室讀本場的、管理員讀全部；客人可查自己尚未建立的案件 ID（重送時判斷是否已建立）
       function ownMissingId() {
         let suffix = id.split('_')[id.split('_').size() - 1];
         return suffix.matches('^[a-f0-9]{16}$') && id == request.auth.uid + '_' + suffix;
@@ -83,7 +104,7 @@ service cloud.firestore {
       }
 
       allow update: if (owner(resource.data) && customerUpdate(resource.data, request.resource.data))
-        || (isStaff(resource.data.site) && staffUpdate(resource.data, request.resource.data));
+        || (canOperate(resource.data.site) && staffUpdate(resource.data, request.resource.data));
 
       function customerUpdate(a, b) {
         let k = b.diff(a).affectedKeys();
@@ -131,9 +152,9 @@ service cloud.firestore {
       match /messages/{mid} {
         function canSee() {
           let c = get(casePath(id)).data;
-          return (anon() && c.customerUid == request.auth.uid) || isStaff(c.site);
+          return (anon() && c.customerUid == request.auth.uid) || canOperate(c.site);
         }
-        allow read: if canSee() || isAdmin();
+        allow read: if canSee();
         allow create: if validMsg(request.resource.data, getAfter(casePath(id)).data);
         // 系統訊息必須對應同一筆寫入中真的發生的狀態變化
         function sysOk(text, before, after) {
@@ -150,9 +171,9 @@ service cloud.firestore {
             && (
               (m.from == 'customer' && anon() && c.customerUid == request.auth.uid
                 && c.lastCustomerMsg == mid && c.lastCustomerAt == request.time && !('dev' in m))
-              || (m.from == 'staff' && isStaff(c.site) && c.acceptedUid == request.auth.uid
+              || (m.from == 'staff' && canOperate(c.site) && c.acceptedUid == request.auth.uid
                 && m.dev == c.acceptedDev && c.lastStaffAt == request.time && c.lastStaffMsg == mid)
-              || (m.from == 'system' && isStaff(c.site) && !('dev' in m)
+              || (m.from == 'system' && canOperate(c.site) && !('dev' in m)
                 && sysOk(m.text, get(casePath(id)).data, c))
             );
         }

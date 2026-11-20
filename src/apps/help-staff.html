@@ -179,6 +179,50 @@ table.ctable td:last-child{text-align:right}
 #v-work.admin #v-detail .back{display:inline-flex!important}
 #v-work.admin #v-detail .log{max-height:60vh}
 #v-work.admin-detail #admin-head,#v-work.admin-detail #sites-box,#v-work.admin-detail #cases-box,#v-work.admin-detail .counts,#v-work.admin-detail .alertset,#v-work.admin-detail .oldline{display:none!important}
+/* 值守狀態 */
+.duty{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px 12px;align-items:center;background:#fff;border:1px solid var(--rule);border-left:4px solid var(--ok);border-radius:14px;padding:10px 12px 10px 14px;margin:0 0 12px}
+.duty b{display:block;font-size:17px}
+.duty span{display:block;font-size:15px;color:var(--ink2)}
+.duty .btn{min-height:44px;padding:0 16px;font-size:16px}
+.duty.away{background:var(--warn);border-color:#F3C9A6;border-left-color:var(--orange)}
+.duty.away b{color:var(--warnink)}
+.duty .err{grid-column:1/-1}
+/* 管理員分頁 */
+.tabs{display:flex;gap:6px;flex-wrap:wrap;margin:10px 0 14px;border-bottom:1px solid var(--rule)}
+.tabs button{min-height:48px;padding:0 16px;border:0;border-bottom:3px solid transparent;background:none;font:inherit;font-weight:500;color:var(--ink2);cursor:pointer;margin-bottom:-1px}
+.tabs button[aria-current=page]{color:var(--navy);border-bottom-color:var(--navy);font-weight:700}
+#v-work.tab-accounts .casegrp,#v-work.tab-backup .casegrp{display:none!important}
+.panel h2{margin:0}
+.panel h3{font-size:17px;margin:22px 0 8px}
+.hint{margin:0 0 6px;color:var(--ink2);font-size:15px}
+.acctag{display:inline-flex;align-items:center;min-height:26px;padding:0 10px;border-radius:999px;font-size:14px;font-weight:700;background:var(--okbg);color:var(--ok)}
+.acctag.off{background:#EEF1F4;color:var(--ink2)}
+.acctag.adm{background:var(--info);color:var(--navy)}
+.acctag.bad{background:var(--errbg);color:var(--err)}
+.rowacts{display:flex;gap:6px;justify-content:flex-end;flex-wrap:wrap}
+.rowacts .btn{min-height:40px;padding:0 12px;font-size:15px}
+.ccard .rowacts{justify-content:flex-start;margin-top:8px}
+.kv{display:grid;grid-template-columns:auto 1fr;gap:4px 14px;font-size:15px;margin:0}
+.kv dt{color:var(--ink2)}
+.kv dd{margin:0;font-weight:500}
+.bkstat{display:grid;gap:4px;background:var(--soft);border-radius:14px;padding:12px 14px;margin:10px 0 4px;font-size:15px}
+.bkstat .bad{color:var(--err);font-weight:700}
+.bkstat .ok{color:var(--ok);font-weight:700}
+.bksite{border:1px solid var(--rule);border-radius:14px;padding:12px 14px;margin:0 0 10px}
+.bksite .hd{display:flex;flex-wrap:wrap;gap:8px 12px;align-items:center;justify-content:space-between}
+.bksite .hd b{font-size:17px}
+.bksite select{width:auto;min-width:200px;min-height:44px;padding-top:6px;padding-bottom:6px}
+.bksite textarea{margin-top:8px}
+.bksite .use{margin:6px 0 0;color:var(--ink2);font-size:15px}
+.savebar{position:sticky;bottom:0;background:#fff;border-top:1px solid var(--rule);margin:14px -18px -18px;padding:12px 18px;border-radius:0 0 18px 18px;display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+.savebar .note{color:var(--ink2);font-size:15px}
+.savebar .note.dirty{color:var(--warnink);font-weight:700}
+.loglist{margin:0;padding:0;list-style:none;font-size:15px}
+.loglist li{padding:8px 0;border-bottom:1px solid var(--rule)}
+.loglist time{color:var(--ink2);margin-right:8px;font-variant-numeric:tabular-nums}
+.whosite{font-size:24px;font-weight:700;color:var(--navy);margin:6px 0 2px}
+.chk{display:flex;align-items:center;gap:8px;min-height:44px;font-size:15px}
+.chk input{width:20px;height:20px;accent-color:var(--blue)}
 [hidden]{display:none!important}
 @media (max-width:959px){
   #v-work.in-detail .counts{display:none}
@@ -199,7 +243,7 @@ table.ctable td:last-child{text-align:right}
 </head>
 <body>
 <div class="vh" id="live" role="status"></div>
-<div class="top"><div class="in"><b id="top-t">管理室</b><span class="scope" id="scope">文字求助</span><span class="robadge" id="ro-badge" hidden>僅供查看</span><button type="button" class="out" id="logout" hidden>登出</button></div></div>
+<div class="top"><div class="in"><b id="top-t">管理室</b><span class="scope" id="scope">文字求助</span><button type="button" class="out" id="logout" hidden>登出</button></div></div>
 <div class="demo" id="demo-bar" hidden>試用版：僅供介面測試，未連線至實際管理室。資料只存在這個瀏覽器，請另開客人端分頁一起測試。</div>
 
 <!-- 登入 -->
@@ -232,30 +276,42 @@ table.ctable td:last-child{text-align:right}
 <!-- 工作區 -->
 <div class="page" id="v-work" hidden>
   <div class="adminhead" id="admin-head" hidden>
-    <h1 id="admin-title" tabindex="-1">跨場案件總覽</h1>
-    <p class="muted" style="margin:0">此帳號僅能查看；接手、回覆與結案由各場管理室處理。</p>
-    <p class="syncline" id="syncline" role="status">讀取中…</p>
+    <nav class="tabs" id="admin-tabs" aria-label="管理功能">
+      <button type="button" data-tab="cases" aria-current="page">案件總覽</button>
+      <button type="button" data-tab="accounts">帳號管理</button>
+      <button type="button" data-tab="backup">備援通知</button>
+    </nav>
+    <div class="casegrp">
+      <h1 id="admin-title" tabindex="-1">跨場案件總覽</h1>
+      <p class="muted" style="margin:0">可查看並處理各場案件；接手後，該場管理室會看到由你處理。</p>
+      <p class="syncline" id="syncline" role="status">讀取中…</p>
+    </div>
   </div>
-  <div class="alertset" id="alertset">
+  <div class="duty" id="duty" hidden>
+    <div><b id="duty-t">值守中</b><span id="duty-p">離開座位前請按「暫時離開」，新求助會立即通知備援人員。</span></div>
+    <button class="btn line" type="button" id="duty-btn">暫時離開</button>
+    <p class="err" id="e-duty" role="alert"></p>
+  </div>
+  <div class="alertset casegrp" id="alertset">
     <div class="t"><b id="al-t">提醒尚未測試</b>
       <details id="al-d"><summary>說明</summary><span id="al-p">本頁保持前景且裝置支援時，可播放提醒聲。震動與系統通知依裝置及設定而定；請先測試，再開始值守。</span></details></div>
     <button class="btn line" type="button" id="al-btn">測試提醒</button>
   </div>
   <p class="loadst" id="loadst" role="status">讀取案件中…</p>
-  <div class="counts" aria-label="本場案件數">
+  <div class="counts casegrp" aria-label="案件數">
     <div class="n"><span>待接手</span><strong id="n-new">0</strong></div>
     <div><span>處理中</span><strong id="n-work">0</strong></div>
     <div><span>今日已結案</span><strong id="n-closed">0</strong></div>
   </div>
-  <p class="oldline" id="n-oldline" hidden></p>
-  <section class="box sitesbox" id="sites-box" hidden aria-labelledby="sites-title">
+  <p class="oldline casegrp" id="n-oldline" hidden></p>
+  <section class="box sitesbox casegrp" id="sites-box" hidden aria-labelledby="sites-title">
     <div class="sbhead">
       <div><h2 id="sites-title">場站概況</h2><p class="muted small" id="sites-sub" style="margin:2px 0 0"></p></div>
       <div class="sbtools"><a class="lnk only-narrow" href="#cases-title" id="jump-cases">跳至案件</a>
         <label class="vh" for="site-sort">排序方式</label><select id="site-sort" class="sortsel"><option value="wait">排序：最久等候</option><option value="n">排序：待接手件數</option><option value="name">排序：場名</option></select></div>
     </div>
     <div class="tablewrap only-wide"><table class="sites">
-      <thead><tr><th scope="col">場站</th><th scope="col" class="num">待接手</th><th scope="col" class="num">處理中</th><th scope="col" class="num">今日結案</th><th scope="col" class="num">最久等候</th></tr></thead>
+      <thead><tr><th scope="col">場站</th><th scope="col">值守</th><th scope="col" class="num">待接手</th><th scope="col" class="num">處理中</th><th scope="col" class="num">今日結案</th><th scope="col" class="num">最久等候</th></tr></thead>
       <tbody id="sites-body"></tbody>
     </table></div>
     <div class="cardlist only-narrow" id="sites-cards"></div>
@@ -263,7 +319,7 @@ table.ctable td:last-child{text-align:right}
     <button type="button" class="btn line wide morebtn" id="closed-toggle" aria-expanded="false" aria-controls="closed-list" hidden></button>
     <p class="muted small closedlist" id="closed-list" hidden></p>
   </section>
-  <section class="box casesbox" id="cases-box" hidden aria-labelledby="cases-title">
+  <section class="box casesbox casegrp" id="cases-box" hidden aria-labelledby="cases-title">
     <div class="sbhead"><h2 id="cases-title" tabindex="-1">案件清單</h2><span class="muted small" id="cases-count"></span></div>
     <div class="filters">
       <label class="vh" for="f-site">篩選場站</label><select id="f-site"><option value="">場站：全部已開放</option></select>
@@ -276,6 +332,47 @@ table.ctable td:last-child{text-align:right}
     <div class="cardlist only-narrow" id="cases-cards"></div>
     <p class="empty" id="cases-empty" hidden>此條件沒有案件。</p>
     <p class="muted small" id="cases-foot" style="margin:10px 0 0"></p>
+  </section>
+
+  <!-- 管理員：帳號管理 -->
+  <section class="box panel" id="tab-accounts" hidden aria-labelledby="acc-title">
+    <div class="sbhead">
+      <div><h2 id="acc-title" tabindex="-1">帳號管理</h2>
+        <p class="muted small" style="margin:2px 0 0">各場管理室的登入帳號。帳號只能看到並處理自己場站的求助；某場有啟用中的帳號，該場客人才能使用文字求助。</p></div>
+      <button class="btn" type="button" id="acc-new">新增帳號</button>
+    </div>
+    <p class="loadst" id="acc-st" role="status">讀取帳號中…</p>
+    <div class="tablewrap only-wide"><table class="ctable">
+      <thead><tr><th scope="col">帳號</th><th scope="col">名稱</th><th scope="col">場站</th><th scope="col">狀態</th><th scope="col">最後登入</th><th scope="col"><span class="vh">操作</span></th></tr></thead>
+      <tbody id="acc-body"></tbody>
+    </table></div>
+    <div class="cardlist only-narrow" id="acc-cards"></div>
+  </section>
+
+  <!-- 管理員：備援通知 -->
+  <section class="box panel" id="tab-backup" hidden aria-labelledby="bk-title">
+    <h2 id="bk-title" tabindex="-1">備援通知</h2>
+    <p class="muted small" style="margin:2px 0 0">管理室按「暫時離開」時，或求助超過設定時間仍無人接手時，系統會寄信通知備援信箱；同一次求助只通知一次。</p>
+    <p class="loadst" id="bk-st" role="status" style="margin-top:12px">讀取設定中…</p>
+    <div id="bk-form" hidden>
+      <div class="bkstat" id="bk-stat"></div>
+      <label class="f" for="bk-timeout">無人接手多久後通知</label>
+      <select id="bk-timeout" style="max-width:320px"></select>
+      <label class="f" for="bk-default">預設備援信箱</label>
+      <p class="hint" id="bk-default-h">未另外指定的場站都寄到這組。每行一個信箱，最多 10 個。</p>
+      <textarea id="bk-default" rows="3" aria-describedby="bk-default-h" spellcheck="false" autocapitalize="none" placeholder="例：backup@example.com"></textarea>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:10px">
+        <button class="btn line sm" type="button" id="bk-test-default">寄測試信給預設信箱</button>
+        <button class="btn line sm" type="button" id="bk-applyall">全部場站改用預設信箱</button>
+      </div>
+      <p class="muted small" id="bk-default-r" role="status" style="margin:6px 0 0"></p>
+      <h3>各場站</h3>
+      <p class="hint">需要不同聯絡人的場站，改為「另外指定」並填寫信箱。</p>
+      <div id="bk-sites"></div>
+      <div class="savebar"><button class="btn" type="button" id="bk-save">儲存設定</button><span class="note" id="bk-note" role="status">尚無變更</span><p class="err" id="e-bk" role="alert" style="flex-basis:100%;margin:0"></p></div>
+      <h3>最近紀錄</h3>
+      <ul class="loglist" id="bk-log"></ul>
+    </div>
   </section>
   <div class="cols">
     <section id="v-list" aria-labelledby="list-title">
@@ -291,7 +388,6 @@ table.ctable td:last-child{text-align:right}
 
     <section id="v-detail" class="box" hidden aria-labelledby="d-title">
       <button type="button" class="back" id="back">← 回案件列表</button>
-      <p class="ro" id="d-ro" hidden>僅供查看，無法接手、回覆或結案。</p>
       <div class="dhead"><h2 id="d-title" tabindex="-1"></h2><span class="chip" id="d-chip"></span>
         <button class="btn line sm" type="button" id="d-close" hidden>結案…</button></div>
       <p class="dsub" id="d-sub"></p>
@@ -303,7 +399,7 @@ table.ctable td:last-child{text-align:right}
       <div class="log" id="d-log" role="log" aria-label="對談內容"><div id="d-msgs" style="display:contents"></div><div id="d-pend" style="display:contents"></div></div>
 
       <div class="gate" id="d-gate" hidden>
-        <p>接手後才能回覆。接手後，客人會看到「管理員已接手」。</p>
+        <p id="d-gate-p">接手後才能回覆。接手後，客人會看到「管理員已接手」。</p>
         <button class="btn wide big" type="button" id="d-accept">接手此案件</button>
         <p class="err" id="e-accept" style="margin-top:8px"></p>
       </div>
@@ -324,6 +420,39 @@ table.ctable td:last-child{text-align:right}
   <p style="margin-top:28px"><button type="button" class="reset" id="reset" hidden>清除試用資料</button></p>
 </div>
 
+<!-- 登入後確認場域 -->
+<dialog id="who" aria-labelledby="who-t" aria-describedby="who-p">
+  <h2 id="who-t">確認登入場域</h2>
+  <p id="who-p" style="margin:0">您目前登入的場域是：</p>
+  <p class="whosite" id="who-site"></p>
+  <p class="muted small" id="who-acct" style="margin:0"></p>
+  <div class="acts"><button class="btn line" type="button" id="who-no">不是，重新登入</button><button class="btn" type="button" id="who-ok">確認進入</button></div>
+</dialog>
+
+<!-- 管理員：新增／修改帳號、重設密碼、停用 -->
+<dialog id="acc-dlg" aria-labelledby="ad-t">
+  <h2 id="ad-t"></h2>
+  <p class="muted small" id="ad-p" style="margin:0"></p>
+  <form id="ad-form" onsubmit="return false">
+    <div id="ad-acct-w"><label class="f" for="ad-acct">帳號</label>
+      <p class="hint" id="ad-acct-h">登入時輸入的名稱：英文小寫、數字或 . - _，3–30 字。建立後不能更改。</p>
+      <input type="text" id="ad-acct" maxlength="30" autocomplete="off" autocapitalize="none" autocorrect="off" spellcheck="false" aria-describedby="ad-acct-h" placeholder="例：minquan2"></div>
+    <div id="ad-name-w"><label class="f" for="ad-name">名稱</label>
+      <p class="hint" id="ad-name-h">接手案件時顯示給其他管理室，例：民權公園管理室、民權公園早班。</p>
+      <input type="text" id="ad-name" maxlength="20" autocomplete="off" aria-describedby="ad-name-h"></div>
+    <div id="ad-site-w"><label class="f" for="ad-site">場站</label>
+      <select id="ad-site"><option value="">選場站</option></select></div>
+    <div id="ad-pw-w"><label class="f" for="ad-pw">密碼</label>
+      <p class="hint" id="ad-pw-h">至少 8 個字元，不可有空白。請另行告知該場人員，系統不會寄出密碼。</p>
+      <input type="password" id="ad-pw" maxlength="64" autocomplete="new-password" aria-describedby="ad-pw-h">
+      <label class="f" for="ad-pw2">再輸入一次密碼</label>
+      <input type="password" id="ad-pw2" maxlength="64" autocomplete="new-password">
+      <label class="chk"><input type="checkbox" id="ad-show"> 顯示密碼</label></div>
+    <p class="err" id="e-ad" role="alert"></p>
+    <div class="acts"><button class="btn line" type="button" id="ad-cancel">取消</button><button class="btn" type="submit" id="ad-ok">確定</button></div>
+  </form>
+</dialog>
+
 <dialog id="dlg" aria-labelledby="dlg-t">
   <h2 id="dlg-t">確認處理結果</h2>
   <p class="muted small" style="margin:0">選前兩項，客人會看到「本次協助已完成」；選後兩項，客人會看到「本次對話已結束」，並可按「仍需要協助」再次求助。</p>
@@ -335,7 +464,7 @@ table.ctable td:last-child{text-align:right}
   <div class="acts"><button class="btn line" type="button" id="dlg-cancel">取消</button><button class="btn" type="button" id="dlg-ok">確認結案</button></div>
 </dialog>
 
-<script>window.HELP_FB = __FBCONFIG__; window.HELP_ROLE = 'staff';</script>
+<script>window.HELP_FB = __FBCONFIG__; window.HELP_ROLE = 'staff'; window.HELP_ADMIN_API = __ADMINAPI__;</script>
 <script src="../api.js?v=__V__"></script>
 <script>
 (function(){
@@ -385,10 +514,10 @@ table.ctable td:last-child{text-align:right}
     $('e-login').textContent = '';
     var btn = this;
     if (DEMO) {
-      if ($('city').value === '*') { API.staffLogin('*', '管理員').then(function(u){ me = { site: '', siteName: '各場總覽', name: '管理員', role: 'admin' }; saveMe(); start(); }); return; }
+      if ($('city').value === '*') { API.staffLogin('*', '管理員').then(function(u){ me = { site: '', siteName: '各場總覽', name: '管理員', role: 'admin' }; confirmWho(); }); return; }
       var s = SITES.filter(function(x){ return x.id === $('site').value; })[0];
       if (!s) { $('e-login').textContent = '請選擇場站。'; ($('city').value ? $('site') : $('city')).focus(); return; }
-      API.staffLogin(s.id, s.name + '管理室').then(function(u){ me = { site: s.id, siteName: s.name, name: u.name, role: 'site' }; saveMe(); start(); });
+      API.staffLogin(s.id, s.name + '管理室').then(function(u){ me = { site: s.id, siteName: s.name, name: u.name, role: 'site' }; confirmWho(); });
       return;
     }
     var acct = $('email').value.trim(), pw = $('pw').value;
@@ -396,10 +525,32 @@ table.ctable td:last-child{text-align:right}
     btn.disabled = true; btn.textContent = '登入中…';
     API.staffLogin(toEmail(acct), pw).then(function(u){
       $('pw').value = '';
-      setMe(u); saveMe(); start();
+      setMe(u); me.account = acct.toLowerCase().split('@')[0]; confirmWho();
     }).catch(function(e){ $('e-login').textContent = LOGIN_ERR[e && e.code] || '無法登入，請稍後再試。'; $('pw').focus(); })
       .then(function(){ btn.disabled = false; btn.textContent = '登入'; });
   };
+  // 登入成功後先確認場域：確認才進入；「不是」就登出並回到登入畫面
+  function confirmWho(){
+    var s = SITES.concat(ALL_SITES).filter(function(x){ return x.id === me.site; })[0];
+    $('who-p').textContent = me.role === 'admin' ? '您目前登入的是：' : '您目前登入的場域是：';
+    $('who-site').textContent = me.role === 'admin' ? '跨場管理（全部場站）' : (s ? s.city + '｜' + s.name : me.siteName);
+    $('who-acct').textContent = (me.account ? '帳號：' + me.account + '　' : '') + '名稱：' + me.name;
+    $('who').showModal(); $('who-ok').focus();
+  }
+  var whoDone = false;
+  $('who-ok').onclick = function(){ whoDone = true; $('who').close(); saveMe(); start(); };
+  function whoNo(){
+    whoDone = true; if ($('who').open) $('who').close();
+    var m = me; me = null; try { localStorage.removeItem('dari-help-staff'); } catch (e) {}
+    Promise.resolve(DEMO || !m ? null : API.staffLogout()).then(function(){
+      $('e-login').textContent = '已登出，請重新輸入正確的帳號與密碼。';
+      if (DEMO) $('city').focus(); else { $('email').select(); $('email').focus(); }
+    });
+  }
+  $('who-no').onclick = whoNo;
+  // 按 Esc 關閉視窗視同「不是」
+  $('who').addEventListener('cancel', function(e){ e.preventDefault(); whoNo(); });
+  $('who').addEventListener('close', function(){ if (!whoDone) whoNo(); whoDone = false; });
   $('logout').onclick = function(){ try { localStorage.removeItem('dari-help-staff'); } catch (e) {} drafts = {}; Promise.resolve(API && API.staffLogout()).then(function(){ location.reload(); }); };
 
   // 提醒：聲音、震動、系統通知（皆需使用者先按一次按鈕才能啟用）
@@ -451,11 +602,14 @@ table.ctable td:last-child{text-align:right}
     document.title = (ADMIN ? '管理員｜' : '管理室｜') + me.siteName;
     if (ADMIN) {
       $('v-work').classList.add('admin');
-      $('admin-head').hidden = false; $('sites-box').hidden = false; $('cases-box').hidden = false; $('ro-badge').hidden = false;
+      $('admin-head').hidden = false; $('sites-box').hidden = false; $('cases-box').hidden = false;
       $('top-t').textContent = '文字求助｜跨場管理'; $('scope').textContent = '';
       $('loadst').hidden = true;
-      $('al-p').textContent = '本頁保持前景且裝置支援時，任一場有新案件都會播放提醒聲。管理員只能查看，不能接手。';
-      openSites().forEach(function(s){ var o = document.createElement('option'); o.value = s.id; o.textContent = '場站：' + s.name; $('f-site').appendChild(o); });
+      $('al-p').textContent = '本頁保持前景且裝置支援時，任一場有新案件都會播放提醒聲。';
+      Array.prototype.forEach.call(document.querySelectorAll('#admin-tabs button'), function(b){ b.onclick = function(){ showTab(b.dataset.tab, true); }; });
+      API.watchAllPresence(function(p){ presence = p || {}; drawSites(); }, function(){});
+      refreshOpen();
+      fillSiteFilter();
       $('f-site').onchange = function(){ siteF = this.value; drawList(); drawSites(); };
       $('f-state').onchange = function(){ drawAdminCases(); };
       $('site-sort').onchange = function(){ drawSites(); };
@@ -466,7 +620,26 @@ table.ctable td:last-child{text-align:right}
       return;
     }
     unsub = API.watchSite(me.site, onCases, connErr);
+    $('duty').hidden = false;
+    API.watchPresence(me.site, function(p){ myPres = p; drawDuty(); });
   }
+
+  // 值守狀態（各場管理室）：暫時離開時，新求助會立即通知備援
+  var myPres = null, presence = {};
+  function drawDuty(){
+    var away = !!(myPres && myPres.away);
+    $('duty').className = 'duty' + (away ? ' away' : '');
+    $('duty-t').textContent = myPres && myPres.unknown ? '值守狀態讀取失敗' : away ? '暫時離開中' + (myPres.since ? '（' + hm(myPres.since) + ' 起）' : '') : '值守中';
+    $('duty-p').textContent = away ? '新求助會立即寄信通知備援人員。回到座位請按「我回來了」。' : '離開座位前請按「暫時離開」，新求助會立即通知備援人員。';
+    $('duty-btn').textContent = away ? '我回來了' : '暫時離開';
+    $('duty-btn').className = away ? 'btn' : 'btn line';
+  }
+  $('duty-btn').onclick = function(){
+    var btn = this, away = !(myPres && myPres.away); btn.disabled = true; $('e-duty').textContent = '';
+    API.setPresence(me.site, away, me.name).then(function(){ say(away ? '已設為暫時離開，新求助會立即通知備援。' : '已回到值守。'); })
+      .catch(function(){ $('e-duty').textContent = '連線中斷，值守狀態尚未變更；請再按一次。'; })
+      .then(function(){ btn.disabled = false; });
+  };
   var lastSync = 0;
   function connErr(e){
     var t = e && e.code === 'denied' ? '此帳號沒有' + (ADMIN ? '管理員' : '本場') + '權限，請登出後重新登入。' : '連線中斷' + (lastSync ? '，以下為 ' + hm(lastSync) + ' 的資料' : '') + '；請確認網路。';
@@ -505,6 +678,14 @@ table.ctable td:last-child{text-align:right}
   // 管理員：已開放的場站（正式版為試辦場站）；未開放的收合，不以 0 冒充有服務
   var showAllSites = false;
   function openSites(){ return ALL_SITES.filter(function(s){ return !LIVE || !PILOT || PILOT.indexOf(s.id) >= 0; }); }
+  // 已開放場站以後台為準（有啟用中帳號的場站）；讀不到時沿用網頁內建清單
+  function refreshOpen(){ if (LIVE && API.openSites) API.openSites().then(function(ids){ if (ids) { PILOT = ids; fillSiteFilter(); drawSites(); } }); }
+  function fillSiteFilter(){
+    var f = $('f-site'), v = f.value; f.length = 1;
+    openSites().forEach(function(s){ var o = document.createElement('option'); o.value = s.id; o.textContent = '場站：' + s.name; f.appendChild(o); });
+    f.value = v; if (f.value !== v) { siteF = ''; f.value = ''; }
+  }
+  function dutyText(id){ var p = presence[id]; return p && p.away ? '暫離' + (p.since ? ' ' + hm(p.since) + ' 起' : '') : '值守中'; }
   function el(tag, cls, text){ var e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; }
   function filterSite(id){ siteF = siteF === id ? '' : id; $('f-site').value = siteF; drawList(); drawSites(); $('cases-box').scrollIntoView({ block: 'start' }); $('cases-title').focus(); }
   function drawSites(){
@@ -537,10 +718,11 @@ table.ctable td:last-child{text-align:right}
       var tr = el('tr', r.n ? 'hot' : ''); tr.setAttribute('aria-selected', siteF === r.id ? 'true' : 'false');
       var td = el('td'), b = el('button'); b.type = 'button'; b.textContent = r.name; b.appendChild(el('span', 'sub', '已開放・' + syncTxt));
       b.onclick = function(){ filterSite(r.id); }; td.appendChild(b); tr.appendChild(td);
+      var away = presence[r.id] && presence[r.id].away, tdd = el('td'); tdd.appendChild(el('span', away ? 'w' : '', dutyText(r.id))); if (away) tdd.firstChild.style.color = 'var(--warnink)'; tr.appendChild(tdd);
       [[r.n, 'w'], [r.w, ''], [r.d, ''], [wait, 'w']].forEach(function(v){ var t = el('td', 'num'), sp = el('span', v[1] && r.n ? v[1] : '', v[0]); t.appendChild(sp); tr.appendChild(t); });
       tb.appendChild(tr);
       var c = el('article', 'scard' + (r.n ? ' hot' : ''));
-      var nm = el('div', 'nm'); nm.appendChild(el('span', '', r.name)); nm.appendChild(el('span', 'chip acc', '已開放')); c.appendChild(nm);
+      var nm = el('div', 'nm'); nm.appendChild(el('span', '', r.name)); nm.appendChild(el('span', presence[r.id] && presence[r.id].away ? 'chip new' : 'chip acc', dutyText(r.id))); c.appendChild(nm);
       c.appendChild(el('p', 'nums', '待接手 ' + r.n + '　處理中 ' + r.w + '　今日結案 ' + r.d));
       var ft = el('div', 'foot'); ft.appendChild(el('span', r.n ? 'w' : 'muted', '最久等候 ' + wait));
       var vb = el('button', 'btn line viewbtn', siteF === r.id ? '取消篩選' : '查看'); vb.type = 'button'; vb.setAttribute('aria-label', (siteF === r.id ? '取消篩選 ' : '查看 ') + r.name + ' 的案件'); vb.onclick = function(){ filterSite(r.id); }; ft.appendChild(vb);
@@ -558,6 +740,12 @@ table.ctable td:last-child{text-align:right}
     if (c.status === 'working') return hm(c.workingAt) + ' 開始處理';
     return hm(c.closedAt) + ' 結案';
   }
+  function escChip(c){
+    if (c.status !== 'new') return null;
+    if (c.escalated) return el('span', 'chip esc', DEMO ? '已通知備援（模擬）' : '已通知備援');
+    if (c.escalateFailed) return el('span', 'chip esc', '備援通知未送出');
+    return null;
+  }
   function drawAdminCases(){
     if (!ADMIN) return;
     var st = $('f-state').value;
@@ -567,20 +755,20 @@ table.ctable td:last-child{text-align:right}
     var tb = $('cases-body'), cards = $('cases-cards'); tb.innerHTML = ''; cards.innerHTML = '';
     $('cases-count').textContent = (st === 'closed' ? '今日結案 ' : '進行中 ') + show.length + ' 件';
     $('cases-empty').hidden = show.length > 0;
-    $('cases-foot').textContent = '已顯示 ' + show.length + '／' + show.length + ' 件｜僅查看，不改變案件狀態';
+    $('cases-foot').textContent = '已顯示 ' + show.length + ' 件';
     show.forEach(function(c){
       var label = (c.device || '未填位置') + '｜' + c.category, sn = c.siteName || siteName(c.site);
       var tr = el('tr');
       tr.appendChild(el('td', 'code', c.code)); tr.appendChild(el('td', '', sn)); tr.appendChild(el('td', '', label));
-      var t1 = el('td'); t1.appendChild(el('span', 'chip ' + STATUS[c.status][0], STATUS[c.status][1].replace('・尚未接手', ''))); tr.appendChild(t1);
+      var t1 = el('td'); t1.appendChild(el('span', 'chip ' + STATUS[c.status][0], STATUS[c.status][1].replace('・尚未接手', ''))); var ec = escChip(c); if (ec) { t1.appendChild(document.createTextNode(' ')); t1.appendChild(ec); } tr.appendChild(t1);
       tr.appendChild(el('td', c.status === 'new' ? 'wt' : '', caseTime(c)));
-      var t2 = el('td'), b = el('button', 'btn line viewbtn', '查看案件'); b.type = 'button'; b.dataset.view = c.id; b.setAttribute('aria-label', '查看案件 ' + c.code + '，' + label); b.onclick = function(){ open(c.id); }; t2.appendChild(b); tr.appendChild(t2);
+      var t2 = el('td'), b = el('button', 'btn line viewbtn', c.status === 'new' ? '查看／接手' : '查看案件'); b.type = 'button'; b.dataset.view = c.id; b.setAttribute('aria-label', '查看案件 ' + c.code + '，' + label); b.onclick = function(){ open(c.id); }; t2.appendChild(b); tr.appendChild(t2);
       tb.appendChild(tr);
       var cd = el('article', 'ccard');
-      var top = el('div', 'top2'); top.appendChild(el('span', 'chip ' + STATUS[c.status][0], STATUS[c.status][1].replace('・尚未接手', ''))); top.appendChild(el('span', c.status === 'new' ? 'wt' : 'muted', caseTime(c))); cd.appendChild(top);
+      var top = el('div', 'top2'), chs = el('span'); chs.appendChild(el('span', 'chip ' + STATUS[c.status][0], STATUS[c.status][1].replace('・尚未接手', ''))); var ec2 = escChip(c); if (ec2) { chs.appendChild(document.createTextNode(' ')); chs.appendChild(ec2); } top.appendChild(chs); top.appendChild(el('span', c.status === 'new' ? 'wt' : 'muted', caseTime(c))); cd.appendChild(top);
       cd.appendChild(el('p', 'dv', label)); cd.appendChild(el('p', 'muted', sn));
       var ft = el('div', 'foot'); ft.appendChild(el('span', 'code', c.code));
-      var b2 = el('button', 'btn line viewbtn', '查看案件'); b2.type = 'button'; b2.dataset.view = c.id + '-m'; b2.setAttribute('aria-label', '查看案件 ' + c.code + '，' + label); b2.onclick = function(){ open(c.id); }; ft.appendChild(b2);
+      var b2 = el('button', 'btn line viewbtn', c.status === 'new' ? '查看／接手' : '查看案件'); b2.type = 'button'; b2.dataset.view = c.id + '-m'; b2.setAttribute('aria-label', '查看案件 ' + c.code + '，' + label); b2.onclick = function(){ open(c.id); }; ft.appendChild(b2);
       cd.appendChild(ft); cards.appendChild(cd);
       if (focusId === c.id) b.focus(); else if (focusId === c.id + '-m') b2.focus();
     });
@@ -605,7 +793,7 @@ table.ctable td:last-child{text-align:right}
       b.type = 'button'; b.className = 'case' + (c.status === 'new' ? ' new' : ''); b.dataset.id = c.id; b.setAttribute('aria-current', sel === c.id ? 'true' : 'false');
       var row = document.createElement('div'); row.className = 'row';
       var chip = document.createElement('span'); chip.className = 'chip ' + STATUS[c.status][0]; chip.textContent = STATUS[c.status][1]; row.appendChild(chip);
-      if (c.status === 'new' && c.escalated) { var e = document.createElement('span'); e.className = 'chip esc'; e.textContent = DEMO ? '已逾時・備援通知（模擬）' : '已逾時・已送出備援通知'; row.appendChild(e); }
+      var ec = escChip(c); if (ec) row.appendChild(ec);
       if (c.cycle > 1 && c.status === 'new') { var r = document.createElement('span'); r.className = 'chip esc'; r.textContent = '客人再次求助'; row.appendChild(r); }
       var age = document.createElement('span'); age.className = 'age'; age.dataset.t = c.status === 'closed' ? c.closedAt : c.queuedAt; age.textContent = ago(+age.dataset.t); row.appendChild(age);
       if (ADMIN) { var sn = document.createElement('span'); sn.className = 'site'; sn.textContent = c.siteName || siteName(c.site); b.appendChild(sn); }
@@ -675,11 +863,10 @@ table.ctable td:last-child{text-align:right}
     if (stick) log.scrollTop = log.scrollHeight;
     var isMine = !!c.acceptedDev && c.acceptedDev === DEV && (DEMO || !me.uid || c.acceptedUid === me.uid);
     var activeCase = c.status === 'accepted' || c.status === 'working';
-    $('d-ro').hidden = !ADMIN;
-    $('d-gate').hidden = ADMIN || c.status !== 'new';
-    $('d-taken').hidden = ADMIN || !(activeCase && !isMine);
+    $('d-gate').hidden = c.status !== 'new';
+    $('d-taken').hidden = !(activeCase && !isMine);
     $('d-taken-t').textContent = '此案件已由「' + (c.acceptedBy || '其他人員') + '」接手。';
-    $('d-reply').hidden = ADMIN || !(isMine && activeCase);
+    $('d-reply').hidden = !(isMine && activeCase);
     $('d-close').hidden = $('d-reply').hidden;
     $('d-closed-note').hidden = c.status !== 'closed';
     $('d-closed-note').textContent = c.status === 'closed' ? '已於 ' + hm(c.closedAt) + ' 結案：' + (c.result || '') : '';
@@ -764,6 +951,239 @@ table.ctable td:last-child{text-align:right}
       .catch(function(e){ $('e-dlg').textContent = e && e.code === 'not_assignee' ? '你已不是此案件的接手人員，無法結案。' : e && e.code === 'closed' ? '此案件已結案。' : '連線中斷，尚未結案；請再按一次。'; })
       .then(function(){ btn.disabled = false; });
   };
+
+  // ───────── 管理員：分頁 ─────────
+  var tab = 'cases';
+  function showTab(t, focus){
+    tab = t;
+    Array.prototype.forEach.call(document.querySelectorAll('#admin-tabs button'), function(b){ if (b.dataset.tab === t) b.setAttribute('aria-current', 'page'); else b.removeAttribute('aria-current'); });
+    $('v-work').classList.toggle('tab-accounts', t === 'accounts');
+    $('v-work').classList.toggle('tab-backup', t === 'backup');
+    $('tab-accounts').hidden = t !== 'accounts'; $('tab-backup').hidden = t !== 'backup';
+    if (t === 'accounts') loadAccounts();
+    if (t === 'backup' && !bk) loadBackup();
+    if (focus) (t === 'cases' ? $('admin-title') : t === 'accounts' ? $('acc-title') : $('bk-title')).focus();
+  }
+  var AERR = {
+    no_backend: '管理後端尚未安裝，帳號管理與備援通知暫時無法使用。', offline: '連線中斷，請確認網路後再試。', not_admin: '此帳號沒有管理員權限。',
+    no_login: '登入已過期，請登出後重新登入。', exists: '這個帳號已存在，請換一個帳號名稱。', bad_account: '帳號格式不正確：英文小寫、數字或 . - _，3–30 字（不可用 admin）。',
+    weak_password: '密碼至少 8 個字元，不可有空白。', bad_name: '請輸入名稱（20 字以內）。', bad_site: '請選擇場站。', protected: '管理員帳號不能在這裡修改。',
+    notfound: '找不到這個帳號，請重新整理。', bad_email: '信箱格式不正確，請檢查。', too_many_emails: '每組最多 10 個信箱。', no_emails: '請先填寫信箱。',
+    quota: '今日寄信額度已用完，明天會恢復。', save_failed: '儲存失敗，請再試一次。', auth_failed: '帳號服務暫時無法使用，請稍後再試。', db_failed: '資料庫暫時無法使用，請稍後再試。'
+  };
+  function aerr(e){ return AERR[e && e.code] || '操作失敗，請稍後再試。'; }
+  function dt(t){ var d = new Date(t); return (d.getMonth() + 1) + '/' + d.getDate() + ' ' + hm(t); }
+  function siteLabel(id){ var x = ALL_SITES.filter(function(s){ return s.id === id; })[0]; return x ? x.name : id || '—'; }
+
+  // ───────── 管理員：帳號管理 ─────────
+  var accounts = [];
+  function loadAccounts(){
+    var st = $('acc-st'); st.hidden = false; st.className = 'loadst'; st.textContent = '讀取帳號中…';
+    API.admin('listAccounts').then(function(j){
+      accounts = j.accounts || []; st.hidden = true;
+      if (j.openSites && LIVE) { PILOT = j.openSites; fillSiteFilter(); drawSites(); }
+      drawAccounts();
+    }).catch(function(e){ st.className = 'loadst bad'; st.textContent = aerr(e); $('acc-new').disabled = e && e.code === 'no_backend'; });
+  }
+  function accState(a){
+    if (a.role === 'admin') return ['adm', '管理員'];
+    if (a.missing) return ['bad', '登入資料遺失'];
+    if (!a.active || a.disabled) return ['off', '已停用'];
+    return ['', '使用中'];
+  }
+  function drawAccounts(){
+    var order = {}; ALL_SITES.forEach(function(s, i){ order[s.id] = i; });
+    var list = accounts.slice().sort(function(a, b){ return ((a.role === 'admin') ? -1 : order[a.site] != null ? order[a.site] : 9e3) - ((b.role === 'admin') ? -1 : order[b.site] != null ? order[b.site] : 9e3) || String(a.account).localeCompare(String(b.account)); });
+    var tb = $('acc-body'), cards = $('acc-cards'); tb.innerHTML = ''; cards.innerHTML = '';
+    if (!list.length) { $('acc-st').hidden = false; $('acc-st').className = 'loadst'; $('acc-st').textContent = '尚無帳號，請按「新增帳號」。'; }
+    list.forEach(function(a){
+      var stt = accState(a), site = a.role === 'admin' ? '全部場站' : siteLabel(a.site), last = a.lastLoginAt ? dt(a.lastLoginAt) : '尚未登入';
+      var tr = el('tr');
+      tr.appendChild(el('td', 'code', a.account || '—')); tr.appendChild(el('td', '', a.name || '—')); tr.appendChild(el('td', '', site));
+      var t1 = el('td'); t1.appendChild(el('span', 'acctag ' + stt[0], stt[1])); tr.appendChild(t1);
+      tr.appendChild(el('td', 'muted', last));
+      var t2 = el('td'); t2.appendChild(accActs(a)); tr.appendChild(t2); tb.appendChild(tr);
+      var cd = el('article', 'ccard'), top = el('div', 'top2');
+      top.appendChild(el('span', 'code', a.account || '—')); top.appendChild(el('span', 'acctag ' + stt[0], stt[1])); cd.appendChild(top);
+      cd.appendChild(el('p', 'dv', a.name || '—')); cd.appendChild(el('p', 'muted', site + '｜最後登入：' + last));
+      cd.appendChild(accActs(a)); cards.appendChild(cd);
+    });
+  }
+  function accActs(a){
+    var box = el('div', 'rowacts');
+    if (a.role === 'admin') { box.appendChild(el('span', 'muted small', '不可在此修改')); return box; }
+    var btn = function(t, mode){ var b = el('button', 'btn line', t); b.type = 'button'; b.setAttribute('aria-label', t + '：' + a.account); b.onclick = function(){ accDialog(mode, a); }; box.appendChild(b); };
+    btn('修改', 'edit'); btn('重設密碼', 'pw'); btn(a.active && !a.disabled ? '停用' : '啟用', 'toggle');
+    return box;
+  }
+  // 場站選單：依縣市分組，列出全部配置場站
+  (function(){
+    var g = Object.create(null); ALL_SITES.forEach(function(s){ (g[s.city] = g[s.city] || []).push(s); });
+    Object.keys(g).forEach(function(c){ var og = document.createElement('optgroup'); og.label = c; g[c].forEach(function(s){ var o = document.createElement('option'); o.value = s.id; o.textContent = s.name; og.appendChild(o); }); $('ad-site').appendChild(og); });
+  })();
+  var adMode = '', adFor = null, adBtn = null;
+  function accDialog(mode, a){
+    adMode = mode; adFor = a || null; adBtn = document.activeElement;
+    var only = function(ids){ ['ad-acct-w', 'ad-name-w', 'ad-site-w', 'ad-pw-w'].forEach(function(k){ $(k).hidden = ids.indexOf(k) < 0; }); };
+    $('e-ad').textContent = ''; $('ad-pw').value = ''; $('ad-pw2').value = ''; $('ad-show').checked = false; $('ad-pw').type = $('ad-pw2').type = 'password';
+    var p = '';
+    if (mode === 'new') { $('ad-t').textContent = '新增帳號'; only(['ad-acct-w', 'ad-name-w', 'ad-site-w', 'ad-pw-w']); $('ad-acct').value = ''; $('ad-name').value = ''; $('ad-site').value = ''; $('ad-ok').textContent = '建立帳號'; p = '建立後，該場站的客人即可使用文字求助。'; }
+    else if (mode === 'edit') { $('ad-t').textContent = '修改帳號：' + a.account; only(['ad-name-w', 'ad-site-w']); $('ad-name').value = a.name || ''; $('ad-site').value = a.site || ''; $('ad-ok').textContent = '儲存'; p = '改場站後，此帳號下次讀取時就只會看到新場站的求助。'; }
+    else if (mode === 'pw') { $('ad-t').textContent = '重設密碼：' + a.account; only(['ad-pw-w']); $('ad-ok').textContent = '重設密碼'; p = '重設後，使用此帳號的裝置需要用新密碼重新登入。'; }
+    else {
+      var on = !(a.active && !a.disabled);
+      var last = !on && accounts.filter(function(x){ return x.site === a.site && x.uid !== a.uid && x.active && !x.disabled && x.role !== 'admin'; }).length === 0;
+      $('ad-t').textContent = (on ? '啟用' : '停用') + '帳號：' + a.account; only([]); $('ad-ok').textContent = on ? '確認啟用' : '確認停用';
+      p = on ? '啟用後即可用原密碼登入。' : '停用後立即無法讀取與處理案件。' + (last ? '這是「' + siteLabel(a.site) + '」唯一使用中的帳號，停用後該場客人將無法送出文字求助。' : '');
+    }
+    $('ad-p').textContent = p;
+    $('acc-dlg').showModal();
+    var f = mode === 'new' ? $('ad-acct') : mode === 'edit' ? $('ad-name') : mode === 'pw' ? $('ad-pw') : $('ad-ok'); f.focus();
+  }
+  $('acc-new').onclick = function(){ accDialog('new'); };
+  $('ad-show').onchange = function(){ $('ad-pw').type = $('ad-pw2').type = this.checked ? 'text' : 'password'; };
+  $('ad-cancel').onclick = function(){ $('acc-dlg').close(); };
+  $('acc-dlg').addEventListener('close', function(){ $('ad-pw').value = ''; $('ad-pw2').value = ''; if (adBtn && adBtn.isConnected) adBtn.focus(); else $('acc-title').focus(); });
+  $('ad-site').onchange = function(){ if (adMode === 'new' && !$('ad-name').value.trim() && this.value) $('ad-name').value = (siteLabel(this.value) + '管理室').slice(0, 20); };
+  $('ad-form').onsubmit = function(){
+    var e = $('e-ad'); e.textContent = '';
+    var bad = function(t, f){ e.textContent = t; f.focus(); return false; };
+    var data = {}, act = '', msg = '';
+    if (adMode === 'new') {
+      var ac = $('ad-acct').value.trim().toLowerCase();
+      if (!/^[a-z0-9][a-z0-9._-]{2,29}$/.test(ac) || ac === 'admin') return bad(AERR.bad_account, $('ad-acct'));
+      if (accounts.some(function(x){ return x.account === ac; })) return bad(AERR.exists, $('ad-acct'));
+      data.account = ac;
+    }
+    if (adMode === 'new' || adMode === 'edit') {
+      var nm = $('ad-name').value.trim(); if (!nm || nm.length > 20) return bad(AERR.bad_name, $('ad-name'));
+      if (!$('ad-site').value) return bad(AERR.bad_site, $('ad-site'));
+      data.name = nm; data.site = $('ad-site').value;
+    }
+    if (adMode === 'new' || adMode === 'pw') {
+      var p1 = $('ad-pw').value; if (p1.length < 8 || /\s/.test(p1)) return bad(AERR.weak_password, $('ad-pw'));
+      if (p1 !== $('ad-pw2').value) return bad('兩次輸入的密碼不一樣。', $('ad-pw2'));
+      data.password = p1;
+    }
+    if (adMode !== 'new') data.uid = adFor.uid;
+    if (adMode === 'new') { act = 'createAccount'; msg = '已建立帳號 ' + data.account + '。'; }
+    else if (adMode === 'edit') { act = 'updateAccount'; msg = '已更新帳號 ' + adFor.account + '。'; }
+    else if (adMode === 'pw') { act = 'setPassword'; msg = '已重設 ' + adFor.account + ' 的密碼。'; }
+    else { data.active = !(adFor.active && !adFor.disabled); act = 'setActive'; msg = (data.active ? '已啟用 ' : '已停用 ') + adFor.account + '。'; }
+    var btn = $('ad-ok'), label = btn.textContent; btn.disabled = true; btn.textContent = '處理中…';
+    API.admin(act, data).then(function(j){
+      $('ad-pw').value = ''; $('ad-pw2').value = '';
+      if (j.openSites && LIVE) { PILOT = j.openSites; fillSiteFilter(); drawSites(); }
+      $('acc-dlg').close(); say(msg); loadAccounts();
+    }).catch(function(x){ e.textContent = aerr(x); })
+      .then(function(){ btn.disabled = false; btn.textContent = label; });
+    return false;
+  };
+
+  // ───────── 管理員：備援通知 ─────────
+  var bk = null, bkDirty = false, TIMEOUTS = [1, 2, 3, 5, 10, 15];
+  TIMEOUTS.forEach(function(m){ var o = document.createElement('option'); o.value = m; o.textContent = m + ' 分鐘'; $('bk-timeout').appendChild(o); });
+  function splitEmails(t){ return String(t || '').split(/[\s,;，、；]+/).map(function(x){ return x.trim().toLowerCase(); }).filter(Boolean).filter(function(x, i, a){ return a.indexOf(x) === i; }); }
+  function okEmail(x){ return x.length <= 120 && /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$/.test(x); }
+  function loadBackup(){
+    var st = $('bk-st'); st.hidden = false; st.className = 'loadst'; st.textContent = '讀取設定中…';
+    API.admin('getSettings').then(function(j){ bk = j; st.hidden = true; $('bk-form').hidden = false; drawBackup(); setDirty(false); })
+      .catch(function(e){ st.className = 'loadst bad'; st.textContent = aerr(e); });
+  }
+  function bkSiteIds(){
+    var ids = openSites().map(function(s){ return s.id; });
+    Object.keys((bk && bk.settings.sites) || {}).forEach(function(k){ if (ids.indexOf(k) < 0 && bk.settings.sites[k].mode === 'custom') ids.push(k); });
+    return ids;
+  }
+  function drawBackupStat(){
+    var b = $('bk-stat'); b.innerHTML = '';
+    var add = function(cls, t){ var p = el('div', cls, t); b.appendChild(p); };
+    if (bk.demo) add('', '試用版：不會真的寄信，設定只存在這個瀏覽器。');
+    var fresh = bk.lastRun && Date.now() - bk.lastRun < 5 * 60 * 1000;
+    if (!bk.triggerOk) add('bad', '自動檢查排程尚未啟用：請在管理後端執行一次 setup。');
+    else add(fresh ? '' : 'bad', '自動檢查：每分鐘一次｜最後檢查 ' + (bk.lastRun ? dt(bk.lastRun) : '尚未執行') + (fresh ? '' : '（超過 5 分鐘未執行，請確認管理後端）'));
+    if (bk.lastError) add('bad', '最近一次檢查發生錯誤：' + bk.lastError);
+    add(bk.quota < 20 ? 'bad' : '', '今日剩餘寄信額度：' + bk.quota + ' 人次（Gmail 個人帳號每日約 100 人次；寄給 3 個信箱算 3 人次）');
+  }
+  function drawBackup(){
+    var st = bk.settings;
+    drawBackupStat();
+    $('bk-timeout').value = String(st.timeoutMin || 3);
+    $('bk-default').value = (st.defaultEmails || []).join('\n');
+    var box = $('bk-sites'); box.innerHTML = '';
+    bkSiteIds().forEach(function(id){
+      var v = st.sites[id] || { mode: 'default', emails: [] };
+      var d = el('div', 'bksite'); d.dataset.site = id;
+      var hd = el('div', 'hd'); hd.appendChild(el('b', '', siteLabel(id)));
+      var lab = el('label', 'vh', siteLabel(id) + ' 的備援信箱'); lab.htmlFor = 'bk-m-' + id;
+      var sel = el('select'); sel.id = 'bk-m-' + id;
+      [['default', '使用預設信箱'], ['custom', '另外指定']].forEach(function(o){ var op = el('option', '', o[1]); op.value = o[0]; sel.appendChild(op); });
+      sel.value = v.mode === 'custom' ? 'custom' : 'default';
+      var tb = el('button', 'btn line sm', '寄測試信'); tb.type = 'button'; tb.setAttribute('aria-label', '寄測試信給 ' + siteLabel(id) + ' 的備援信箱');
+      var right = el('div', 'sbtools'); right.appendChild(lab); right.appendChild(sel); right.appendChild(tb); hd.appendChild(right); d.appendChild(hd);
+      var ta = el('textarea'); ta.rows = 2; ta.id = 'bk-e-' + id; ta.spellcheck = false; ta.setAttribute('autocapitalize', 'none'); ta.placeholder = '每行一個信箱'; ta.setAttribute('aria-label', siteLabel(id) + ' 的指定信箱');
+      ta.value = (v.emails || []).join('\n'); d.appendChild(ta);
+      var use = el('p', 'use'); use.setAttribute('role', 'status'); d.appendChild(use);
+      var sync = function(){ ta.hidden = sel.value !== 'custom'; var list = sel.value === 'custom' ? splitEmails(ta.value) : splitEmails($('bk-default').value); use.textContent = (sel.value === 'custom' ? '' : '使用預設信箱：') + (list.length ? '通知 ' + list.length + ' 個信箱' : '尚未設定信箱，逾時或暫離時無法通知'); use.style.color = list.length ? '' : 'var(--err)'; };
+      sel.onchange = function(){ sync(); setDirty(true); if (sel.value === 'custom') ta.focus(); };
+      ta.oninput = function(){ sync(); setDirty(true); };
+      tb.onclick = function(){ testMail(sel.value === 'custom' ? ta.value : $('bk-default').value, siteLabel(id), use, tb); };
+      d._sync = sync; sync();
+      box.appendChild(d);
+    });
+    if (!box.children.length) box.appendChild(el('p', 'muted', '目前沒有已開放的場站。'));
+    var lg = $('bk-log'); lg.innerHTML = '';
+    (bk.log || []).slice(0, 20).forEach(function(x){ var li = el('li'); var tm = el('time', '', dt(x.t)); li.appendChild(tm); li.appendChild(document.createTextNode((x.kind ? '［' + x.kind + '］' : '') + x.text)); lg.appendChild(li); });
+    if (!lg.children.length) lg.appendChild(el('li', 'muted', '尚無紀錄。'));
+  }
+  function syncAllSites(){ Array.prototype.forEach.call(document.querySelectorAll('.bksite'), function(d){ if (d._sync) d._sync(); }); }
+  function setDirty(v){ bkDirty = v; $('bk-note').className = 'note' + (v ? ' dirty' : ''); $('bk-note').textContent = v ? '有尚未儲存的變更' : '尚無變更'; }
+  $('bk-timeout').onchange = function(){ setDirty(true); };
+  $('bk-default').oninput = function(){ syncAllSites(); setDirty(true); };
+  $('bk-applyall').onclick = function(){
+    Array.prototype.forEach.call(document.querySelectorAll('.bksite select'), function(s){ s.value = 'default'; });
+    syncAllSites(); setDirty(true); say('全部場站已改用預設信箱，按「儲存設定」後生效。');
+    $('bk-default-r').textContent = '全部場站已改用預設信箱，按「儲存設定」後生效。';
+  };
+  function testMail(text, siteName, out, btn){
+    var list = splitEmails(text), bad = list.filter(function(x){ return !okEmail(x); });
+    if (!list.length) { out.textContent = AERR.no_emails; out.style.color = 'var(--err)'; return; }
+    if (bad.length) { out.textContent = '信箱格式不正確：' + bad.join('、'); out.style.color = 'var(--err)'; return; }
+    btn.disabled = true; out.style.color = ''; out.textContent = '寄送測試信中…';
+    API.admin('testEmail', { to: list, siteName: siteName }).then(function(j){ out.textContent = (j.demo ? '（試用版模擬）' : '') + '已寄出測試信給 ' + j.sent + ' 個信箱，請到信箱確認（也請看垃圾郵件匣）。'; if (bk && typeof bk.quota === 'number' && !j.demo) { bk.quota -= j.sent; drawBackupStat(); } })
+      .catch(function(e){ out.textContent = aerr(e); out.style.color = 'var(--err)'; })
+      .then(function(){ btn.disabled = false; });
+  }
+  $('bk-test-default').onclick = function(){ testMail($('bk-default').value, '', $('bk-default-r'), this); };
+  $('bk-save').onclick = function(){
+    var e = $('e-bk'); e.textContent = '';
+    var check = function(list, f, name){
+      var bad = list.filter(function(x){ return !okEmail(x); });
+      if (bad.length) { e.textContent = name + '的信箱格式不正確：' + bad.join('、'); f.focus(); return false; }
+      if (list.length > 10) { e.textContent = name + '最多 10 個信箱。'; f.focus(); return false; }
+      return true;
+    };
+    var def = splitEmails($('bk-default').value);
+    if (!check(def, $('bk-default'), '預設備援信箱')) return;
+    var sites = {}, ok = true;
+    Array.prototype.forEach.call(document.querySelectorAll('.bksite'), function(d){
+      if (!ok) return;
+      var id = d.dataset.site, mode = d.querySelector('select').value, ta = d.querySelector('textarea'), list = splitEmails(ta.value);
+      if (mode === 'custom' && !check(list, ta, siteLabel(id))) { ok = false; return; }
+      if (mode === 'custom' && !list.length) { e.textContent = siteLabel(id) + '選了「另外指定」，請填寫信箱，或改回「使用預設信箱」。'; ta.focus(); ok = false; return; }
+      sites[id] = { mode: mode, emails: mode === 'custom' ? list : [] };
+    });
+    if (!ok) return;
+    var settings = { timeoutMin: Number($('bk-timeout').value), defaultEmails: def, sites: sites };
+    var btn = this; btn.disabled = true; btn.textContent = '儲存中…';
+    API.admin('saveSettings', { settings: settings }).then(function(){
+      bk.settings = settings; setDirty(false); say('已儲存備援通知設定。');
+      return API.admin('getSettings').then(function(j){ bk = j; drawBackup(); }).catch(function(){}).then(function(){ $('bk-note').textContent = '已儲存（' + hm(Date.now()) + '）'; });
+    })
+      .catch(function(x){ e.textContent = aerr(x); })
+      .then(function(){ btn.disabled = false; btn.textContent = '儲存設定'; });
+  };
+  window.addEventListener('beforeunload', function(ev){ if (bkDirty) { ev.preventDefault(); ev.returnValue = ''; } });
 
   // 試用資料清除（按兩次確認）
   $('reset').onclick = function(){ if (this.dataset.armed) { API.resetDemo(); this.dataset.armed = ''; this.textContent = '已清除試用資料'; } else { this.dataset.armed = 1; this.textContent = '再按一次確認清除'; } };
