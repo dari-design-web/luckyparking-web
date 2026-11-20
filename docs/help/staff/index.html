@@ -4,12 +4,12 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content">
 <meta name="robots" content="noindex, nofollow">
-<meta name="theme-color" content="#1B4A83">
+<meta name="theme-color" content="#0B1C33">
 <title>管理室｜文字求助</title>
 <link rel="icon" href="../../assets/img/favicon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Noto+Sans+TC:wght@400;500;700;900&display=swap">
 <style>
 :root{--blue:#2561A9;--navy:#1B4A83;--ink:#121A26;--ink2:#516173;--line:#8794A5;--rule:#DCE3EB;--soft:#F6F8FB;--info:#EEF4FB;--orange:#EF7836;--newbg:#FFF1E8;--newink:#9A3F0C;--warn:#FFF4E8;--warnink:#7A3E10;--err:#AA2836;--errbg:#FFF1F1;--ok:#176444;--okbg:#EAF6EF}
 *{box-sizing:border-box}
@@ -258,12 +258,13 @@ dialog{border-radius:var(--r-panel);box-shadow:0 16px 48px rgb(18 26 38 / 16%)}
 .filter button{border-width:1px;border-radius:var(--r-ctl);min-width:120px;font-weight:700;color:var(--blue);border-color:var(--blue)}
 .filter button[aria-pressed=true]{background:var(--blue);border-color:var(--blue)}
 /* 狀態提示框：左側色條＋淺底 */
-.note-box{border-radius:var(--r-panel);padding:14px 16px 14px 18px;border-left:4px solid var(--navy);background:var(--info);color:var(--navy);margin:0 0 12px}
+.note-box{position:relative;border-radius:var(--r-panel);padding:14px 16px 14px 30px;background:var(--info);color:var(--navy);margin:0 0 12px}
+.note-box::before{content:"";position:absolute;left:14px;top:14px;bottom:14px;width:3px;border-radius:2px;background:currentColor}
 .note-box b{display:block;font-size:17px}
 .note-box span{display:block;font-size:15px}
-.note-box.ok{background:var(--okbg);border-left-color:var(--ok);color:var(--ok)}
-.note-box.warn{background:var(--warn);border-left-color:var(--warnink);color:var(--warnink)}
-.note-box.bad{background:var(--errbg);border-left-color:var(--err);color:var(--err)}
+.note-box.ok{background:var(--okbg);color:var(--ok)}
+.note-box.warn{background:var(--warn);color:var(--warnink)}
+.note-box.bad{background:var(--errbg);color:var(--err)}
 /* 值守 */
 .duty{display:block;background:none;border:0;padding:0;margin:0 0 14px}
 .duty .note-box{margin:0 0 10px}
@@ -315,6 +316,121 @@ dialog{border-radius:var(--r-panel);box-shadow:0 16px 48px rgb(18 26 38 / 16%)}
 .fielderr{color:var(--err);font-size:15px;margin:4px 0 0;font-weight:500}
 .fielderr:empty{display:none}
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{transition:none!important;animation:none!important;scroll-behavior:auto!important}}
+/* ───── 概念 A「停車場導引」（深色大畫面；Dari 14:23 選定） ───── */
+:root{--night:#0B1C33;--lane:#CFE0F5;--amber:#FFE7C2;--amberink:#7A4A00;--num:"Barlow Condensed","Noto Sans TC",sans-serif;--page:#EEF2F6}
+body{background:var(--page)}
+h1{font-weight:900}
+.p{font-style:normal;display:inline-grid;place-items:center;flex:none;width:36px;height:36px;border-radius:8px;background:var(--blue);color:#fff;font:700 24px/1 var(--num);box-shadow:inset 0 0 0 2px rgba(255,255,255,.85)}
+/* 頁首：深色玻璃，捲動到白色內容上仍清楚 */
+.top{background:rgba(11,28,51,.88);border-bottom:1px solid rgba(207,224,245,.14);color:#fff;-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px)}
+.top b{color:#fff}
+.top b::before{display:none}
+.top .scope{color:var(--lane)}
+.top .out{background:rgba(255,255,255,.08);color:#fff;border:1.5px solid rgba(255,255,255,.45)}
+.top :focus-visible{outline-color:#fff!important}
+.demo{background:#3A2A06;color:#FFE1A8}
+/* 大畫面：自繪停車場插畫＋漸層，讓白字清楚 */
+.art,.band{position:relative;background:var(--night) url(../garage.svg) center/cover no-repeat;color:#fff;isolation:isolate}
+.art::after,.band::after{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(90deg,rgba(6,17,31,.86),rgba(6,17,31,.45) 70%,rgba(6,17,31,.62))}
+/* 登入：電腦左右分割，手機上下 */
+.loginsplit{display:grid;min-height:calc(100dvh - 64px)}
+.loginsplit .art{min-height:260px;display:flex;align-items:flex-end;padding:24px 20px 52px;background-position:38% 58%}
+.loginsplit .say .big{font-size:48px;line-height:1.1;font-weight:900;margin:0 0 6px}
+.loginsplit .say p{margin:0;color:var(--lane)}
+.logincard.box{border:0;border-radius:24px 24px 0 0;margin:-24px 0 0;padding:28px 22px 36px;position:relative;z-index:1}
+@media (min-width:900px){
+  .loginsplit{grid-template-columns:minmax(0,1fr) 520px}
+  .loginsplit .art{padding:56px;align-items:flex-end;background-position:30% 60%}
+  .loginsplit .say .big{font-size:88px}
+  .loginsplit .say p{font-size:20px}
+  .logincard.box{margin:0;border-radius:0;display:flex;flex-direction:column;justify-content:center;padding:56px}
+}
+/* 工作區：上方大畫面帶，下方白色面板疊上去 */
+.band{padding:8px 0 76px}
+.bandin{max-width:1180px;margin:0 auto;padding:12px 20px 0}
+.band h1{color:#fff;font-size:36px;margin:8px 0 2px}
+.band .admsub,.band .muted{color:var(--lane)}
+.band .syncline{color:var(--lane)}
+.band .syncline.bad{color:#FFB4B4}
+.band .loadst{background:rgba(9,24,44,.6);color:var(--lane);border:1px solid rgba(207,224,245,.22)}
+.band .loadst.bad{background:rgba(120,20,30,.55);color:#FFE3E3}
+.band .oldline{color:#FFB07A}
+.sitehead h1{margin-top:4px}
+.work{margin-top:-60px;position:relative;z-index:2;padding-top:0}
+/* 分頁：深色按鈕組，白色指示塊滑到選取的分頁 */
+.band .tabs{position:relative;display:inline-flex;gap:4px;padding:5px;margin:4px 0 14px;border-radius:12px;background:rgba(255,255,255,.08);border:0}
+.band .tabs button{position:relative;z-index:1;min-width:0;min-height:44px;padding:0 18px;border:0;border-radius:8px;background:none;color:#DCE8F7;transition:color .25s var(--ease)}
+.band .tabs button[aria-current=page]{background:none;color:var(--navy)}
+.band .tabs .ind{position:absolute;z-index:0;top:5px;bottom:5px;left:5px;width:0;border-radius:8px;background:#fff;box-shadow:0 6px 18px -6px rgba(0,0,0,.6);transition:left .32s var(--ease),width .32s var(--ease)}
+@media (max-width:767px){.band .tabs{display:grid;grid-template-columns:repeat(3,1fr);width:100%}.band .tabs button{padding:0 6px}}
+/* 統計：像停車場指示牌的數字 */
+.band .counts{grid-template-columns:repeat(3,minmax(0,210px));margin:18px 0 0}
+.band .counts div{background:rgba(9,24,44,.62);border:1px solid rgba(207,224,245,.22);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);border-radius:14px}
+.band .counts span{color:var(--lane)}
+.band .counts strong{display:block;font:700 52px/1.05 var(--num);color:#fff}
+.band .counts .n strong{color:#FFB07A}
+@media (max-width:767px){.band .counts{grid-template-columns:repeat(3,1fr);gap:8px}.band .counts strong{font-size:40px}}
+/* 提醒測試列：深色玻璃 */
+.band .alertset{background:rgba(9,24,44,.6);border:1px solid rgba(207,224,245,.22);color:#fff}
+.band .alertset #al-t{color:#FFD7B5}
+.band .alertset.on #al-t{color:#B9F0CF}
+.band .alertset.fail #al-t{color:#FFB4B4}
+.band .alertset details{color:var(--lane)}
+.band .alertset summary{color:#fff}
+.band .alertset .btn.line{background:rgba(255,255,255,.08);color:#fff;box-shadow:none;border:1.5px solid rgba(255,255,255,.5)}
+/* 值守：值守中＝綠燈；暫離＝琥珀燈慢閃 */
+.band .duty .note-box.ok{background:rgba(9,24,44,.6);color:#B9F0CF;border:1px solid rgba(185,240,207,.3)}
+.band .duty .note-box.ok span{color:var(--lane)}
+.band .duty .note-box.warn{background:rgba(255,231,194,.96);color:var(--amberink)}
+.band .duty .note-box.warn span{color:#5E4210}
+.band .duty .note-box.bad{background:rgba(255,240,240,.96)}
+.band .duty .note-box{padding-left:36px}
+.band .duty .note-box::before{width:10px;height:10px;top:22px;bottom:auto;left:15px;border-radius:50%;box-shadow:0 0 0 4px color-mix(in srgb,currentColor 25%,transparent),0 0 12px currentColor}
+.band .duty .note-box.warn::before{animation:lamp 1.6s ease-in-out infinite}
+@keyframes lamp{50%{opacity:.25;box-shadow:none}}
+.band .duty .btn.line{background:rgba(255,255,255,.1);color:#fff;border:1.5px solid rgba(255,255,255,.55)}
+.band .duty .note-box.warn + .btn.line{background:#fff;color:var(--navy);border-color:#fff}
+.band .prio{background:rgba(255,231,194,.96);color:var(--amberink)}
+/* 白色面板 */
+.cols{gap:20px}
+#v-list{background:#fff;border-radius:20px;padding:18px;box-shadow:0 18px 40px -24px rgba(11,28,51,.45)}
+#v-detail.box,.work .box{border:0;border-radius:20px;box-shadow:0 18px 40px -24px rgba(11,28,51,.45)}
+.case{background:#F7F9FC;border:0;border-radius:16px;position:relative;overflow:hidden}
+.case::before{content:"";position:absolute;left:0;top:0;bottom:0;width:5px;background:var(--blue)}
+.case.new{border-left:0}
+.case.new::before{background:var(--orange)}
+.case[aria-current=true]{background:#fff;box-shadow:0 0 0 2px var(--blue)}
+.case .code{font:700 18px/1.25 var(--num);letter-spacing:.02em}
+.counts strong,.case .age,.chip{font-variant-numeric:tabular-nums}
+.empty{background:#F7F9FC;border:1.5px dashed #B7C4D3}
+
+/* ───── 按鈕特效（Dari：button 多一些特效）─────
+   掃光：滑過或鍵盤焦點時一道光掃過；按下：下沉＋漣漪；主要按鈕有柔和光暈。
+   系統設定「減少動態效果」時全部關閉，只留顏色變化。 */
+.btn{position:relative;overflow:hidden;isolation:isolate;transition:transform .12s var(--ease),box-shadow .25s var(--ease),background-color .2s var(--ease),color .2s var(--ease)}
+.btn::after{content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;background:linear-gradient(110deg,transparent 32%,rgba(255,255,255,.42) 50%,transparent 68%);transform:translateX(-130%);transition:transform .75s var(--ease)}
+.btn:hover::after,.btn:focus-visible::after{transform:translateX(130%)}
+.btn:not([disabled]):active{transform:translateY(1px) scale(.985)}
+.btn:not(.line):not([disabled]){background-image:linear-gradient(180deg,#2E6FBE,#2561A9);box-shadow:0 10px 22px -12px rgba(37,97,169,.9)}
+.btn:not(.line):not([disabled]):hover{box-shadow:0 14px 28px -12px rgba(37,97,169,1),0 0 0 4px rgba(37,97,169,.16)}
+.btn.line:not([disabled]):hover{background:#EEF4FB;box-shadow:0 0 0 4px rgba(37,97,169,.12)}
+.btn.line::after{background:linear-gradient(110deg,transparent 32%,rgba(37,97,169,.16) 50%,transparent 68%)}
+.fxr{position:absolute;z-index:-1;border-radius:50%;pointer-events:none;background:currentColor;opacity:.28;transform:scale(0);animation:fxr .6s ease-out forwards}
+@keyframes fxr{to{transform:scale(1);opacity:0}}
+/* 接手按鈕：像求助點一樣有呼吸光暈，提醒有人在等 */
+#d-accept:not([disabled]){animation:beaconB 2.6s ease-in-out infinite}
+@keyframes beaconB{0%,100%{box-shadow:0 10px 22px -12px rgba(37,97,169,.9),0 0 0 0 rgba(37,97,169,.35)}50%{box-shadow:0 10px 22px -12px rgba(37,97,169,.9),0 0 0 10px rgba(37,97,169,0)}}
+/* 案件卡：滑過浮起 */
+.case{transition:transform .18s var(--ease),box-shadow .18s var(--ease)}
+.case:hover{transform:translateY(-2px);box-shadow:0 12px 24px -16px rgba(11,28,51,.55)}
+.case[aria-current=true]:hover{box-shadow:0 0 0 2px var(--blue),0 12px 24px -16px rgba(11,28,51,.55)}
+@media (prefers-reduced-motion:reduce){
+  .btn::after,.fxr{display:none}
+  .btn,.case{transition:none}
+  .btn:active,.case:hover{transform:none}
+  #d-accept,.band .duty .note-box.warn::before{animation:none}
+  .band .tabs .ind{transition:none}
+}
 [hidden]{display:none!important}
 @media (max-width:959px){
   #v-work.in-detail .counts{display:none}
@@ -335,13 +451,14 @@ dialog{border-radius:var(--r-panel);box-shadow:0 16px 48px rgb(18 26 38 / 16%)}
 </head>
 <body>
 <div class="vh" id="live" role="status"></div>
-<div class="top"><div class="in"><b id="top-t">管理室</b><span class="scope" id="scope">文字求助</span><button type="button" class="out" id="logout" hidden>登出</button></div></div>
+<div class="top"><div class="in"><i class="p" aria-hidden="true">P</i><b id="top-t">管理室</b><span class="scope" id="scope">文字求助</span><button type="button" class="out" id="logout" hidden>登出</button></div></div>
 <div class="demo" id="demo-bar" hidden>試用版：僅供介面測試，未連線至實際管理室。資料只存在這個瀏覽器，請另開客人端分頁一起測試。</div>
 
 <!-- 登入 -->
-<div class="page" id="v-login">
-  <div class="box" style="max-width:520px;margin:12px auto">
-    <h1 id="login-title" tabindex="-1">管理室登入</h1>
+<div id="v-login" class="loginsplit">
+  <div class="art" aria-hidden="true"><div class="say"><p class="big">管理室</p><p>文字求助值守｜每一則求助，都有人看見。</p></div></div>
+  <div class="box logincard">
+    <h1 id="login-title" tabindex="-1">值守登入</h1>
     <p class="muted" style="margin:0" id="login-p">輸入帳號與密碼，登入後自動進入該帳號的場站。</p>
     <form id="login-form" onsubmit="return false">
     <div id="login-demo" hidden>
@@ -366,7 +483,8 @@ dialog{border-radius:var(--r-panel);box-shadow:0 16px 48px rgb(18 26 38 / 16%)}
 </div>
 
 <!-- 工作區 -->
-<div class="page" id="v-work" hidden>
+<div id="v-work" hidden>
+  <div class="band"><div class="bandin">
   <div class="adminhead" id="admin-head" hidden>
     <nav class="tabs" id="admin-tabs" aria-label="管理功能">
       <button type="button" data-tab="cases" aria-current="page">案件總覽</button>
@@ -380,6 +498,7 @@ dialog{border-radius:var(--r-panel);box-shadow:0 16px 48px rgb(18 26 38 / 16%)}
       <div class="note-box warn prio" id="prio" role="status"></div>
     </div>
   </div>
+  <div class="sitehead" id="site-head" hidden><h1 id="site-title"></h1><p class="admsub" style="margin:0">文字求助值守｜新求助會在這裡出現並發出提醒</p></div>
   <div class="duty" id="duty" hidden>
     <div class="note-box ok" id="duty-box" role="status"><b id="duty-t">本場值守中</b><span id="duty-p">離開管理位置前，請先檢查進行中案件並設定暫離。</span></div>
     <button class="btn line" type="button" id="duty-btn">暫時離開</button>
@@ -397,6 +516,8 @@ dialog{border-radius:var(--r-panel);box-shadow:0 16px 48px rgb(18 26 38 / 16%)}
     <div><span>今日已結案</span><strong id="n-closed">0</strong></div>
   </div>
   <p class="oldline casegrp" id="n-oldline" hidden></p>
+  </div></div>
+  <div class="page work">
 
   <!-- 管理員：帳號管理 -->
   <section class="box panel" id="tab-accounts" hidden aria-labelledby="acc-title">
@@ -520,6 +641,7 @@ dialog{border-radius:var(--r-panel);box-shadow:0 16px 48px rgb(18 26 38 / 16%)}
     <p class="muted small closedlist" id="closed-list" hidden></p>
   </section>
   <p style="margin-top:28px"><button type="button" class="reset" id="reset" hidden>清除試用資料</button></p>
+  </div>
 </div>
 
 <!-- 登入後確認場域 -->
@@ -735,6 +857,7 @@ dialog{border-radius:var(--r-panel);box-shadow:0 16px 48px rgb(18 26 38 / 16%)}
       $('loadst').hidden = true;
       $('al-p').textContent = '本頁保持前景且裝置支援時，任一場有新案件都會播放提醒聲。';
       Array.prototype.forEach.call(document.querySelectorAll('#admin-tabs button'), function(b){ b.onclick = function(){ showTab(b.dataset.tab, true); }; });
+      setTimeout(moveInd, 0); if (document.fonts && document.fonts.ready) document.fonts.ready.then(moveInd);
       API.watchAllPresence(function(p){ presence = p || {}; drawSites(); }, function(){});
       refreshOpen();
       fillSiteFilter();
@@ -748,6 +871,7 @@ dialog{border-radius:var(--r-panel);box-shadow:0 16px 48px rgb(18 26 38 / 16%)}
     }
     unsub = API.watchSite(me.site, onCases, connErr);
     $('duty').hidden = false;
+    $('site-head').hidden = false; $('site-title').textContent = me.siteName;
     API.watchPresence(me.site, function(p){ myPres = p; drawDuty(); });
   }
 
@@ -1079,6 +1203,26 @@ dialog{border-radius:var(--r-panel);box-shadow:0 16px 48px rgb(18 26 38 / 16%)}
       .then(function(){ btn.disabled = false; });
   };
 
+  // ───────── 按鈕特效：按下時從按點擴散的漣漪（減少動態效果時不做）─────────
+  var calm = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+  document.addEventListener('pointerdown', function(e){
+    if (calm) return;
+    var b = e.target.closest && e.target.closest('.btn');
+    if (!b || b.disabled) return;
+    var r = b.getBoundingClientRect(), d = Math.max(r.width, r.height) * 2.2, sp = document.createElement('span');
+    sp.className = 'fxr'; sp.setAttribute('aria-hidden', 'true');
+    sp.style.width = sp.style.height = d + 'px'; sp.style.left = (e.clientX - r.left - d / 2) + 'px'; sp.style.top = (e.clientY - r.top - d / 2) + 'px';
+    b.appendChild(sp); setTimeout(function(){ sp.remove(); }, 650);
+  });
+  // 分頁指示塊：滑到目前分頁
+  (function(){ var t = $('admin-tabs'), ind = document.createElement('span'); ind.className = 'ind'; ind.setAttribute('aria-hidden', 'true'); t.insertBefore(ind, t.firstChild); })();
+  function moveInd(){
+    var t = $('admin-tabs'), cur = t.querySelector('[aria-current=page]'), ind = t.querySelector('.ind');
+    if (!cur || !ind || !t.offsetParent) return;
+    ind.style.left = cur.offsetLeft + 'px'; ind.style.width = cur.offsetWidth + 'px';
+  }
+  window.addEventListener('resize', moveInd);
+
   // ───────── 管理員：分頁 ─────────
   var tab = 'cases';
   function showTab(t, focus){
@@ -1087,6 +1231,7 @@ dialog{border-radius:var(--r-panel);box-shadow:0 16px 48px rgb(18 26 38 / 16%)}
     $('v-work').classList.toggle('tab-accounts', t === 'accounts');
     $('v-work').classList.toggle('tab-backup', t === 'backup');
     $('tab-accounts').hidden = t !== 'accounts'; $('tab-backup').hidden = t !== 'backup';
+    moveInd();
     if (t === 'accounts') loadAccounts();
     if (t === 'backup' && !bk) loadBackup();
     if (focus) (t === 'cases' ? $('admin-title') : t === 'accounts' ? $('acc-title') : $('bk-title')).focus();

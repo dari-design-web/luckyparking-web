@@ -647,6 +647,7 @@ fs.writeFileSync(path.join(OUT, 'robots.txt'), `User-agent: *\nAllow: /\nSitemap
   if (pilot) pilot.forEach(c => { if (!LOTS.some(l => l.id === c)) throw new Error('helpSites 有不存在的場站代碼：' + c); });
   const helpPage = f => fs.readFileSync(path.join(ROOT, f), 'utf8').replace('__SITES__', () => lotsJson).replace('__PILOT__', () => JSON.stringify(pilot)).replace('__FBCONFIG__', () => fbJson).replace('__ADMINAPI__', () => JSON.stringify(adminApi)).replace(/__V__/g, helpVer);
   fs.copyFileSync(path.join(ROOT, 'src/apps/help-api.js'), path.join(helpDir, 'api.js'));
+  fs.copyFileSync(path.join(ROOT, 'src/apps/help-garage.svg'), path.join(helpDir, 'garage.svg'));   // 自繪停車場背景插畫
   if (fb) fs.copyFileSync(bundle, path.join(helpDir, 'api-fb.js'));
   fs.writeFileSync(path.join(helpDir, 'index.html'), helpPage('src/apps/help.html'));
   fs.writeFileSync(path.join(helpDir, 'staff', 'index.html'), helpPage('src/apps/help-staff.html'));
