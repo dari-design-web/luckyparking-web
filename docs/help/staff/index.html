@@ -299,7 +299,7 @@ dialog{border-radius:var(--r-panel);box-shadow:0 16px 48px rgb(18 26 38 / 16%)}
 .case .sitel{display:block;font-size:15px;color:var(--ink2);margin:-2px 0 4px}
 .addr{margin:6px 0 0;padding:0;list-style:none}
 .addr li{overflow-wrap:anywhere;word-break:break-all;padding:2px 0;font-weight:500;color:var(--ink);user-select:text}
-#acc-dlg{padding:0}
+#acc-dlg{padding:0;scroll-padding-top:120px;scroll-padding-bottom:140px}
 #acc-dlg .dlghead{position:sticky;top:0;z-index:2;background:#fff;padding:20px 22px 10px;border-bottom:1px solid var(--rule)}
 #acc-dlg .dlghead h2{margin:0}
 #acc-dlg form{padding:0 22px}
@@ -1225,16 +1225,17 @@ dialog{border-radius:var(--r-panel);box-shadow:0 16px 48px rgb(18 26 38 / 16%)}
         inp.oninput = function(){
           rows[i] = inp.value; set(uniq(rows)); setDirty();
           // 修改後立即撤除這一列的錯誤，不留下過期提示
-          if (inp.getAttribute('aria-invalid') === 'true') { inp.removeAttribute('aria-invalid'); var ex = row.querySelector('.fielderr'); if (ex) ex.remove(); var ge = box.closest('section').querySelector('.fielderr[role=alert]'); if (ge) ge.textContent = ''; }
+          if (inp.getAttribute('aria-invalid') === 'true') { inp.removeAttribute('aria-invalid'); inp.removeAttribute('aria-describedby'); var ex = row.querySelector('.fielderr'); if (ex) ex.remove(); var ge = box.closest('section').querySelector('.fielderr[role=alert]'); if (ge) ge.textContent = ''; }
         };
         var rm = el('button', 'btn line', '移除'); rm.type = 'button'; rm.setAttribute('aria-label', '移除' + label + ' ' + (i + 1));
-        rm.onclick = function(){ rows.splice(i, 1); set(uniq(rows)); setDirty(); draw(); var f = box.querySelector('input'); if (f) f.focus(); };
+        rm.onclick = function(){ rows.splice(i, 1); set(uniq(rows)); setDirty(); clearGroupErr(); draw(); var f = box.querySelector('input'); if (f) f.focus(); };
         row.appendChild(inp); row.appendChild(rm); box.appendChild(row);
       });
       addBtn.disabled = rows.length >= 10;
       if (focusLast) { var all = box.querySelectorAll('input'); all[all.length - 1].focus(); }
     }
-    addBtn.onclick = function(){ if (rows.length < 10) { rows.push(''); draw(true); } };
+    function clearGroupErr(){ var ge = box.closest('section').querySelector('.fielderr[role=alert]'); if (ge) ge.textContent = ''; }
+    addBtn.onclick = function(){ if (rows.length < 10) { rows.push(''); clearGroupErr(); draw(true); } };
     return { load: function(){ rows = get().slice(); draw(); } };
   }
   var defEd = rcpEditor($('bk-def-list'), $('bk-def-add'), '預設收件人', function(){ return bkState.defaultEmails; }, function(v){ bkState.defaultEmails = v; drawSiteUse(); });
@@ -1293,7 +1294,10 @@ dialog{border-radius:var(--r-panel);box-shadow:0 16px 48px rgb(18 26 38 / 16%)}
     var list = uniq(custom ? (bkState.sites[bkSel].emails || []) : bkState.defaultEmails);
     var sv = norm(bk.settings || {}), saved = sv.sites[bkSel] ? sv.sites[bkSel].emails : sv.defaultEmails;
     var pending = JSON.stringify(list) !== JSON.stringify(saved);
-    if (!list.length) { u.textContent = (custom ? '另行指定：' : '沿用預設：') + '尚未設定信箱，逾時或暫離時無法通知'; u.style.color = 'var(--err)'; return; }
+    if (!list.length) {
+      if (pending && saved.length) { u.textContent = '草稿沒有收件人；儲存前仍寄到已儲存的 ' + saved.length + ' 個信箱。'; u.style.color = 'var(--warnink)'; return; }
+      u.textContent = (custom ? '另行指定：' : '沿用預設：') + '尚未設定信箱，逾時或暫離時無法通知'; u.style.color = 'var(--err)'; return;
+    }
     u.appendChild(el('b', '', (pending ? '待儲存收件人' : '目前本場收件人') + '（' + (custom ? '另行指定' : '沿用預設') + '，同時寄出）'));
     var ul = el('ul', 'addr'); list.forEach(function(x){ ul.appendChild(el('li', '', x)); }); u.appendChild(ul);
   }
@@ -1337,7 +1341,7 @@ dialog{border-radius:var(--r-panel);box-shadow:0 16px 48px rgb(18 26 38 / 16%)}
   // 標出出錯的那一列：欄位下方顯示說明並移焦；改正後由輸入事件撤除
   function focusBad(box, val){
     var ins = Array.prototype.slice.call(box.querySelectorAll('input'));
-    ins.forEach(function(x){ x.removeAttribute('aria-invalid'); var e = x.parentNode.querySelector('.fielderr'); if (e) e.remove(); });
+    ins.forEach(function(x){ x.removeAttribute('aria-invalid'); x.removeAttribute('aria-describedby'); var e = x.parentNode.querySelector('.fielderr'); if (e) e.remove(); });
     var hit = ins.filter(function(x){ return val != null && x.value.trim().toLowerCase() === val; })[0] || ins.filter(function(x){ return !x.value.trim(); })[0] || ins[0];
     if (!hit) return;
     if (val != null) {
@@ -1356,7 +1360,7 @@ dialog{border-radius:var(--r-panel);box-shadow:0 16px 48px rgb(18 26 38 / 16%)}
     return API.admin('saveSettings', { settings: settings }).then(function(){
       bk.settings = JSON.parse(JSON.stringify(settings)); say('已儲存備援通知設定。');
       $('bk-note').hidden = false; $('bk-note').className = 'note-box ok'; $('bk-note').textContent = '已儲存（' + hm(Date.now()) + '）';
-      setDirty(); drawSum();
+      setDirty(); drawSum(); drawSiteUse();
       API.admin('getSettings').then(function(j){ bk.quota = j.quota; bk.lastRun = j.lastRun; bk.lastError = j.lastError; bk.triggerOk = j.triggerOk; bk.log = j.log; drawBackupStat(); drawLog(); }).catch(function(){});
       return true;
     }).catch(function(x){ out.textContent = aerr(x); return false; })
