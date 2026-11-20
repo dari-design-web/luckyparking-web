@@ -819,11 +819,11 @@ html.day .tpl button{border:1px solid var(--bctl)}
 </dialog>
 
 <script>window.HELP_FB = {"apiKey":"AIzaSyDUoIG3FCxiyzixCDwM1m-5w5MF7-Ak4qs","authDomain":"wedding-seating-37b71.firebaseapp.com","projectId":"wedding-seating-37b71","appId":"1:830651084062:web:fc326c270926d742bf2d0f"}; window.HELP_ROLE = 'staff'; window.HELP_ADMIN_API = "https://script.google.com/macros/s/AKfycbzyDwNWCSRTxHYcr3_Cl7HlMLQ1pIDIpLWhSeu3z79l8_0BkwI3atVRj01dB4cnr3KI0w/exec";</script>
-<script src="../api.js?v=3d5ae41812"></script>
+<script src="../api.js?v=0f5bc646bc"></script>
 <script>
 (function(){
   if (!window.HELP_FB || /[?&]demo=1/.test(location.search)) return;
-  var s = document.createElement('script'); s.src = '../api-fb.js?v=3d5ae41812';
+  var s = document.createElement('script'); s.src = '../api-fb.js?v=0f5bc646bc';
   s.onerror = function(){ window.dispatchEvent(new Event('helpapi-fail')); };
   document.head.appendChild(s);
 })();
@@ -911,6 +911,24 @@ html.day .tpl button{border:1px solid var(--bctl)}
 
   // 提醒：聲音、震動、系統通知（皆需使用者先按一次按鈕才能啟用）
   var ac = null, alertsOn = false, wake = null;
+  // 提醒音樂（ACE-Step 1.5 製作的流行風短旋律）：新求助用完整版、客人新訊息用短版；載入失敗時退回原本的嗶聲
+  var SND = { loading: false };
+  function loadSounds(){
+    if (!ac || SND.loading) return; SND.loading = true;
+    [['newcase', '../alert-new.mp3?v=0f5bc646bc'], ['msg', '../alert-msg.mp3?v=0f5bc646bc']].forEach(function(p){
+      fetch(p[1]).then(function(r){ if (!r.ok) throw 0; return r.arrayBuffer(); })
+        .then(function(b){ return new Promise(function(ok, no){ var q = ac.decodeAudioData(b, ok, no); if (q && q.then) q.then(ok, no); }); })
+        .then(function(buf){ SND[p[0]] = buf; }).catch(function(){});
+    });
+  }
+  function play(kind){
+    var buf = SND[kind] || SND.newcase;
+    if (!ac || !buf) return beep();
+    return Promise.resolve(ac.resume()).then(function(){
+      var s = ac.createBufferSource(); s.buffer = buf; s.connect(ac.destination); s.start();
+      return ac.state === 'running';
+    }).catch(function(){ return beep(); });
+  }
   function beep(){
     if (!ac) return Promise.resolve(false);
     return Promise.resolve(ac.resume()).then(function(){
@@ -929,10 +947,12 @@ html.day .tpl button{border:1px solid var(--bctl)}
   document.addEventListener('visibilitychange', function(){ if (!document.hidden) { document.title = '管理室｜文字求助'; if (alertsOn) holdScreen(); } });
   $('al-btn').onclick = function(){
     try { ac = ac || new (window.AudioContext || window.webkitAudioContext)(); } catch (e) {}
-    alertsOn = true;
+    alertsOn = true; loadSounds();
     var vib = buzz();
     var perm = window.Notification && Notification.permission === 'default' ? Notification.requestPermission().catch(function(){}) : Promise.resolve();
-    Promise.all([beep(), holdScreen(), perm]).then(function(r){
+    // 測試時等提醒音樂載入（最多 2 秒），讓值守人員聽到的就是實際的提醒聲
+    var ready = new Promise(function(ok){ var n = 0; (function w(){ if (SND.newcase || ++n > 20) ok(); else setTimeout(w, 100); })(); });
+    Promise.all([ready.then(function(){ return play('newcase'); }), holdScreen(), perm]).then(function(r){
       var sound = r[0], screen = r[1], note = window.Notification ? Notification.permission : 'unsupported';
       var lines = [
         sound ? '提示音：已播放（沒聽到請調高音量）' : '提示音：此裝置無法播放，請改看畫面',
@@ -1077,7 +1097,7 @@ html.day .tpl button{border:1px solid var(--bctl)}
     drawList(); drawSites();
   }
   function ring(title, where){
-    if (alertsOn) { beep(); buzz(); }
+    if (alertsOn) { play(title === '客人有新訊息' ? 'msg' : 'newcase'); buzz(); lastRing = Date.now(); }
     sysNote(title);
     say(title + '：' + where);
     if (document.hidden) document.title = '（' + title + '）管理室';
@@ -1214,6 +1234,13 @@ html.day .tpl button{border:1px solid var(--bctl)}
   });
   // 每 30 秒只更新「幾分鐘前」，不重建清單
   setInterval(function(){ Array.prototype.forEach.call(document.querySelectorAll('.case .age'), function(a){ a.textContent = ago(+a.dataset.t); }); drawSites(); drawAdminCases(); }, 30000);
+  // 還有人沒接手的新求助時，每 30 秒再提醒一次（最多提醒 10 分鐘），避免一時沒聽到
+  var lastRing = 0;
+  setInterval(function(){
+    if (!alertsOn) return;
+    var now = Date.now(), wait = cases.filter(function(c){ return c.status === 'new' && now - c.queuedAt < 10 * 60 * 1000; });
+    if (wait.length && now - lastRing >= 29000) { play('newcase'); buzz(); lastRing = now; }
+  }, 5000);
 
   // 案件詳細
   var pending = {}, drafts = {}, shown = {}, overArm = '', detail = null, unDetail = null;

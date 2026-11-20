@@ -639,7 +639,9 @@ fs.writeFileSync(path.join(OUT, 'robots.txt'), `User-agent: *\nAllow: /\nSitemap
   const fbJson = fb ? JSON.stringify({ apiKey: fb.apiKey, authDomain: fb.authDomain, projectId: fb.projectId, appId: fb.appId }).replace(/</g, '\\u003c') : 'null';
   const bundle = path.join(ROOT, 'src/apps/help-fb.bundle.js');
   if (fb && !fs.existsSync(bundle)) throw new Error('缺少 src/apps/help-fb.bundle.js，請先執行 node tools/bundle-help.mjs');
-  const helpVer = crypto.createHash('sha256').update(fs.readFileSync(path.join(ROOT, 'src/apps/help-api.js'))).update(fb ? fs.readFileSync(bundle) : '').digest('hex').slice(0, 10);
+  // 版本碼含提醒音樂：換音樂後瀏覽器會重新下載
+  const helpVer = ['help-alert-new.mp3', 'help-alert-msg.mp3'].reduce((h, f) => fs.existsSync(path.join(ROOT, 'src/apps', f)) ? h.update(fs.readFileSync(path.join(ROOT, 'src/apps', f))) : h,
+    crypto.createHash('sha256').update(fs.readFileSync(path.join(ROOT, 'src/apps/help-api.js'))).update(fb ? fs.readFileSync(bundle) : '')).digest('hex').slice(0, 10);
   // 正式版只開放 helpSites 列出的試辦場站（有管理室帳號的場站）；試用版開放全部場站
   const pilot = SITE.helpSites || null;
   // 管理後端（Google Apps Script 網頁應用程式）網址：帳號管理與備援通知；未設定時管理員頁面顯示「尚未安裝」
@@ -652,6 +654,9 @@ fs.writeFileSync(path.join(OUT, 'robots.txt'), `User-agent: *\nAllow: /\nSitemap
   // 日光版（GPT S25 方向 B）背景：客人端庭院、登入門廊、管理端橫幅（GPT 原創向量，無文字／人物／車牌／商標）
   for (const [src, dst] of [['help-day-court.svg', 'day-court.svg'], ['help-day-porch.svg', 'day-porch.svg'], ['help-day-banner.svg', 'day-banner.svg']])
     fs.copyFileSync(path.join(ROOT, 'src/apps', src), path.join(helpDir, dst));
+  // 管理室提醒音樂（ACE-Step 1.5 製作）
+  for (const f of ['alert-new.mp3', 'alert-msg.mp3'])
+    if (fs.existsSync(path.join(ROOT, 'src/apps/help-' + f))) fs.copyFileSync(path.join(ROOT, 'src/apps/help-' + f), path.join(helpDir, f));
   if (fb) fs.copyFileSync(bundle, path.join(helpDir, 'api-fb.js'));
   fs.writeFileSync(path.join(helpDir, 'index.html'), helpPage('src/apps/help.html'));
   fs.writeFileSync(path.join(helpDir, 'staff', 'index.html'), helpPage('src/apps/help-staff.html'));
