@@ -265,8 +265,9 @@ header a{display:inline-flex;align-items:center;min-height:44px}
   // 換縣市或換場站：清掉舊位置與自動帶入的草稿，提醒客人確認位置
   function siteChanged(){ device = ''; $('dev').value = ''; $('dev-hint').hidden = false; if (autoDraft()) $('first').value = cat ? cat + '。' : ''; showWhere(); }
   function autoDraft(){ var t = $('first').value; return !t.trim() || CATS.some(function(x){ return t.indexOf(x[0]) === 0 && /，我在.*。$|。$/.test(t); }); }
-  $('city').onchange = function(){ fillSites(this.value); siteObj = null; siteChanged(); };
-  $('site').onchange = function(){ siteObj = SITES.filter(function(s){ return s.id === $('site').value; })[0] || null; siteChanged(); };
+  var manual = false;   // 客人自己改過場站後，後台清單晚到時不再套用 QR 的場站
+  $('city').onchange = function(){ manual = true; fillSites(this.value); siteObj = null; siteChanged(); };
+  $('site').onchange = function(){ manual = true; siteObj = SITES.filter(function(s){ return s.id === $('site').value; })[0] || null; siteChanged(); };
   $('dev').oninput = function(){ device = this.value.trim().slice(0, 30); $('dev-hint').hidden = true; showWhere(); };
   function showWhere(){
     var known = ALL_SITES.some(function(s){ return s.id === q.get('s'); });
@@ -277,14 +278,15 @@ header a{display:inline-flex;align-items:center;min-height:44px}
   if (!siteObj) { $('pick').hidden = false; $('where').hidden = !q.get('s'); }
   // 正式版：開放的場站以後台設定為準（有啟用中管理室帳號的場站），讀不到時沿用網頁內建清單
   function setOpen(ids){
-    var had = siteObj;
+    var had = siteObj, want = had ? had.id : manual ? '' : q.get('s');
     SITES = ALL_SITES.filter(function(s){ return ids.indexOf(s.id) >= 0; });
     groups = Object.create(null);
     SITES.forEach(function(s){ (groups[s.city] = groups[s.city] || []).push(s); });
     var cv = $('city').value; $('city').length = 1;
     Object.keys(groups).forEach(function(c){ var o = document.createElement('option'); o.value = c; o.textContent = c; $('city').appendChild(o); });
     if (groups[cv]) { $('city').value = cv; var sv = $('site').value; fillSites(cv); $('site').value = sv; } else fillSites('');
-    siteObj = SITES.filter(function(s){ return s.id === (had ? had.id : q.get('s')); })[0] || null;
+    siteObj = SITES.filter(function(s){ return s.id === want; })[0] || null;
+    if (had && !siteObj) { device = ''; $('dev').value = ''; }
     showWhere();
     if (!siteObj) { $('pick').hidden = false; $('where').hidden = !q.get('s'); }
     else if (!had) { $('pick').hidden = true; $('where').hidden = false; }
@@ -309,7 +311,7 @@ header a{display:inline-flex;align-items:center;min-height:44px}
     var text = $('first').value.trim();
     if (!siteObj) { $('e-start').textContent = '請先選擇所在的場站。'; $('pick').hidden = false; $('city').focus(); return; }
     if (text.length < 2) { $('e-start').textContent = '請選一個狀況，或輸入您的狀況。'; $('first').focus(); return; }
-    if (!API) { $('e-start').textContent = loadFailed ? '目前無法連線，請使用現場求助，或依指標前往管理室。' : '連線中，請稍候再按一次。'; return; }
+    if (!API || !sitesReady) { $('e-start').textContent = loadFailed ? '目前無法連線，請使用現場求助，或依指標前往管理室。' : '連線中，請稍候再按一次。'; return; }
     var sig = siteObj.id + '\n' + device + '\n' + text;
     if (!op || op.sig !== sig) { op = { sig: sig, cid: rid() }; store('dari-help-op', JSON.stringify(op)); }
     var btn = this; btn.disabled = true; btn.firstChild.textContent = '送出中… ';
@@ -479,7 +481,7 @@ header a{display:inline-flex;align-items:center;min-height:44px}
   document.addEventListener('focusin', emh); document.addEventListener('focusout', function(){ setTimeout(emh, 50); });
 
   // 資料介面載入完成後：顯示試用版提示、接續先前的案件
-  var loadFailed = false;
+  var loadFailed = false, sitesReady = false;
   function failLoad(){ if (API) return; loadFailed = true; $('e-start').textContent = '目前無法連線，請使用現場求助，或依指標前往管理室。'; }
   window.addEventListener('helpapi-fail', failLoad);
   setTimeout(failLoad, 20000);
@@ -487,7 +489,11 @@ header a{display:inline-flex;align-items:center;min-height:44px}
     API = window.HelpAPI; DEMO = API.mode === 'demo';
     if (DEMO) $('demo-bar').hidden = false;
     if ($('e-start').textContent.indexOf('連線中') === 0 || loadFailed) $('e-start').textContent = '';
-    if (LIVE && API.openSites) API.openSites().then(function(ids){ if (ids) setOpen(ids); });
+    // 開放場站清單最多等 8 秒，讀不到就沿用網頁內建清單
+    if (LIVE && API.openSites) {
+      var late = setTimeout(function(){ sitesReady = true; }, 8000);
+      API.openSites().then(function(ids){ clearTimeout(late); if (ids) setOpen(ids); sitesReady = true; });
+    } else sitesReady = true;
     resume();
   }
   if (API) setTimeout(ready, 0); else window.addEventListener('helpapi', ready, { once: true });

@@ -11,14 +11,21 @@ service cloud.firestore {
     function anon() { return signedIn() && request.auth.token.firebase.sign_in_provider == 'anonymous'; }
     function pw() { return signedIn() && request.auth.token.firebase.sign_in_provider == 'password'; }
     function staffPath() { return /databases/$(database)/documents/staff/$(request.auth.uid); }
+    // 登入時間必須晚於最近一次重設密碼／停用（validAfter，秒），舊裝置的登入立即失效
+    function staffOk() {
+      return pw() && exists(staffPath()) && get(staffPath()).data.active == true
+        && request.auth.token.auth_time >= get(staffPath()).data.get('validAfter', 0);
+    }
     function isStaff(site) {
-      return pw() && exists(staffPath()) && get(staffPath()).data.active == true && get(staffPath()).data.site == site
-        && get(staffPath()).data.get('role', '') != 'admin';
+      return staffOk() && get(staffPath()).data.site == site && get(staffPath()).data.get('role', '') != 'admin';
     }
     function isAdmin() {
-      return pw() && exists(staffPath()) && get(staffPath()).data.active == true && get(staffPath()).data.get('role', '') == 'admin';
+      return staffOk() && get(staffPath()).data.get('role', '') == 'admin';
     }
     function str(v, min, max) { return v is string && v.size() >= min && v.size() <= max; }
+    // 只有已開放的場站（管理後端維護的 config/public.openSites）能建立新求助；管理後端安裝前不限制
+    function cfgPath() { return /databases/$(database)/documents/config/public; }
+    function siteOpen(site) { return !exists(cfgPath()) || site in get(cfgPath()).data.openSites; }
     function casePath(id) { return /databases/$(database)/documents/cases/$(id); }
     function msgPath(id, mid) { return /databases/$(database)/documents/cases/$(id)/messages/$(mid); }
     function gatePath() { return /databases/$(database)/documents/gates/$(request.auth.uid); }
@@ -89,7 +96,7 @@ service cloud.firestore {
           && b.clientId is string && b.clientId.matches('^[a-f0-9]{16}$')
           && id == request.auth.uid + '_' + b.clientId
           && str(b.code, 1, 24)
-          && b.site is string && b.site.matches('^[a-z0-9-]{1,40}$')
+          && b.site is string && b.site.matches('^[a-z0-9-]{1,40}$') && siteOpen(b.site)
           && str(b.siteName, 1, 60) && str(b.device, 0, 30)
           && b.category in ['柵欄沒開', '繳費失敗', '優惠沒生效', '找不到車', '需要人來現場', '其他']
           && b.status == 'new' && b.open == true && b.cycle == 1

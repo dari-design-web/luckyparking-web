@@ -535,22 +535,21 @@ table.ctable td:last-child{text-align:right}
     $('who-p').textContent = me.role === 'admin' ? '您目前登入的是：' : '您目前登入的場域是：';
     $('who-site').textContent = me.role === 'admin' ? '跨場管理（全部場站）' : (s ? s.city + '｜' + s.name : me.siteName);
     $('who-acct').textContent = (me.account ? '帳號：' + me.account + '　' : '') + '名稱：' + me.name;
-    $('who').showModal(); $('who-ok').focus();
+    $('v-login').hidden = false; $('login').disabled = true;
+    $('who').returnValue = ''; $('who').showModal(); $('who-ok').focus();
   }
-  var whoDone = false;
-  $('who-ok').onclick = function(){ whoDone = true; $('who').close(); saveMe(); start(); };
-  function whoNo(){
-    whoDone = true; if ($('who').open) $('who').close();
+  // 只有按「確認進入」才進入；「不是」、Esc 或其他方式關閉，一律登出後才能重新登入
+  $('who-ok').onclick = function(){ $('who').close('ok'); };
+  $('who-no').onclick = function(){ $('who').close('no'); };
+  $('who').addEventListener('close', function(){
+    if ($('who').returnValue === 'ok') { me.confirmed = me.uid || me.site || 'admin'; saveMe(); $('login').disabled = false; start(); return; }
     var m = me; me = null; try { localStorage.removeItem('dari-help-staff'); } catch (e) {}
-    Promise.resolve(DEMO || !m ? null : API.staffLogout()).then(function(){
+    Promise.resolve(DEMO || !m ? null : API.staffLogout()).catch(function(){}).then(function(){
+      $('login').disabled = false;
       $('e-login').textContent = '已登出，請重新輸入正確的帳號與密碼。';
       if (DEMO) $('city').focus(); else { $('email').select(); $('email').focus(); }
     });
-  }
-  $('who-no').onclick = whoNo;
-  // 按 Esc 關閉視窗視同「不是」
-  $('who').addEventListener('cancel', function(e){ e.preventDefault(); whoNo(); });
-  $('who').addEventListener('close', function(){ if (!whoDone) whoNo(); whoDone = false; });
+  });
   $('logout').onclick = function(){ try { localStorage.removeItem('dari-help-staff'); } catch (e) {} drafts = {}; Promise.resolve(API && API.staffLogout()).then(function(){ location.reload(); }); };
 
   // 提醒：聲音、震動、系統通知（皆需使用者先按一次按鈕才能啟用）
@@ -969,7 +968,7 @@ table.ctable td:last-child{text-align:right}
     no_login: '登入已過期，請登出後重新登入。', exists: '這個帳號已存在，請換一個帳號名稱。', bad_account: '帳號格式不正確：英文小寫、數字或 . - _，3–30 字（不可用 admin）。',
     weak_password: '密碼至少 8 個字元，不可有空白。', bad_name: '請輸入名稱（20 字以內）。', bad_site: '請選擇場站。', protected: '管理員帳號不能在這裡修改。',
     notfound: '找不到這個帳號，請重新整理。', bad_email: '信箱格式不正確，請檢查。', too_many_emails: '每組最多 10 個信箱。', no_emails: '請先填寫信箱。',
-    quota: '今日寄信額度已用完，明天會恢復。', save_failed: '儲存失敗，請再試一次。', auth_failed: '帳號服務暫時無法使用，請稍後再試。', db_failed: '資料庫暫時無法使用，請稍後再試。'
+    quota: '今日寄信額度已用完，明天會恢復。', busy: '目前有其他修改正在處理，請稍後再試。', too_many: '操作太頻繁，請等幾分鐘再試。', save_failed: '儲存失敗，請再試一次。', auth_failed: '帳號服務暫時無法使用，請稍後再試。', db_failed: '資料庫暫時無法使用，請稍後再試。'
   };
   function aerr(e){ return AERR[e && e.code] || '操作失敗，請稍後再試。'; }
   function dt(t){ var d = new Date(t); return (d.getMonth() + 1) + '/' + d.getDate() + ' ' + hm(t); }
@@ -1058,7 +1057,7 @@ table.ctable td:last-child{text-align:right}
     if (adMode === 'new' || adMode === 'edit') {
       var nm = $('ad-name').value.trim(); if (!nm || nm.length > 20) return bad(AERR.bad_name, $('ad-name'));
       if (!$('ad-site').value) return bad(AERR.bad_site, $('ad-site'));
-      data.name = nm; data.site = $('ad-site').value;
+      data.name = nm; data.site = $('ad-site').value; data.siteName = siteLabel(data.site);
     }
     if (adMode === 'new' || adMode === 'pw') {
       var p1 = $('ad-pw').value; if (p1.length < 8 || /\s/.test(p1)) return bad(AERR.weak_password, $('ad-pw'));
@@ -1074,14 +1073,14 @@ table.ctable td:last-child{text-align:right}
     API.admin(act, data).then(function(j){
       $('ad-pw').value = ''; $('ad-pw2').value = '';
       if (j.openSites && LIVE) { PILOT = j.openSites; fillSiteFilter(); drawSites(); }
-      $('acc-dlg').close(); say(msg); loadAccounts();
+      $('acc-dlg').close(); say(j.partial ? msg + '但停用登入未完成，已先關閉權限；請稍後再按一次停用。' : msg); loadAccounts();
     }).catch(function(x){ e.textContent = aerr(x); })
       .then(function(){ btn.disabled = false; btn.textContent = label; });
     return false;
   };
 
   // ───────── 管理員：備援通知 ─────────
-  var bk = null, bkDirty = false, TIMEOUTS = [1, 2, 3, 5, 10, 15];
+  var bk = null, bkDirty = false, bkVer = 0, TIMEOUTS = [1, 2, 3, 5, 10, 15];
   TIMEOUTS.forEach(function(m){ var o = document.createElement('option'); o.value = m; o.textContent = m + ' 分鐘'; $('bk-timeout').appendChild(o); });
   function splitEmails(t){ return String(t || '').split(/[\s,;，、；]+/).map(function(x){ return x.trim().toLowerCase(); }).filter(Boolean).filter(function(x, i, a){ return a.indexOf(x) === i; }); }
   function okEmail(x){ return x.length <= 120 && /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$/.test(x); }
@@ -1137,7 +1136,7 @@ table.ctable td:last-child{text-align:right}
     if (!lg.children.length) lg.appendChild(el('li', 'muted', '尚無紀錄。'));
   }
   function syncAllSites(){ Array.prototype.forEach.call(document.querySelectorAll('.bksite'), function(d){ if (d._sync) d._sync(); }); }
-  function setDirty(v){ bkDirty = v; $('bk-note').className = 'note' + (v ? ' dirty' : ''); $('bk-note').textContent = v ? '有尚未儲存的變更' : '尚無變更'; }
+  function setDirty(v){ if (v) bkVer++; bkDirty = v; $('bk-note').className = 'note' + (v ? ' dirty' : ''); $('bk-note').textContent = v ? '有尚未儲存的變更' : '尚無變更'; }
   $('bk-timeout').onchange = function(){ setDirty(true); };
   $('bk-default').oninput = function(){ syncAllSites(); setDirty(true); };
   $('bk-applyall').onclick = function(){
@@ -1175,10 +1174,13 @@ table.ctable td:last-child{text-align:right}
     });
     if (!ok) return;
     var settings = { timeoutMin: Number($('bk-timeout').value), defaultEmails: def, sites: sites };
-    var btn = this; btn.disabled = true; btn.textContent = '儲存中…';
+    var btn = this, ver = bkVer; btn.disabled = true; btn.textContent = '儲存中…';
     API.admin('saveSettings', { settings: settings }).then(function(){
-      bk.settings = settings; setDirty(false); say('已儲存備援通知設定。');
-      return API.admin('getSettings').then(function(j){ bk = j; drawBackup(); }).catch(function(){}).then(function(){ $('bk-note').textContent = '已儲存（' + hm(Date.now()) + '）'; });
+      bk.settings = settings; say('已儲存備援通知設定。');
+      // 儲存期間又有修改：保留畫面上的內容與「尚未儲存」提示，不重新載入
+      if (ver !== bkVer) { $('bk-note').textContent = '已儲存先前內容；之後的修改尚未儲存'; return; }
+      setDirty(false);
+      return API.admin('getSettings').then(function(j){ if (ver !== bkVer) return; bk = j; drawBackup(); }).catch(function(){}).then(function(){ if (ver === bkVer) $('bk-note').textContent = '已儲存（' + hm(Date.now()) + '）'; });
     })
       .catch(function(x){ e.textContent = aerr(x); })
       .then(function(){ btn.disabled = false; btn.textContent = '儲存設定'; });
@@ -1199,9 +1201,13 @@ table.ctable td:last-child{text-align:right}
       if (me && (me.role === 'admin' || SITES.some(function(s){ return s.id === me.site; }))) start(); else $('login-title').focus();
       return;
     }
+    var prev = me;
     API.staffSession().then(function(u){
       if (!u) { $('login-title').focus(); return; }
-      setMe(u); saveMe(); start();
+      setMe(u);
+      // 這個帳號在這台裝置確認過場域才直接進入；否則（例如確認前就重新整理）再問一次
+      if (prev && prev.confirmed === u.uid && prev.site === u.site) { me.confirmed = u.uid; me.account = prev.account; saveMe(); start(); }
+      else { me.account = String(u.email || '').split('@')[0]; confirmWho(); }
     }).catch(function(e){ $('e-login').textContent = LOGIN_ERR[e && e.code] || '請重新登入。'; $('login-title').focus(); });
   }
   window.addEventListener('helpapi-fail', function(){ if (!API) $('login-wait').textContent = '無法連線，請確認網路後重新整理。'; });
