@@ -290,7 +290,20 @@ dialog{border-radius:var(--r-panel);box-shadow:0 16px 48px rgb(18 26 38 / 16%)}
 .bkpanel{background:#fff;border:1px solid var(--rule);border-radius:var(--r-panel);padding:20px}
 .bkpanel h3{margin:0 0 6px;font-size:18px}
 .bkpanel .btn{width:100%;margin-top:12px}
-.rcp{display:flex;gap:8px;align-items:center;margin:0 0 8px}
+.rcp{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:0 0 8px}
+.rcp .fielderr{flex-basis:100%;margin:0}
+.rcp input[aria-invalid=true]{border-color:var(--err);box-shadow:0 0 0 1px var(--err)}
+.openlbl{display:inline-flex;align-items:center;min-height:44px;padding:0 16px;margin-top:8px;border:1px solid var(--blue);border-radius:var(--r-ctl);color:var(--blue);font-weight:700;font-size:15px}
+.case[aria-current=true] .openlbl{background:var(--blue);color:#fff}
+.case .foot2{display:flex;justify-content:flex-end}
+.case .sitel{display:block;font-size:15px;color:var(--ink2);margin:-2px 0 4px}
+.addr{margin:6px 0 0;padding:0;list-style:none}
+.addr li{overflow-wrap:anywhere;word-break:break-all;padding:2px 0;font-weight:500;color:var(--ink);user-select:text}
+#acc-dlg{padding:0}
+#acc-dlg .dlghead{position:sticky;top:0;z-index:2;background:#fff;padding:20px 22px 10px;border-bottom:1px solid var(--rule)}
+#acc-dlg .dlghead h2{margin:0}
+#acc-dlg form{padding:0 22px}
+#acc-dlg .acts{flex-wrap:wrap;position:sticky;bottom:0;background:#fff;margin:16px -22px 0;padding:12px 22px 18px;border-top:1px solid var(--rule)}
 .rcp input{flex:1}
 .rcp .btn{width:auto;margin:0;min-width:72px}
 .modes{display:grid;gap:8px;margin:6px 0 12px}
@@ -434,7 +447,7 @@ dialog{border-radius:var(--r-panel);box-shadow:0 16px 48px rgb(18 26 38 / 16%)}
             <div id="bk-site-list"></div>
             <button class="btn line sm" type="button" id="bk-site-add" style="width:auto;margin-top:0">新增收件人</button>
           </div>
-          <p class="muted small" id="bk-site-use" role="status" style="margin:8px 0 0"></p>
+          <div class="muted small" id="bk-site-use" role="status" style="margin:8px 0 0"></div>
           <p class="fielderr" id="e-bk-site" role="alert"></p>
           <button class="btn" type="button" id="bk-save-site">儲存本場備援設定</button>
           <button class="btn line" type="button" id="bk-test-site">寄測試信給本場收件人</button>
@@ -544,8 +557,8 @@ dialog{border-radius:var(--r-panel);box-shadow:0 16px 48px rgb(18 26 38 / 16%)}
 
 <!-- 管理員：新增／修改帳號、重設密碼、停用 -->
 <dialog id="acc-dlg" aria-labelledby="ad-t">
-  <h2 id="ad-t"></h2>
-  <p class="muted small" id="ad-p" style="margin:0"></p>
+  <div class="dlghead"><h2 id="ad-t"></h2>
+  <p class="muted small" id="ad-p" style="margin:4px 0 0"></p></div>
   <form id="ad-form" onsubmit="return false">
     <div id="ad-acct-w"><label class="f" for="ad-acct">帳號</label>
       <p class="hint" id="ad-acct-h">登入時輸入的名稱：英文小寫、數字或 . - _，3–30 字。建立後不能更改。</p>
@@ -561,8 +574,7 @@ dialog{border-radius:var(--r-panel);box-shadow:0 16px 48px rgb(18 26 38 / 16%)}
       <label class="f" for="ad-pw2">再輸入一次密碼</label>
       <input type="password" id="ad-pw2" maxlength="64" autocomplete="new-password">
       <label class="chk"><input type="checkbox" id="ad-show"> 顯示密碼</label></div>
-    <p class="err" id="e-ad" role="alert"></p>
-    <div class="acts"><button class="btn line" type="button" id="ad-cancel">取消</button><button class="btn" type="submit" id="ad-ok">確定</button></div>
+    <div class="acts"><p class="err" id="e-ad" role="alert" style="flex-basis:100%;margin:0"></p><button class="btn line" type="button" id="ad-cancel">取消</button><button class="btn" type="submit" id="ad-ok">確定</button></div>
   </form>
 </dialog>
 
@@ -913,10 +925,13 @@ dialog{border-radius:var(--r-panel);box-shadow:0 16px 48px rgb(18 26 38 / 16%)}
       var ec = escChip(c); if (ec) row.appendChild(ec);
       if (c.cycle > 1 && c.status === 'new') { var r = document.createElement('span'); r.className = 'chip esc'; r.textContent = '客人再次求助'; row.appendChild(r); }
       var age = document.createElement('span'); age.className = 'age'; age.dataset.t = c.status === 'closed' ? c.closedAt : c.queuedAt; age.textContent = ago(+age.dataset.t); row.appendChild(age);
-      var cd = document.createElement('span'); cd.className = 'code'; cd.textContent = c.code + (ADMIN ? '｜' + (c.siteName || siteName(c.site)) : ''); b.appendChild(cd);
+      var cd = document.createElement('span'); cd.className = 'code'; cd.textContent = '案號：' + c.code; b.appendChild(cd);
+      if (ADMIN) { var sl = document.createElement('span'); sl.className = 'sitel'; sl.textContent = '場站：' + (c.siteName || siteName(c.site)); b.appendChild(sl); }
       var dev = document.createElement('p'); dev.className = 'dev'; dev.textContent = (c.device || '未填位置') + '｜' + c.category;
       var pre = document.createElement('p'); pre.className = 'pre'; pre.textContent = c.lastCustomerText || '';
       b.appendChild(row); b.appendChild(dev); b.appendChild(pre);
+      // 整張卡可點；另顯示「開啟案件」字樣，讓人一眼看出可以點（開啟不等於接手）
+      var ft = document.createElement('span'); ft.className = 'foot2'; var ol = document.createElement('span'); ol.className = 'openlbl'; ol.setAttribute('aria-hidden', 'true'); ol.textContent = sel === c.id ? '目前開啟' : '開啟案件'; ft.appendChild(ol); b.appendChild(ft);
       b.onclick = function(){ open(c.id); };
       li.appendChild(b); ul.appendChild(li);
       if (focusId === c.id) b.focus();
@@ -1139,7 +1154,7 @@ dialog{border-radius:var(--r-panel);box-shadow:0 16px 48px rgb(18 26 38 / 16%)}
     var only = function(ids){ ['ad-acct-w', 'ad-name-w', 'ad-site-w', 'ad-pw-w'].forEach(function(k){ $(k).hidden = ids.indexOf(k) < 0; }); };
     $('e-ad').textContent = ''; $('ad-pw').value = ''; $('ad-pw2').value = ''; $('ad-show').checked = false; $('ad-pw').type = $('ad-pw2').type = 'password';
     var p = '';
-    if (mode === 'new') { $('ad-t').textContent = '新增帳號'; only(['ad-acct-w', 'ad-name-w', 'ad-site-w', 'ad-pw-w']); $('ad-acct').value = ''; $('ad-name').value = ''; $('ad-site').value = ''; $('ad-ok').textContent = '建立帳號'; p = '建立後，該場站的客人即可使用文字求助。'; }
+    if (mode === 'new') { $('ad-t').textContent = '新增場站帳號'; only(['ad-acct-w', 'ad-name-w', 'ad-site-w', 'ad-pw-w']); $('ad-acct').value = ''; $('ad-name').value = ''; $('ad-site').value = ''; $('ad-ok').textContent = '建立帳號'; p = '建立後，該場站的客人即可使用文字求助。'; }
     else if (mode === 'edit') { $('ad-t').textContent = '修改帳號：' + a.account; only(['ad-name-w', 'ad-site-w']); $('ad-name').value = a.name || ''; $('ad-site').value = a.site || ''; $('ad-ok').textContent = '儲存'; p = '改場站後，此帳號下次讀取時就只會看到新場站的求助。'; }
     else if (mode === 'pw') { $('ad-t').textContent = '重設密碼：' + a.account; only(['ad-pw-w']); $('ad-ok').textContent = '重設密碼'; p = '重設後，使用此帳號的裝置需要用新密碼重新登入。'; }
     else {
@@ -1207,7 +1222,11 @@ dialog{border-radius:var(--r-panel);box-shadow:0 16px 48px rgb(18 26 38 / 16%)}
         var row = el('div', 'rcp'), inp = el('input');
         inp.type = 'email'; inp.value = v; inp.autocomplete = 'off'; inp.spellcheck = false; inp.setAttribute('autocapitalize', 'none'); inp.placeholder = 'name@example.com';
         inp.setAttribute('aria-label', label + ' ' + (i + 1));
-        inp.oninput = function(){ rows[i] = inp.value; set(uniq(rows)); setDirty(); };
+        inp.oninput = function(){
+          rows[i] = inp.value; set(uniq(rows)); setDirty();
+          // 修改後立即撤除這一列的錯誤，不留下過期提示
+          if (inp.getAttribute('aria-invalid') === 'true') { inp.removeAttribute('aria-invalid'); var ex = row.querySelector('.fielderr'); if (ex) ex.remove(); var ge = box.closest('section').querySelector('.fielderr[role=alert]'); if (ge) ge.textContent = ''; }
+        };
         var rm = el('button', 'btn line', '移除'); rm.type = 'button'; rm.setAttribute('aria-label', '移除' + label + ' ' + (i + 1));
         rm.onclick = function(){ rows.splice(i, 1); set(uniq(rows)); setDirty(); draw(); var f = box.querySelector('input'); if (f) f.focus(); };
         row.appendChild(inp); row.appendChild(rm); box.appendChild(row);
@@ -1266,11 +1285,17 @@ dialog{border-radius:var(--r-panel);box-shadow:0 16px 48px rgb(18 26 38 / 16%)}
     $('e-bk-site').textContent = ''; $('bk-site-r').textContent = '';
     drawSiteUse();
   }
+  // 顯示這一場實際會寄到的完整信箱（可換行、可選取）；與已儲存不同時標「待儲存」
   function drawSiteUse(){
-    if (!bkSel) { $('bk-site-use').textContent = '目前沒有已開放的場站。'; return; }
-    var list = siteMode() === 'custom' ? (bkState.sites[bkSel].emails || []) : bkState.defaultEmails;
-    $('bk-site-use').textContent = (siteMode() === 'custom' ? '另行指定：' : '沿用預設：') + (list.length ? '會同時寄給 ' + list.length + ' 個信箱' : '尚未設定信箱，逾時或暫離時無法通知');
-    $('bk-site-use').style.color = list.length ? '' : 'var(--err)';
+    var u = $('bk-site-use'); u.innerHTML = ''; u.style.color = '';
+    if (!bkSel) { u.textContent = '目前沒有已開放的場站。'; return; }
+    var custom = siteMode() === 'custom';
+    var list = uniq(custom ? (bkState.sites[bkSel].emails || []) : bkState.defaultEmails);
+    var sv = norm(bk.settings || {}), saved = sv.sites[bkSel] ? sv.sites[bkSel].emails : sv.defaultEmails;
+    var pending = JSON.stringify(list) !== JSON.stringify(saved);
+    if (!list.length) { u.textContent = (custom ? '另行指定：' : '沿用預設：') + '尚未設定信箱，逾時或暫離時無法通知'; u.style.color = 'var(--err)'; return; }
+    u.appendChild(el('b', '', (pending ? '待儲存收件人' : '目前本場收件人') + '（' + (custom ? '另行指定' : '沿用預設') + '，同時寄出）'));
+    var ul = el('ul', 'addr'); list.forEach(function(x){ ul.appendChild(el('li', '', x)); }); u.appendChild(ul);
   }
   function drawSum(){
     var ul = $('bk-sum'); ul.innerHTML = '';
@@ -1309,10 +1334,18 @@ dialog{border-radius:var(--r-panel);box-shadow:0 16px 48px rgb(18 26 38 / 16%)}
     if (bkDirty) { $('bk-note').hidden = false; $('bk-note').className = 'note-box warn'; $('bk-note').textContent = '有尚未儲存的變更：' + [defDirty ? '預設與逾時' : '', siteDirty ? '各場設定' : ''].filter(Boolean).join('、'); }
     else if ($('bk-note').className.indexOf('warn') >= 0) $('bk-note').hidden = true;
   }
+  // 標出出錯的那一列：欄位下方顯示說明並移焦；改正後由輸入事件撤除
   function focusBad(box, val){
     var ins = Array.prototype.slice.call(box.querySelectorAll('input'));
+    ins.forEach(function(x){ x.removeAttribute('aria-invalid'); var e = x.parentNode.querySelector('.fielderr'); if (e) e.remove(); });
     var hit = ins.filter(function(x){ return val != null && x.value.trim().toLowerCase() === val; })[0] || ins.filter(function(x){ return !x.value.trim(); })[0] || ins[0];
-    if (hit) hit.focus();
+    if (!hit) return;
+    if (val != null) {
+      hit.setAttribute('aria-invalid', 'true');
+      var m = el('p', 'fielderr', '請輸入完整的 Email 地址，例如 name@example.com。'); m.id = 'err-' + Math.random().toString(36).slice(2, 8);
+      hit.setAttribute('aria-describedby', m.id); hit.parentNode.appendChild(m);
+    }
+    hit.focus();
   }
   // 依按鈕範圍儲存：「預設與逾時」只送出預設與逾時；「本場」只送出這一場；其他草稿保留在畫面上
   // 同一時間只送一個請求，避免較舊的內容後到覆蓋較新的
