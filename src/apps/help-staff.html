@@ -173,12 +173,6 @@ table.ctable td:last-child{text-align:right}
 .ccard .dv{font-weight:700;font-size:17px;margin:6px 0 2px}
 .ccard .code{color:var(--navy);font-weight:700;overflow-wrap:anywhere}
 .viewbtn{min-height:44px;padding:0 16px;font-size:16px}
-#v-work.admin .cols{display:block}
-#v-work.admin #v-list{display:none!important}
-#v-work.admin #v-detail{position:static;max-height:none;max-width:760px;margin:0 auto;display:block}
-#v-work.admin #v-detail .back{display:inline-flex!important}
-#v-work.admin #v-detail .log{max-height:60vh}
-#v-work.admin-detail #admin-head,#v-work.admin-detail #sites-box,#v-work.admin-detail #cases-box,#v-work.admin-detail .counts,#v-work.admin-detail .alertset,#v-work.admin-detail .oldline{display:none!important}
 /* 值守狀態 */
 .duty{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px 12px;align-items:center;background:#fff;border:1px solid var(--rule);border-left:4px solid var(--ok);border-radius:14px;padding:10px 12px 10px 14px;margin:0 0 12px}
 .duty b{display:block;font-size:17px}
@@ -192,7 +186,7 @@ table.ctable td:last-child{text-align:right}
 .tabs button{min-height:48px;padding:0 16px;border:0;border-bottom:3px solid transparent;background:none;font:inherit;font-weight:500;color:var(--ink2);cursor:pointer;margin-bottom:-1px}
 .tabs button[aria-current=page]{color:var(--navy);border-bottom-color:var(--navy);font-weight:700}
 #v-work.tab-accounts .casegrp,#v-work.tab-backup .casegrp{display:none!important}
-.panel h2{margin:0}
+.panel h2{margin:0;font-size:28px;line-height:1.35}
 .panel h3{font-size:17px;margin:22px 0 8px}
 .hint{margin:0 0 6px;color:var(--ink2);font-size:15px}
 .acctag{display:inline-flex;align-items:center;min-height:26px;padding:0 10px;border-radius:999px;font-size:14px;font-weight:700;background:var(--okbg);color:var(--ok)}
@@ -223,6 +217,91 @@ table.ctable td:last-child{text-align:right}
 .whosite{font-size:24px;font-weight:700;color:var(--navy);margin:6px 0 2px}
 .chk{display:flex;align-items:center;gap:8px;min-height:44px;font-size:15px}
 .chk input{width:20px;height:20px;accent-color:var(--blue)}
+/* ───── S18 設計：安靜的值班工作台（GPT 提案，Claude 採入） ───── */
+:root{--soft:#F5F7FA;--newbg:#FFF3E8;--newink:#8A3F0C;--warn:#FFF3E8;--warnink:#8A3F0C;--err:#A92E31;--errbg:#FFF0F0;--ok:#176448;--okbg:#EAF5EF;--r-ctl:10px;--r-panel:16px;--r-msg:12px;--r-label:6px;--ease:cubic-bezier(.2,0,0,1)}
+body{background:var(--soft);font-variant-numeric:tabular-nums}
+.top{background:#fff;color:var(--ink);border-bottom:1px solid var(--rule)}
+.top .in{min-height:64px}
+.top b{display:flex;align-items:center;gap:12px;color:var(--navy);font-size:20px}
+.top b::before{content:"";flex:none;width:4px;height:24px;border-radius:2px;background:var(--orange)}
+.top .scope{color:var(--ink2);font-size:15px}
+.top .out{border:1px solid var(--blue);color:var(--blue);background:#fff;border-radius:var(--r-ctl);font-weight:700}
+.top :focus-visible{outline-color:var(--navy)!important}
+.page{padding-top:20px}
+h1{font-size:32px;line-height:1.35}
+.box{border-radius:var(--r-panel);border-color:var(--rule)}
+select,input[type=text],input[type=email],input[type=password],textarea{border-width:1px;border-radius:var(--r-ctl);min-height:48px}
+.btn{border-radius:var(--r-ctl);min-height:48px;transition:background-color 120ms var(--ease),border-color 120ms var(--ease)}
+.btn.line{border-width:1px}
+.btn.big{min-height:56px}
+.chip,.acctag{border-radius:var(--r-label)}
+.counts div{border-radius:var(--r-panel)}
+.counts strong{color:var(--navy)}
+.counts .n strong{color:var(--newink)}
+.alertset{border-radius:var(--r-panel);border-left-width:1px;border-left-color:var(--rule)}
+.alertset.on{border-left-color:var(--rule)}
+.alertset #al-t{color:var(--warnink)}
+.alertset.on #al-t{color:var(--ok)}
+.alertset.fail #al-t{color:var(--err)}
+.case{border-width:1px;border-radius:var(--r-panel)}
+.case.new{box-shadow:none;border-color:var(--rule);border-left:4px solid var(--orange)}
+.case[aria-current=true]{box-shadow:0 0 0 2px var(--blue);border-color:var(--blue)}
+.case .code{display:block;color:var(--navy);font-weight:700;font-size:15px;margin-bottom:4px}
+.msg{border-radius:var(--r-msg)}
+.msg.cust{background:var(--info);border:0}
+.msg.adm{align-self:flex-end;background:#fff;border:1px solid var(--rule);color:var(--ink)}
+.msg.adm small{color:var(--ink2)}
+.log{border-radius:var(--r-panel)}
+dialog{border-radius:var(--r-panel);box-shadow:0 16px 48px rgb(18 26 38 / 16%)}
+.radios label{border-width:1px;border-radius:var(--r-ctl)}
+.tpl button{border-width:1px;border-radius:var(--r-ctl)}
+.filter button{border-width:1px;border-radius:var(--r-ctl);min-width:120px;font-weight:700;color:var(--blue);border-color:var(--blue)}
+.filter button[aria-pressed=true]{background:var(--blue);border-color:var(--blue)}
+/* 狀態提示框：左側色條＋淺底 */
+.note-box{border-radius:var(--r-panel);padding:14px 16px 14px 18px;border-left:4px solid var(--navy);background:var(--info);color:var(--navy);margin:0 0 12px}
+.note-box b{display:block;font-size:17px}
+.note-box span{display:block;font-size:15px}
+.note-box.ok{background:var(--okbg);border-left-color:var(--ok);color:var(--ok)}
+.note-box.warn{background:var(--warn);border-left-color:var(--warnink);color:var(--warnink)}
+.note-box.bad{background:var(--errbg);border-left-color:var(--err);color:var(--err)}
+/* 值守 */
+.duty{display:block;background:none;border:0;padding:0;margin:0 0 14px}
+.duty .note-box{margin:0 0 10px}
+.duty .btn{min-width:240px}
+.duty .err{margin:8px 0 0}
+@media (max-width:767px){.duty .btn{width:100%}}
+/* 分頁：按鈕組 */
+.tabs{gap:8px;border-bottom:0;margin:0 0 18px}
+.tabs button{min-height:48px;min-width:160px;padding:0 16px;border:1px solid var(--blue);border-radius:var(--r-ctl);background:#fff;color:var(--blue);font-weight:700;margin:0}
+.tabs button[aria-current=page]{background:var(--blue);color:#fff;border-color:var(--blue)}
+@media (max-width:767px){.tabs{display:grid;grid-template-columns:repeat(3,1fr)}.tabs button{min-width:0;padding:0 6px}}
+/* 管理員：案件先行 */
+.prio:empty{display:none}
+.prio li{margin:2px 0}
+.prio ul{margin:4px 0 0;padding-left:1.2em}
+.admsub{margin:2px 0 4px;color:var(--ink2)}
+/* 確認場域 */
+.whocity{margin:10px 0 0;color:var(--ink2);font-weight:500}
+.whosite{margin:2px 0 6px;font-size:26px;line-height:1.35;word-break:keep-all;overflow-wrap:anywhere}
+@media (max-width:520px){#who .acts,#away-dlg .acts{flex-direction:column-reverse}}
+/* 備援設定：左右兩欄 */
+.bkgrid{display:grid;gap:16px;margin-top:12px}
+@media (min-width:960px){.bkgrid{grid-template-columns:minmax(0,1fr) minmax(0,1fr);align-items:start}}
+.bkpanel{background:#fff;border:1px solid var(--rule);border-radius:var(--r-panel);padding:20px}
+.bkpanel h3{margin:0 0 6px;font-size:18px}
+.bkpanel .btn{width:100%;margin-top:12px}
+.rcp{display:flex;gap:8px;align-items:center;margin:0 0 8px}
+.rcp input{flex:1}
+.rcp .btn{width:auto;margin:0;min-width:72px}
+.modes{display:grid;gap:8px;margin:6px 0 12px}
+.modes label{display:flex;align-items:center;gap:10px;min-height:48px;padding:0 14px;border:1px solid var(--line);border-radius:var(--r-ctl);cursor:pointer}
+.modes input{width:20px;height:20px;accent-color:var(--blue)}
+.sumlist{margin:6px 0 0;padding:0;list-style:none}
+.sumlist li{display:flex;justify-content:space-between;gap:10px;align-items:center;min-height:48px;border-bottom:1px solid var(--rule)}
+.sumlist button{min-height:44px}
+.fielderr{color:var(--err);font-size:15px;margin:4px 0 0;font-weight:500}
+.fielderr:empty{display:none}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{transition:none!important;animation:none!important;scroll-behavior:auto!important}}
 [hidden]{display:none!important}
 @media (max-width:959px){
   #v-work.in-detail .counts{display:none}
@@ -282,13 +361,14 @@ table.ctable td:last-child{text-align:right}
       <button type="button" data-tab="backup">備援通知</button>
     </nav>
     <div class="casegrp">
-      <h1 id="admin-title" tabindex="-1">跨場案件總覽</h1>
-      <p class="muted" style="margin:0">可查看並處理各場案件；接手後，該場管理室會看到由你處理。</p>
+      <h1 id="admin-title" tabindex="-1" style="margin-top:0">跨場案件總覽</h1>
+      <p class="admsub">可接手、回覆及結案；回覆前請核對場站與案號。客人會看到「跨場管理員」。</p>
       <p class="syncline" id="syncline" role="status">讀取中…</p>
+      <div class="note-box warn prio" id="prio" role="status"></div>
     </div>
   </div>
   <div class="duty" id="duty" hidden>
-    <div><b id="duty-t">值守中</b><span id="duty-p">離開座位前請按「暫時離開」，新求助會立即通知備援人員。</span></div>
+    <div class="note-box ok" id="duty-box" role="status"><b id="duty-t">本場值守中</b><span id="duty-p">離開管理位置前，請先檢查進行中案件並設定暫離。</span></div>
     <button class="btn line" type="button" id="duty-btn">暫時離開</button>
     <p class="err" id="e-duty" role="alert"></p>
   </div>
@@ -304,35 +384,6 @@ table.ctable td:last-child{text-align:right}
     <div><span>今日已結案</span><strong id="n-closed">0</strong></div>
   </div>
   <p class="oldline casegrp" id="n-oldline" hidden></p>
-  <section class="box sitesbox casegrp" id="sites-box" hidden aria-labelledby="sites-title">
-    <div class="sbhead">
-      <div><h2 id="sites-title">場站概況</h2><p class="muted small" id="sites-sub" style="margin:2px 0 0"></p></div>
-      <div class="sbtools"><a class="lnk only-narrow" href="#cases-title" id="jump-cases">跳至案件</a>
-        <label class="vh" for="site-sort">排序方式</label><select id="site-sort" class="sortsel"><option value="wait">排序：最久等候</option><option value="n">排序：待接手件數</option><option value="name">排序：場名</option></select></div>
-    </div>
-    <div class="tablewrap only-wide"><table class="sites">
-      <thead><tr><th scope="col">場站</th><th scope="col">值守</th><th scope="col" class="num">待接手</th><th scope="col" class="num">處理中</th><th scope="col" class="num">今日結案</th><th scope="col" class="num">最久等候</th></tr></thead>
-      <tbody id="sites-body"></tbody>
-    </table></div>
-    <div class="cardlist only-narrow" id="sites-cards"></div>
-    <button type="button" class="btn line wide morebtn" id="sites-more" aria-expanded="false" hidden></button>
-    <button type="button" class="btn line wide morebtn" id="closed-toggle" aria-expanded="false" aria-controls="closed-list" hidden></button>
-    <p class="muted small closedlist" id="closed-list" hidden></p>
-  </section>
-  <section class="box casesbox casegrp" id="cases-box" hidden aria-labelledby="cases-title">
-    <div class="sbhead"><h2 id="cases-title" tabindex="-1">案件清單</h2><span class="muted small" id="cases-count"></span></div>
-    <div class="filters">
-      <label class="vh" for="f-site">篩選場站</label><select id="f-site"><option value="">場站：全部已開放</option></select>
-      <label class="vh" for="f-state">篩選狀態</label><select id="f-state"><option value="open">狀態：進行中</option><option value="closed">狀態：今日結案</option></select>
-    </div>
-    <div class="tablewrap only-wide"><table class="ctable">
-      <thead><tr><th scope="col">案件編號</th><th scope="col">場站</th><th scope="col">位置｜狀況</th><th scope="col">狀態</th><th scope="col">本輪時間</th><th scope="col"><span class="vh">操作</span></th></tr></thead>
-      <tbody id="cases-body"></tbody>
-    </table></div>
-    <div class="cardlist only-narrow" id="cases-cards"></div>
-    <p class="empty" id="cases-empty" hidden>此條件沒有案件。</p>
-    <p class="muted small" id="cases-foot" style="margin:10px 0 0"></p>
-  </section>
 
   <!-- 管理員：帳號管理 -->
   <section class="box panel" id="tab-accounts" hidden aria-labelledby="acc-title">
@@ -350,33 +401,56 @@ table.ctable td:last-child{text-align:right}
   </section>
 
   <!-- 管理員：備援通知 -->
-  <section class="box panel" id="tab-backup" hidden aria-labelledby="bk-title">
+  <section class="panel" id="tab-backup" hidden aria-labelledby="bk-title">
     <h2 id="bk-title" tabindex="-1">備援通知</h2>
     <p class="muted small" style="margin:2px 0 0">管理室按「暫時離開」時，或求助超過設定時間仍無人接手時，系統會寄信通知備援信箱；同一次求助只通知一次。</p>
     <p class="loadst" id="bk-st" role="status" style="margin-top:12px">讀取設定中…</p>
     <div id="bk-form" hidden>
-      <div class="bkstat" id="bk-stat"></div>
-      <label class="f" for="bk-timeout">無人接手多久後通知</label>
-      <select id="bk-timeout" style="max-width:320px"></select>
-      <label class="f" for="bk-default">預設備援信箱</label>
-      <p class="hint" id="bk-default-h">未另外指定的場站都寄到這組。每行一個信箱，最多 10 個。</p>
-      <textarea id="bk-default" rows="3" aria-describedby="bk-default-h" spellcheck="false" autocapitalize="none" placeholder="例：backup@example.com"></textarea>
-      <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:10px">
-        <button class="btn line sm" type="button" id="bk-test-default">寄測試信給預設信箱</button>
-        <button class="btn line sm" type="button" id="bk-applyall">全部場站改用預設信箱</button>
+      <div class="note-box warn" id="bk-stat" role="status"></div>
+      <div class="bkgrid">
+        <section class="bkpanel" aria-labelledby="bk-def-t">
+          <h3 id="bk-def-t">預設備援信箱</h3>
+          <p class="hint" id="bk-def-h">沒有另行指定的場站都寄到這組；可填多個，同時寄出。</p>
+          <div id="bk-def-list"></div>
+          <button class="btn line sm" type="button" id="bk-def-add" style="width:auto;margin-top:0">新增收件人</button>
+          <p class="fielderr" id="e-bk-def" role="alert"></p>
+          <label class="f" for="bk-timeout">無人接手多久後通知</label>
+          <select id="bk-timeout"></select>
+          <p class="hint" style="margin-top:6px">這是通知的觸發時間，不是人員回應時間的承諾；本場「暫時離開」時不等待，直接通知。</p>
+          <button class="btn" type="button" id="bk-save-def">儲存預設與逾時設定</button>
+          <button class="btn line" type="button" id="bk-applyall">預覽套用全部場站</button>
+          <button class="btn line" type="button" id="bk-test-default">寄測試信給預設信箱</button>
+          <p class="muted small" id="bk-default-r" role="status" style="margin:8px 0 0"></p>
+        </section>
+        <section class="bkpanel" aria-labelledby="bk-site-t">
+          <h3 id="bk-site-t">各場設定</h3>
+          <label class="f" for="bk-site" style="margin-top:6px">場站</label>
+          <select id="bk-site"></select>
+          <div class="modes" role="radiogroup" aria-label="這個場站的備援信箱">
+            <label><input type="radio" name="bk-mode" value="default"> 沿用預設信箱</label>
+            <label><input type="radio" name="bk-mode" value="custom"> 另行指定收件人（優先於預設）</label>
+          </div>
+          <div id="bk-site-custom">
+            <div id="bk-site-list"></div>
+            <button class="btn line sm" type="button" id="bk-site-add" style="width:auto;margin-top:0">新增收件人</button>
+          </div>
+          <p class="muted small" id="bk-site-use" role="status" style="margin:8px 0 0"></p>
+          <p class="fielderr" id="e-bk-site" role="alert"></p>
+          <button class="btn" type="button" id="bk-save-site">儲存本場備援設定</button>
+          <button class="btn line" type="button" id="bk-test-site">寄測試信給本場收件人</button>
+          <p class="muted small" id="bk-site-r" role="status" style="margin:8px 0 0"></p>
+          <h3 style="margin-top:20px">另行指定的場站</h3>
+          <ul class="sumlist" id="bk-sum"></ul>
+        </section>
       </div>
-      <p class="muted small" id="bk-default-r" role="status" style="margin:6px 0 0"></p>
-      <h3>各場站</h3>
-      <p class="hint">需要不同聯絡人的場站，改為「另外指定」並填寫信箱。</p>
-      <div id="bk-sites"></div>
-      <div class="savebar"><button class="btn" type="button" id="bk-save">儲存設定</button><span class="note" id="bk-note" role="status">尚無變更</span><p class="err" id="e-bk" role="alert" style="flex-basis:100%;margin:0"></p></div>
+      <p class="note-box" id="bk-note" role="status" style="margin-top:16px" hidden></p>
       <h3>最近紀錄</h3>
       <ul class="loglist" id="bk-log"></ul>
     </div>
   </section>
-  <div class="cols">
+  <div class="cols casegrp">
     <section id="v-list" aria-labelledby="list-title">
-      <h2 id="list-title">本場案件</h2>
+      <h2 id="list-title" tabindex="-1">待處理案件</h2>
       <div id="site-filter-box" hidden style="margin:0 0 10px"><label class="vh" for="site-filter">篩選場站</label><select id="site-filter"><option value="">全部場站</option></select></div>
       <div class="filter" role="group" aria-label="篩選">
         <button type="button" data-f="open" aria-pressed="true">進行中</button>
@@ -417,6 +491,21 @@ table.ctable td:last-child{text-align:right}
       <p class="muted small" id="d-closed-note" hidden></p>
     </section>
   </div>
+  <section class="box sitesbox casegrp" style="margin-top:20px" id="sites-box" hidden aria-labelledby="sites-title">
+    <div class="sbhead">
+      <div><h2 id="sites-title">場站概況</h2><p class="muted small" id="sites-sub" style="margin:2px 0 0"></p></div>
+      <div class="sbtools"><a class="lnk only-narrow" href="#list-title" id="jump-cases">回到案件</a>
+        <label class="vh" for="site-sort">排序方式</label><select id="site-sort" class="sortsel"><option value="wait">排序：最久等候</option><option value="n">排序：待接手件數</option><option value="name">排序：場名</option></select></div>
+    </div>
+    <div class="tablewrap only-wide"><table class="sites">
+      <thead><tr><th scope="col">場站</th><th scope="col">值守</th><th scope="col" class="num">待接手</th><th scope="col" class="num">處理中</th><th scope="col" class="num">今日結案</th><th scope="col" class="num">最久等候</th></tr></thead>
+      <tbody id="sites-body"></tbody>
+    </table></div>
+    <div class="cardlist only-narrow" id="sites-cards"></div>
+    <button type="button" class="btn line wide morebtn" id="sites-more" aria-expanded="false" hidden></button>
+    <button type="button" class="btn line wide morebtn" id="closed-toggle" aria-expanded="false" aria-controls="closed-list" hidden></button>
+    <p class="muted small closedlist" id="closed-list" hidden></p>
+  </section>
   <p style="margin-top:28px"><button type="button" class="reset" id="reset" hidden>清除試用資料</button></p>
 </div>
 
@@ -424,9 +513,33 @@ table.ctable td:last-child{text-align:right}
 <dialog id="who" aria-labelledby="who-t" aria-describedby="who-p">
   <h2 id="who-t">確認登入場域</h2>
   <p id="who-p" style="margin:0">您目前登入的場域是：</p>
+  <p class="whocity" id="who-city"></p>
   <p class="whosite" id="who-site"></p>
   <p class="muted small" id="who-acct" style="margin:0"></p>
-  <div class="acts"><button class="btn line" type="button" id="who-no">不是，重新登入</button><button class="btn" type="button" id="who-ok">確認進入</button></div>
+  <div class="acts"><button class="btn line" type="button" id="who-no">不是，登出重登</button><button class="btn" type="button" id="who-ok">確認，進入管理室</button></div>
+</dialog>
+
+<!-- 暫時離開前確認 -->
+<dialog id="away-dlg" aria-labelledby="aw-t" aria-describedby="aw-p">
+  <h2 id="aw-t">設定本場暫時離開？</h2>
+  <p id="aw-p" style="margin:0">暫離期間，新求助會立即寄信通知備援人員。</p>
+  <p class="note-box warn" id="aw-work" style="margin:12px 0 0" hidden></p>
+  <p class="muted small" style="margin:10px 0 0">這是本場所有登入裝置共用的狀態；回到座位請按「我回來了」。</p>
+  <div class="acts"><button class="btn line" type="button" id="aw-no">取消</button><button class="btn" type="button" id="aw-ok">確認暫時離開</button></div>
+</dialog>
+
+<!-- 管理員：套用全部場站前確認 -->
+<dialog id="apply-dlg" aria-labelledby="ap-t">
+  <h2 id="ap-t">套用到全部場站前確認</h2>
+  <p class="muted small" style="margin:0">只變更設定，不會寄出測試信。</p>
+  <dl class="kv" style="margin:12px 0" id="ap-kv"></dl>
+  <p class="note-box warn" id="ap-note"></p>
+  <div class="modes" role="radiogroup" aria-label="另行指定的場站">
+    <label><input type="radio" name="ap-mode" value="keep" checked> 保留各場另行指定的信箱（建議）</label>
+    <label><input type="radio" name="ap-mode" value="overwrite"> 改為覆寫：全部場站都用預設信箱</label>
+  </div>
+  <p class="err" id="e-ap" role="alert"></p>
+  <div class="acts"><button class="btn line" type="button" id="ap-no">取消</button><button class="btn" type="button" id="ap-ok">確認套用</button></div>
 </dialog>
 
 <!-- 管理員：新增／修改帳號、重設密碼、停用 -->
@@ -486,6 +599,8 @@ table.ctable td:last-child{text-align:right}
   // 範本：按鈕顯示短標籤，點選後把完整句子放進輸入框
   var TPL = [['到場協助', '我會到現場協助，請在安全處等候。'], ['請到管理室', '請依指標到管理室，可使用筆談。'], ['已處理完成', '已處理完成，可以離場。']];
   var TPL_GATE = ['依權限處理柵欄', '請稍候，我將依權限協助處理柵欄。'];
+  // 跨場管理員遠端處理：不說「我會到現場」，避免冒稱人已在場
+  var TPL_ADMIN = [['確認中', '我正在確認處理方式，請在此頁等候回覆。'], ['已聯繫現場', '已聯繫本場人員協助；目前由跨場管理員與您文字聯繫。'], ['請到管理室', '請依指標到管理室，可使用筆談。'], ['已處理完成', '已處理完成，可以離場。']];
   // 只有確認問題排除的兩項，客人端才顯示「本次協助已完成」；其餘顯示「本次對話已結束」並保留「仍需要協助」
   var RESULTS = ['問題已排除，可正常離場', '已於現場確認問題排除', '已轉管理室接續處理', '客人已離開，未確認是否排除'];
   var STATUS = { new: ['new', '新案件・尚未接手'], accepted: ['acc', '已接手'], working: ['work', '處理中'], closed: ['closed', '已結案'] };
@@ -533,7 +648,8 @@ table.ctable td:last-child{text-align:right}
   function confirmWho(){
     var s = SITES.concat(ALL_SITES).filter(function(x){ return x.id === me.site; })[0];
     $('who-p').textContent = me.role === 'admin' ? '您目前登入的是：' : '您目前登入的場域是：';
-    $('who-site').textContent = me.role === 'admin' ? '跨場管理（全部場站）' : (s ? s.city + '｜' + s.name : me.siteName);
+    $('who-city').textContent = me.role === 'admin' ? '' : (s ? s.city : '');
+    $('who-site').textContent = me.role === 'admin' ? '跨場管理（全部場站）' : (s ? s.name : me.siteName);
     $('who-acct').textContent = (me.account ? '帳號：' + me.account + '　' : '') + '名稱：' + me.name;
     $('v-login').hidden = false; $('login').disabled = true;
     $('who').returnValue = ''; $('who').showModal(); $('who-ok').focus();
@@ -596,25 +712,25 @@ table.ctable td:last-child{text-align:right}
   function start(){
     $('v-login').hidden = true; $('v-work').hidden = false; $('logout').hidden = false;
     ADMIN = me.role === 'admin';
-    $('scope').textContent = ADMIN ? '各場總覽' : me.siteName + '｜本場案件';
-    $('top-t').textContent = ADMIN ? '管理員' : '管理室';
-    document.title = (ADMIN ? '管理員｜' : '管理室｜') + me.siteName;
+    $('scope').textContent = ADMIN ? '' : me.siteName;
+    $('top-t').textContent = ADMIN ? '跨場管理' : '管理室';
+    document.title = (ADMIN ? '跨場管理｜文字求助' : '管理室｜' + me.siteName);
+    if (DEMO && API.demoRole) API.demoRole(me.role);
     if (ADMIN) {
       $('v-work').classList.add('admin');
-      $('admin-head').hidden = false; $('sites-box').hidden = false; $('cases-box').hidden = false;
-      $('top-t').textContent = '文字求助｜跨場管理'; $('scope').textContent = '';
+      $('admin-head').hidden = false; $('sites-box').hidden = false; $('site-filter-box').hidden = false;
+      $('list-title').textContent = '待回覆案件';
       $('loadst').hidden = true;
       $('al-p').textContent = '本頁保持前景且裝置支援時，任一場有新案件都會播放提醒聲。';
       Array.prototype.forEach.call(document.querySelectorAll('#admin-tabs button'), function(b){ b.onclick = function(){ showTab(b.dataset.tab, true); }; });
       API.watchAllPresence(function(p){ presence = p || {}; drawSites(); }, function(){});
       refreshOpen();
       fillSiteFilter();
-      $('f-site').onchange = function(){ siteF = this.value; drawList(); drawSites(); };
-      $('f-state').onchange = function(){ drawAdminCases(); };
+      $('site-filter').onchange = function(){ siteF = this.value; drawList(); drawSites(); };
       $('site-sort').onchange = function(){ drawSites(); };
       $('sites-more').onclick = function(){ showAllSites = !showAllSites; drawSites(); };
       $('closed-toggle').onclick = function(){ var o = $('closed-list').hidden; $('closed-list').hidden = !o; this.setAttribute('aria-expanded', o ? 'true' : 'false'); drawSites(); };
-      $('jump-cases').onclick = function(e){ e.preventDefault(); $('cases-box').scrollIntoView({ block: 'start' }); $('cases-title').focus(); };
+      $('jump-cases').onclick = function(e){ e.preventDefault(); $('v-list').scrollIntoView({ block: 'start' }); $('list-title').focus(); };
       unsub = API.watchAll(onCases, connErr);
       return;
     }
@@ -626,19 +742,32 @@ table.ctable td:last-child{text-align:right}
   // 值守狀態（各場管理室）：暫時離開時，新求助會立即通知備援
   var myPres = null, presence = {};
   function drawDuty(){
-    var away = !!(myPres && myPres.away);
-    $('duty').className = 'duty' + (away ? ' away' : '');
-    $('duty-t').textContent = myPres && myPres.unknown ? '值守狀態讀取失敗' : away ? '暫時離開中' + (myPres.since ? '（' + hm(myPres.since) + ' 起）' : '') : '值守中';
-    $('duty-p').textContent = away ? '新求助會立即寄信通知備援人員。回到座位請按「我回來了」。' : '離開座位前請按「暫時離開」，新求助會立即通知備援人員。';
-    $('duty-btn').textContent = away ? '我回來了' : '暫時離開';
-    $('duty-btn').className = away ? 'btn' : 'btn line';
+    var away = !!(myPres && myPres.away), unk = !!(myPres && myPres.unknown);
+    $('duty-box').className = 'note-box ' + (unk ? 'bad' : away ? 'warn' : 'ok');
+    $('duty-t').textContent = unk ? '值守狀態讀取失敗' : away ? '本場暫離中' + (myPres.since ? '（' + hm(myPres.since) + ' 起）' : '') : '本場值守中';
+    $('duty-p').textContent = unk ? '請確認網路；狀態恢復前，逾時未接手的求助仍會通知備援。' : away ? '新求助會立即進入備援通知流程；已接手的案件仍需完成處理或交接。' : '離開管理位置前，請先檢查進行中案件並設定暫離。';
+    $('duty-btn').textContent = away ? '我回來了，恢復值守' : '暫時離開';
   }
-  $('duty-btn').onclick = function(){
-    var btn = this, away = !(myPres && myPres.away); btn.disabled = true; $('e-duty').textContent = '';
-    API.setPresence(me.site, away, me.name).then(function(){ say(away ? '已設為暫時離開，新求助會立即通知備援。' : '已回到值守。'); })
+  // 暫離前先確認（列出仍在處理中的案件）；狀態以伺服器寫入成功為準，不先假裝已變更
+  function setAway(away){
+    var btn = $('duty-btn'); btn.disabled = true; $('e-duty').textContent = '';
+    API.setPresence(me.site, away, me.name).then(function(){ say(away ? '已設為暫時離開，新求助會立即通知備援。' : '已恢復值守。'); })
       .catch(function(){ $('e-duty').textContent = '連線中斷，值守狀態尚未變更；請再按一次。'; })
       .then(function(){ btn.disabled = false; });
+  }
+  $('duty-btn').onclick = function(){
+    if (myPres && myPres.away) { setAway(false); return; }
+    var mine = cases.filter(function(c){ return (c.status === 'accepted' || c.status === 'working') && c.acceptedDev === DEV; }).length;
+    var waiting = cases.filter(function(c){ return c.status === 'new'; }).length;
+    var t = [];
+    if (mine) t.push('你還有 ' + mine + ' 件處理中的案件，暫離期間客人等不到你的回覆；建議先回覆或結案。');
+    if (waiting) t.push('目前有 ' + waiting + ' 件待接手，確認後會立即通知備援。');
+    $('aw-work').hidden = !t.length; $('aw-work').textContent = t.join('');
+    $('away-dlg').returnValue = ''; $('away-dlg').showModal(); $('aw-no').focus();
   };
+  $('aw-no').onclick = function(){ $('away-dlg').close(); };
+  $('aw-ok').onclick = function(){ $('away-dlg').close('ok'); };
+  $('away-dlg').addEventListener('close', function(){ if ($('away-dlg').returnValue === 'ok') setAway(true); $('duty-btn').focus(); });
   var lastSync = 0;
   function connErr(e){
     var t = e && e.code === 'denied' ? '此帳號沒有' + (ADMIN ? '管理員' : '本場') + '權限，請登出後重新登入。' : '連線中斷' + (lastSync ? '，以下為 ' + hm(lastSync) + ' 的資料' : '') + '；請確認網路。';
@@ -680,13 +809,13 @@ table.ctable td:last-child{text-align:right}
   // 已開放場站以後台為準（有啟用中帳號的場站）；讀不到時沿用網頁內建清單
   function refreshOpen(){ if (LIVE && API.openSites) API.openSites().then(function(ids){ if (ids) { PILOT = ids; fillSiteFilter(); drawSites(); } }); }
   function fillSiteFilter(){
-    var f = $('f-site'), v = f.value; f.length = 1;
-    openSites().forEach(function(s){ var o = document.createElement('option'); o.value = s.id; o.textContent = '場站：' + s.name; f.appendChild(o); });
+    var f = $('site-filter'), v = f.value; f.length = 1;
+    openSites().forEach(function(s){ var o = document.createElement('option'); o.value = s.id; o.textContent = s.name; f.appendChild(o); });
     f.value = v; if (f.value !== v) { siteF = ''; f.value = ''; }
   }
   function dutyText(id){ var p = presence[id]; return p && p.away ? '暫離' + (p.since ? ' ' + hm(p.since) + ' 起' : '') : '值守中'; }
   function el(tag, cls, text){ var e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; }
-  function filterSite(id){ siteF = siteF === id ? '' : id; $('f-site').value = siteF; drawList(); drawSites(); $('cases-box').scrollIntoView({ block: 'start' }); $('cases-title').focus(); }
+  function filterSite(id){ siteF = siteF === id ? '' : id; $('site-filter').value = siteF; drawList(); drawSites(); $('v-list').scrollIntoView({ block: 'start' }); $('list-title').focus(); }
   function drawSites(){
     if (!ADMIN) return;
     var opens = openSites(), openIds = {}; opens.forEach(function(s){ openIds[s.id] = 1; });
@@ -745,32 +874,21 @@ table.ctable td:last-child{text-align:right}
     if (c.escalateFailed) return el('span', 'chip esc', '備援通知未送出');
     return null;
   }
+  // 管理員：優先處理提示（暫離場站有待接手、備援通知未送出）
   function drawAdminCases(){
     if (!ADMIN) return;
-    var st = $('f-state').value;
-    var show = cases.filter(function(c){ return (st === 'closed' ? c.status === 'closed' && isToday(c.closedAt) : c.status !== 'closed') && (!siteF || c.site === siteF); });
-    show.sort(function(a, b){ return st === 'closed' ? b.closedAt - a.closedAt : (ORDER[a.status] - ORDER[b.status]) || (a.queuedAt - b.queuedAt); });
-    var fa = document.activeElement, focusId = fa && fa.dataset ? fa.dataset.view : null;
-    var tb = $('cases-body'), cards = $('cases-cards'); tb.innerHTML = ''; cards.innerHTML = '';
-    $('cases-count').textContent = (st === 'closed' ? '今日結案 ' : '進行中 ') + show.length + ' 件';
-    $('cases-empty').hidden = show.length > 0;
-    $('cases-foot').textContent = '已顯示 ' + show.length + ' 件';
-    show.forEach(function(c){
-      var label = (c.device || '未填位置') + '｜' + c.category, sn = c.siteName || siteName(c.site);
-      var tr = el('tr');
-      tr.appendChild(el('td', 'code', c.code)); tr.appendChild(el('td', '', sn)); tr.appendChild(el('td', '', label));
-      var t1 = el('td'); t1.appendChild(el('span', 'chip ' + STATUS[c.status][0], STATUS[c.status][1].replace('・尚未接手', ''))); var ec = escChip(c); if (ec) { t1.appendChild(document.createTextNode(' ')); t1.appendChild(ec); } tr.appendChild(t1);
-      tr.appendChild(el('td', c.status === 'new' ? 'wt' : '', caseTime(c)));
-      var t2 = el('td'), b = el('button', 'btn line viewbtn', c.status === 'new' ? '查看／接手' : '查看案件'); b.type = 'button'; b.dataset.view = c.id; b.setAttribute('aria-label', '查看案件 ' + c.code + '，' + label); b.onclick = function(){ open(c.id); }; t2.appendChild(b); tr.appendChild(t2);
-      tb.appendChild(tr);
-      var cd = el('article', 'ccard');
-      var top = el('div', 'top2'), chs = el('span'); chs.appendChild(el('span', 'chip ' + STATUS[c.status][0], STATUS[c.status][1].replace('・尚未接手', ''))); var ec2 = escChip(c); if (ec2) { chs.appendChild(document.createTextNode(' ')); chs.appendChild(ec2); } top.appendChild(chs); top.appendChild(el('span', c.status === 'new' ? 'wt' : 'muted', caseTime(c))); cd.appendChild(top);
-      cd.appendChild(el('p', 'dv', label)); cd.appendChild(el('p', 'muted', sn));
-      var ft = el('div', 'foot'); ft.appendChild(el('span', 'code', c.code));
-      var b2 = el('button', 'btn line viewbtn', c.status === 'new' ? '查看／接手' : '查看案件'); b2.type = 'button'; b2.dataset.view = c.id + '-m'; b2.setAttribute('aria-label', '查看案件 ' + c.code + '，' + label); b2.onclick = function(){ open(c.id); }; ft.appendChild(b2);
-      cd.appendChild(ft); cards.appendChild(cd);
-      if (focusId === c.id) b.focus(); else if (focusId === c.id + '-m') b2.focus();
+    var items = [];
+    cases.forEach(function(c){
+      if (c.status !== 'new') return;
+      var sn = c.siteName || siteName(c.site), p = presence[c.site];
+      if (c.escalateFailed) items.push(sn + '：' + c.code + ' 備援通知未送出，尚未接手');
+      else if (p && p.away) items.push(sn + ' 暫離：' + c.code + ' 尚未接手' + (c.escalated ? '（已通知備援）' : ''));
     });
+    var box = $('prio'); box.innerHTML = '';
+    if (!items.length) return;
+    box.appendChild(el('b', '', '優先處理'));
+    var ul = el('ul'); items.slice(0, 5).forEach(function(t){ ul.appendChild(el('li', '', t)); }); if (items.length > 5) ul.appendChild(el('li', '', '另有 ' + (items.length - 5) + ' 件'));
+    box.appendChild(ul);
   }
   // 案件清單：重畫後把鍵盤焦點放回原本那一件
   function drawList(){
@@ -780,7 +898,7 @@ table.ctable td:last-child{text-align:right}
     $('n-oldline').textContent = wl.length ? '最久等候：' + ago(Math.min.apply(null, wl.map(function(c){ return c.queuedAt; }))).replace('前', '') : '';
     $('n-work').textContent = cases.filter(function(c){ return c.status === 'accepted' || c.status === 'working'; }).length;
     $('n-closed').textContent = cases.filter(function(c){ return c.status === 'closed' && isToday(c.closedAt); }).length;
-    if (ADMIN) { drawAdminCases(); return; }
+    if (ADMIN) drawAdminCases();
     var show = cases.filter(function(c){ return (filter === 'closed' ? c.status === 'closed' : c.status !== 'closed') && (!siteF || c.site === siteF); });
     show.sort(function(a, b){ return filter === 'closed' ? b.closedAt - a.closedAt : (ORDER[a.status] - ORDER[b.status]) || (a.queuedAt - b.queuedAt); });
     var ul = $('list'), fa = document.activeElement, focusId = fa && fa.classList && fa.classList.contains('case') ? fa.dataset.id : null;
@@ -795,7 +913,7 @@ table.ctable td:last-child{text-align:right}
       var ec = escChip(c); if (ec) row.appendChild(ec);
       if (c.cycle > 1 && c.status === 'new') { var r = document.createElement('span'); r.className = 'chip esc'; r.textContent = '客人再次求助'; row.appendChild(r); }
       var age = document.createElement('span'); age.className = 'age'; age.dataset.t = c.status === 'closed' ? c.closedAt : c.queuedAt; age.textContent = ago(+age.dataset.t); row.appendChild(age);
-      if (ADMIN) { var sn = document.createElement('span'); sn.className = 'site'; sn.textContent = c.siteName || siteName(c.site); b.appendChild(sn); }
+      var cd = document.createElement('span'); cd.className = 'code'; cd.textContent = c.code + (ADMIN ? '｜' + (c.siteName || siteName(c.site)) : ''); b.appendChild(cd);
       var dev = document.createElement('p'); dev.className = 'dev'; dev.textContent = (c.device || '未填位置') + '｜' + c.category;
       var pre = document.createElement('p'); pre.className = 'pre'; pre.textContent = c.lastCustomerText || '';
       b.appendChild(row); b.appendChild(dev); b.appendChild(pre);
@@ -816,7 +934,6 @@ table.ctable td:last-child{text-align:right}
     if (sel !== id) { if (unDetail) unDetail(); detail = undefined; unDetail = API.watchCase(id, function(c){ detail = c; if (sel === id) drawDetail(); }); }
     if (sel && sel !== id) drafts[sel] = $('d-draft').value;
     if (sel !== id) { $('d-msgs').innerHTML = ''; shown = {}; overArm = ''; resetOver(); $('e-accept').textContent = ''; $('e-reply').textContent = ''; }
-    if (ADMIN && !sel) { adminScroll = window.scrollY; $('v-work').classList.add('admin-detail'); $('back').textContent = '← 返回總覽'; window.scrollTo(0, 0); }
     sel = id; $('v-detail').hidden = false; $('v-work').classList.add('in-detail');
     $('d-draft').value = drafts[id] || '';
     if (!matchMedia('(min-width:960px)').matches) $('v-list').hidden = true;
@@ -826,12 +943,6 @@ table.ctable td:last-child{text-align:right}
   $('back').onclick = function(){
     var id = sel; if (id) drafts[id] = $('d-draft').value;
     sel = null; if (unDetail) unDetail(); unDetail = null; detail = null; $('v-work').classList.remove('in-detail'); $('v-detail').hidden = true; $('v-list').hidden = false; drawList();
-    if (ADMIN) {
-      $('v-work').classList.remove('admin-detail'); window.scrollTo(0, adminScroll);
-      var vb = document.querySelector('[data-view="' + id + '"]') || document.querySelector('[data-view="' + id + '-m"]');
-      if (vb && vb.offsetParent) vb.focus(); else { var vm = document.querySelector('[data-view="' + id + '-m"]'); if (vm && vm.offsetParent) vm.focus(); else $('cases-title').focus(); }
-      return;
-    }
     var b = document.querySelector('.case[data-id="' + id + '"]') || document.querySelector('.case'); if (b) b.focus(); else $('list-title').focus();
   };
   var adminScroll = 0;
@@ -845,7 +956,7 @@ table.ctable td:last-child{text-align:right}
     var c = detail && detail.id === sel ? detail : null;
     if (!c) { if (detail === undefined && sel) return; $('v-detail').hidden = true; $('v-list').hidden = false; sel = null; if ($('dlg').open) $('dlg').close(); return; }
     $('d-title').textContent = (c.device || '未填位置') + '｜' + c.category;
-    $('d-sub').textContent = (ADMIN ? (c.siteName || siteName(c.site)) + '・' : '') + c.code + '・' + hm(c.queuedAt) + ' 送出（' + ago(c.queuedAt) + '）' + (c.cycle > 1 ? '・第 ' + c.cycle + ' 次求助' : '');
+    $('d-sub').textContent = (ADMIN ? '場站：' + (c.siteName || siteName(c.site)) + '・' : '') + c.code + '・' + hm(c.queuedAt) + ' 送出（' + ago(c.queuedAt) + '）' + (c.cycle > 1 ? '・第 ' + c.cycle + ' 次求助' : '');
     $('d-chip').className = 'chip ' + STATUS[c.status][0]; $('d-chip').textContent = STATUS[c.status][1];
     $('d-dev').textContent = c.device || '未填位置';
     $('d-cat').textContent = c.category;
@@ -854,7 +965,7 @@ table.ctable td:last-child{text-align:right}
     var log = $('d-log'), stick = log.scrollHeight - log.scrollTop - log.clientHeight < 60 || first;
     c.messages.forEach(function(m){
       if (shown[m.id]) return; shown[m.id] = 1;
-      var d = m.from === 'system' ? bubble('sys', '', m.text) : bubble(m.from === 'customer' ? 'cust' : 'me', (m.from === 'customer' ? '客人' : '管理室') + '　' + hm(m.at), m.text);
+      var d = m.from === 'system' ? bubble('sys', '', m.text) : bubble(m.from === 'customer' ? 'cust' : m.role === 'admin' && !ADMIN ? 'adm' : 'me', (m.from === 'customer' ? '客人' : m.role === 'admin' ? '跨場管理員' : '管理室') + '　' + hm(m.at), m.text);
       $('d-msgs').appendChild(d);
       if (m.clientMsgId && pending[m.clientMsgId]) delete pending[m.clientMsgId];
     });
@@ -863,6 +974,8 @@ table.ctable td:last-child{text-align:right}
     var isMine = !!c.acceptedDev && c.acceptedDev === DEV && (DEMO || !me.uid || c.acceptedUid === me.uid);
     var activeCase = c.status === 'accepted' || c.status === 'working';
     $('d-gate').hidden = c.status !== 'new';
+    $('d-gate-p').textContent = ADMIN ? '回覆前請核對場站與案號。接手後，客人會看到「跨場管理員已接手」，該場管理室也會看到由你處理。' : '接手後才能回覆。接手後，客人會看到「管理員已接手」。';
+    $('d-accept').textContent = ADMIN ? '以跨場管理員接手' : '接手此案件';
     $('d-taken').hidden = !(activeCase && !isMine);
     $('d-taken-t').textContent = '此案件已由「' + (c.acceptedBy || '其他人員') + '」接手。';
     $('d-reply').hidden = !(isMine && activeCase);
@@ -880,7 +993,7 @@ table.ctable td:last-child{text-align:right}
       $('dlg').close(); $('e-reply').textContent = '案件狀態已變更，結案視窗已關閉。';
     }
     // 範本：柵欄、繳費類才顯示「依權限協助處理柵欄」
-    var tpl = TPL.slice(); if (c.category === '柵欄沒開' || c.category === '繳費失敗') tpl.splice(1, 0, TPL_GATE);
+    var tpl = ADMIN ? TPL_ADMIN.slice() : TPL.slice(); if (!ADMIN && (c.category === '柵欄沒開' || c.category === '繳費失敗')) tpl.splice(1, 0, TPL_GATE);
     var box = $('d-tpl'); if (box.dataset.k !== c.id + c.category) { box.dataset.k = c.id + c.category; box.innerHTML = ''; tpl.forEach(function(t){ var b = document.createElement('button'); b.type = 'button'; b.textContent = t[0]; b.title = t[1]; b.setAttribute('aria-label', t[0] + '：' + t[1]); b.onclick = function(){ $('d-draft').value = t[1]; $('d-draft').focus(); }; box.appendChild(b); }); }
   }
   function drawPending(c){
@@ -898,7 +1011,7 @@ table.ctable td:last-child{text-align:right}
       if (r.ok) { say('已接手，可以回覆了。'); if (sel === id && matchMedia('(pointer:fine)').matches) setTimeout(function(){ if (!$('d-reply').hidden) $('d-draft').focus(); }, 50); }
       else { $('e-accept').textContent = '已由「' + (r.by || '其他人員') + '」接手，無法重複接手。'; say($('e-accept').textContent); }
     }).catch(function(){ $('e-accept').textContent = '連線中斷，尚未接手；請再按一次。'; say($('e-accept').textContent); })
-      .then(function(){ btn.disabled = false; btn.textContent = '接手此案件'; });
+      .then(function(){ btn.disabled = false; btn.textContent = ADMIN ? '以跨場管理員接手' : '接手此案件'; });
   };
   function resetOver(){ var b = $('d-over'); b.textContent = '原接手人員無法處理？改由我接手'; }
   $('d-over').onclick = function(){
@@ -1079,113 +1192,183 @@ table.ctable td:last-child{text-align:right}
     return false;
   };
 
-  // ───────── 管理員：備援通知 ─────────
-  var bk = null, bkDirty = false, bkVer = 0, TIMEOUTS = [1, 2, 3, 5, 10, 15];
+  // ───────── 管理員：備援通知（左：預設與逾時；右：各場設定）─────────
+  var bk = null, bkDirty = false, bkVer = 0, bkState = null, bkSel = '', TIMEOUTS = [1, 2, 3, 5, 10, 15];
   TIMEOUTS.forEach(function(m){ var o = document.createElement('option'); o.value = m; o.textContent = m + ' 分鐘'; $('bk-timeout').appendChild(o); });
-  function splitEmails(t){ return String(t || '').split(/[\s,;，、；]+/).map(function(x){ return x.trim().toLowerCase(); }).filter(Boolean).filter(function(x, i, a){ return a.indexOf(x) === i; }); }
   function okEmail(x){ return x.length <= 120 && /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$/.test(x); }
+  function uniq(list){ return list.map(function(x){ return String(x || '').trim().toLowerCase(); }).filter(Boolean).filter(function(x, i, a){ return a.indexOf(x) === i; }); }
+  // 收件人列：每列一個信箱，可新增、移除（最多 10 個）
+  function rcpEditor(box, addBtn, label, get, set){
+    var rows = [];
+    function draw(focusLast){
+      box.innerHTML = '';
+      if (!rows.length) rows = [''];
+      rows.forEach(function(v, i){
+        var row = el('div', 'rcp'), inp = el('input');
+        inp.type = 'email'; inp.value = v; inp.autocomplete = 'off'; inp.spellcheck = false; inp.setAttribute('autocapitalize', 'none'); inp.placeholder = 'name@example.com';
+        inp.setAttribute('aria-label', label + ' ' + (i + 1));
+        inp.oninput = function(){ rows[i] = inp.value; set(uniq(rows)); setDirty(true); };
+        var rm = el('button', 'btn line', '移除'); rm.type = 'button'; rm.setAttribute('aria-label', '移除' + label + ' ' + (i + 1));
+        rm.onclick = function(){ rows.splice(i, 1); set(uniq(rows)); setDirty(true); draw(); var f = box.querySelector('input'); if (f) f.focus(); };
+        row.appendChild(inp); row.appendChild(rm); box.appendChild(row);
+      });
+      addBtn.disabled = rows.length >= 10;
+      if (focusLast) { var all = box.querySelectorAll('input'); all[all.length - 1].focus(); }
+    }
+    addBtn.onclick = function(){ if (rows.length < 10) { rows.push(''); draw(true); } };
+    return { load: function(){ rows = get().slice(); draw(); } };
+  }
+  var defEd = rcpEditor($('bk-def-list'), $('bk-def-add'), '預設收件人', function(){ return bkState.defaultEmails; }, function(v){ bkState.defaultEmails = v; drawSiteUse(); });
+  var siteEd = rcpEditor($('bk-site-list'), $('bk-site-add'), '本場收件人', function(){ return (bkState.sites[bkSel] || {}).emails || []; }, function(v){ bkState.sites[bkSel] = { mode: 'custom', emails: v }; drawSiteUse(); drawSum(); });
   function loadBackup(){
     var st = $('bk-st'); st.hidden = false; st.className = 'loadst'; st.textContent = '讀取設定中…';
-    API.admin('getSettings').then(function(j){ bk = j; st.hidden = true; $('bk-form').hidden = false; drawBackup(); setDirty(false); })
+    API.admin('getSettings').then(function(j){ bk = j; st.hidden = true; $('bk-form').hidden = false; drawBackup(); setDirty(false); $('bk-note').hidden = true; })
       .catch(function(e){ st.className = 'loadst bad'; st.textContent = aerr(e); });
   }
   function bkSiteIds(){
     var ids = openSites().map(function(s){ return s.id; });
-    Object.keys((bk && bk.settings.sites) || {}).forEach(function(k){ if (ids.indexOf(k) < 0 && bk.settings.sites[k].mode === 'custom') ids.push(k); });
+    Object.keys(bkState.sites).forEach(function(k){ if (ids.indexOf(k) < 0 && bkState.sites[k].mode === 'custom') ids.push(k); });
     return ids;
   }
   function drawBackupStat(){
     var b = $('bk-stat'); b.innerHTML = '';
-    var add = function(cls, t){ var p = el('div', cls, t); b.appendChild(p); };
-    if (bk.demo) add('', '試用版：不會真的寄信，設定只存在這個瀏覽器。');
-    var fresh = bk.lastRun && Date.now() - bk.lastRun < 5 * 60 * 1000;
-    if (!bk.triggerOk) add('bad', '自動檢查排程尚未啟用：請在管理後端執行一次 setup。');
-    else add(fresh ? '' : 'bad', '自動檢查：每分鐘一次｜最後檢查 ' + (bk.lastRun ? dt(bk.lastRun) : '尚未執行') + (fresh ? '' : '（超過 5 分鐘未執行，請確認管理後端）'));
-    if (bk.lastError) add('bad', '最近一次檢查發生錯誤：' + bk.lastError);
-    add(bk.quota < 20 ? 'bad' : '', '今日剩餘寄信額度：' + bk.quota + ' 人次（Gmail 個人帳號每日約 100 人次；寄給 3 個信箱算 3 人次）');
+    var fresh = bk.lastRun && Date.now() - bk.lastRun < 5 * 60 * 1000, bad = !bk.demo && (!bk.triggerOk || !fresh || bk.lastError);
+    b.className = 'note-box ' + (bk.demo ? '' : bad ? 'bad' : 'ok');
+    b.appendChild(el('b', '', bk.demo ? '試用版：不會真的寄信' : bad ? '自動檢查需要注意' : '自動檢查運作中'));
+    var lines = [];
+    if (bk.demo) lines.push('設定只存在這個瀏覽器。');
+    else if (!bk.triggerOk) lines.push('自動檢查排程尚未啟用：請在管理後端執行一次 setup。');
+    else lines.push('每分鐘檢查一次｜最後檢查 ' + (bk.lastRun ? dt(bk.lastRun) : '尚未執行') + (fresh ? '' : '（超過 5 分鐘未執行）'));
+    if (bk.lastError) lines.push('最近一次檢查發生錯誤：' + bk.lastError);
+    if (bk.demo) lines.push('示範剩餘寄信額度：' + bk.quota + ' 位收件人次（模擬）');
+    else lines.push(typeof bk.quota === 'number' ? '今日剩餘寄信額度：' + bk.quota + ' 位收件人次（個人 Gmail 帳號通常每日 100 位；寄給 3 個信箱算 3 位）' : '剩餘寄信額度：尚未取得');
+    lines.forEach(function(t){ b.appendChild(el('span', '', t)); });
   }
   function drawBackup(){
-    var st = bk.settings;
+    bkState = JSON.parse(JSON.stringify(bk.settings || {}));
+    bkState.defaultEmails = bkState.defaultEmails || []; bkState.sites = bkState.sites || {};
     drawBackupStat();
-    $('bk-timeout').value = String(st.timeoutMin || 3);
-    $('bk-default').value = (st.defaultEmails || []).join('\n');
-    var box = $('bk-sites'); box.innerHTML = '';
-    bkSiteIds().forEach(function(id){
-      var v = st.sites[id] || { mode: 'default', emails: [] };
-      var d = el('div', 'bksite'); d.dataset.site = id;
-      var hd = el('div', 'hd'); hd.appendChild(el('b', '', siteLabel(id)));
-      var lab = el('label', 'vh', siteLabel(id) + ' 的備援信箱'); lab.htmlFor = 'bk-m-' + id;
-      var sel = el('select'); sel.id = 'bk-m-' + id;
-      [['default', '使用預設信箱'], ['custom', '另外指定']].forEach(function(o){ var op = el('option', '', o[1]); op.value = o[0]; sel.appendChild(op); });
-      sel.value = v.mode === 'custom' ? 'custom' : 'default';
-      var tb = el('button', 'btn line sm', '寄測試信'); tb.type = 'button'; tb.setAttribute('aria-label', '寄測試信給 ' + siteLabel(id) + ' 的備援信箱');
-      var right = el('div', 'sbtools'); right.appendChild(lab); right.appendChild(sel); right.appendChild(tb); hd.appendChild(right); d.appendChild(hd);
-      var ta = el('textarea'); ta.rows = 2; ta.id = 'bk-e-' + id; ta.spellcheck = false; ta.setAttribute('autocapitalize', 'none'); ta.placeholder = '每行一個信箱'; ta.setAttribute('aria-label', siteLabel(id) + ' 的指定信箱');
-      ta.value = (v.emails || []).join('\n'); d.appendChild(ta);
-      var use = el('p', 'use'); use.setAttribute('role', 'status'); d.appendChild(use);
-      var sync = function(){ ta.hidden = sel.value !== 'custom'; var list = sel.value === 'custom' ? splitEmails(ta.value) : splitEmails($('bk-default').value); use.textContent = (sel.value === 'custom' ? '' : '使用預設信箱：') + (list.length ? '通知 ' + list.length + ' 個信箱' : '尚未設定信箱，逾時或暫離時無法通知'); use.style.color = list.length ? '' : 'var(--err)'; };
-      sel.onchange = function(){ sync(); setDirty(true); if (sel.value === 'custom') ta.focus(); };
-      ta.oninput = function(){ sync(); setDirty(true); };
-      tb.onclick = function(){ testMail(sel.value === 'custom' ? ta.value : $('bk-default').value, siteLabel(id), use, tb); };
-      d._sync = sync; sync();
-      box.appendChild(d);
-    });
-    if (!box.children.length) box.appendChild(el('p', 'muted', '目前沒有已開放的場站。'));
+    $('bk-timeout').value = String(bkState.timeoutMin || 3);
+    defEd.load();
+    var sel = $('bk-site'), ids = bkSiteIds(), open = openSites().map(function(s){ return s.id; });
+    sel.innerHTML = '';
+    ids.forEach(function(id){ var o = el('option', '', siteLabel(id) + (open.indexOf(id) < 0 ? '（未開放）' : '')); o.value = id; sel.appendChild(o); });
+    if (ids.indexOf(bkSel) < 0) bkSel = ids[0] || '';
+    sel.value = bkSel; drawSitePanel(); drawSum();
     var lg = $('bk-log'); lg.innerHTML = '';
-    (bk.log || []).slice(0, 20).forEach(function(x){ var li = el('li'); var tm = el('time', '', dt(x.t)); li.appendChild(tm); li.appendChild(document.createTextNode((x.kind ? '［' + x.kind + '］' : '') + x.text)); lg.appendChild(li); });
+    (bk.log || []).slice(0, 20).forEach(function(x){ var li = el('li'); li.appendChild(el('time', '', dt(x.t))); li.appendChild(document.createTextNode((x.kind ? '［' + x.kind + '］' : '') + x.text)); lg.appendChild(li); });
     if (!lg.children.length) lg.appendChild(el('li', 'muted', '尚無紀錄。'));
   }
-  function syncAllSites(){ Array.prototype.forEach.call(document.querySelectorAll('.bksite'), function(d){ if (d._sync) d._sync(); }); }
-  function setDirty(v){ if (v) bkVer++; bkDirty = v; $('bk-note').className = 'note' + (v ? ' dirty' : ''); $('bk-note').textContent = v ? '有尚未儲存的變更' : '尚無變更'; }
-  $('bk-timeout').onchange = function(){ setDirty(true); };
-  $('bk-default').oninput = function(){ syncAllSites(); setDirty(true); };
+  function siteMode(){ var v = bkState.sites[bkSel]; return v && v.mode === 'custom' ? 'custom' : 'default'; }
+  function drawSitePanel(){
+    var none = !bkSel;
+    $('bk-site').disabled = none; $('bk-save-site').disabled = none; $('bk-test-site').disabled = none;
+    Array.prototype.forEach.call(document.querySelectorAll('[name=bk-mode]'), function(r){ r.checked = r.value === siteMode(); r.disabled = none; });
+    $('bk-site-custom').hidden = siteMode() !== 'custom';
+    if (siteMode() === 'custom') siteEd.load();
+    $('e-bk-site').textContent = ''; $('bk-site-r').textContent = '';
+    drawSiteUse();
+  }
+  function drawSiteUse(){
+    if (!bkSel) { $('bk-site-use').textContent = '目前沒有已開放的場站。'; return; }
+    var list = siteMode() === 'custom' ? (bkState.sites[bkSel].emails || []) : bkState.defaultEmails;
+    $('bk-site-use').textContent = (siteMode() === 'custom' ? '另行指定：' : '沿用預設：') + (list.length ? '會同時寄給 ' + list.length + ' 個信箱' : '尚未設定信箱，逾時或暫離時無法通知');
+    $('bk-site-use').style.color = list.length ? '' : 'var(--err)';
+  }
+  function drawSum(){
+    var ul = $('bk-sum'); ul.innerHTML = '';
+    var custom = bkSiteIds().filter(function(id){ return bkState.sites[id] && bkState.sites[id].mode === 'custom'; });
+    custom.forEach(function(id){
+      var li = el('li'); li.appendChild(el('span', '', siteLabel(id) + '｜' + (bkState.sites[id].emails || []).length + ' 個收件人'));
+      var b = el('button', 'lnk', '編輯'); b.type = 'button'; b.setAttribute('aria-label', '編輯 ' + siteLabel(id) + ' 的備援設定');
+      b.onclick = function(){ bkSel = id; $('bk-site').value = id; drawSitePanel(); $('bk-site').focus(); };
+      li.appendChild(b); ul.appendChild(li);
+    });
+    var rest = bkSiteIds().length - custom.length;
+    ul.appendChild(el('li', 'muted', custom.length ? '其餘 ' + rest + ' 場沿用預設信箱' : '目前全部 ' + rest + ' 場都沿用預設信箱'));
+  }
+  $('bk-site').onchange = function(){ bkSel = this.value; drawSitePanel(); };
+  Array.prototype.forEach.call(document.querySelectorAll('[name=bk-mode]'), function(r){
+    r.onchange = function(){
+      if (!bkSel) return;
+      var cur = bkState.sites[bkSel] || { emails: [] };
+      bkState.sites[bkSel] = { mode: r.value, emails: r.value === 'custom' ? (cur.emails || []) : [] };
+      setDirty(true); drawSitePanel(); drawSum();
+      if (r.value === 'custom') { var f = $('bk-site-list').querySelector('input'); if (f) f.focus(); }
+    };
+  });
+  $('bk-timeout').onchange = function(){ bkState.timeoutMin = Number(this.value); setDirty(true); };
+  function setDirty(v){
+    if (v) bkVer++; bkDirty = v;
+    if (v) { $('bk-note').hidden = false; $('bk-note').className = 'note-box warn'; $('bk-note').textContent = '有尚未儲存的變更'; }
+  }
+  // 檢查格式：錯誤顯示在對應欄位旁並移焦
+  function validate(){
+    $('e-bk-def').textContent = ''; $('e-bk-site').textContent = '';
+    var bad = bkState.defaultEmails.filter(function(x){ return !okEmail(x); });
+    if (bad.length) { $('e-bk-def').textContent = '信箱格式不正確：' + bad.join('、'); var f = $('bk-def-list').querySelector('input'); if (f) f.focus(); return false; }
+    var ids = Object.keys(bkState.sites);
+    for (var i = 0; i < ids.length; i++) {
+      var v = bkState.sites[ids[i]];
+      if (v.mode !== 'custom') continue;
+      var b2 = (v.emails || []).filter(function(x){ return !okEmail(x); });
+      var msg = b2.length ? siteLabel(ids[i]) + '的信箱格式不正確：' + b2.join('、') : !(v.emails || []).length ? siteLabel(ids[i]) + '選了「另行指定」，請填寫收件人，或改回「沿用預設信箱」。' : '';
+      if (msg) { bkSel = ids[i]; $('bk-site').value = ids[i]; drawSitePanel(); $('e-bk-site').textContent = msg; var g = $('bk-site-list').querySelector('input'); if (g) g.focus(); return false; }
+    }
+    return true;
+  }
+  function saveAll(btn, label, out){
+    if (!validate()) return Promise.resolve(false);
+    var sites = {}; Object.keys(bkState.sites).forEach(function(k){ var v = bkState.sites[k]; if (v.mode === 'custom') sites[k] = { mode: 'custom', emails: uniq(v.emails) }; });
+    var settings = { timeoutMin: Number($('bk-timeout').value), defaultEmails: uniq(bkState.defaultEmails), sites: sites };
+    var ver = bkVer; btn.disabled = true; btn.textContent = '儲存中…';
+    return API.admin('saveSettings', { settings: settings }).then(function(){
+      bk.settings = settings; say('已儲存備援通知設定。');
+      if (ver !== bkVer) { $('bk-note').textContent = '已儲存先前的內容；之後的修改尚未儲存'; return true; }
+      bkDirty = false; $('bk-note').hidden = false; $('bk-note').className = 'note-box ok'; $('bk-note').textContent = '已儲存（' + hm(Date.now()) + '）';
+      return API.admin('getSettings').then(function(j){ if (ver === bkVer) { bk = j; drawBackupStat(); drawBackup(); } }).catch(function(){}).then(function(){ return true; });
+    }).catch(function(x){ out.textContent = aerr(x); return false; })
+      .then(function(r){ btn.disabled = false; btn.textContent = label; return r; });
+  }
+  $('bk-save-def').onclick = function(){ saveAll(this, '儲存預設與逾時設定', $('e-bk-def')); };
+  $('bk-save-site').onclick = function(){ saveAll(this, '儲存本場備援設定', $('e-bk-site')); };
+  // 套用全部場站：先預覽影響；預設保留各場另行指定，覆寫須另選
   $('bk-applyall').onclick = function(){
-    Array.prototype.forEach.call(document.querySelectorAll('.bksite select'), function(s){ s.value = 'default'; });
-    syncAllSites(); setDirty(true); say('全部場站已改用預設信箱，按「儲存設定」後生效。');
-    $('bk-default-r').textContent = '全部場站已改用預設信箱，按「儲存設定」後生效。';
+    var ids = bkSiteIds(), custom = ids.filter(function(id){ return bkState.sites[id] && bkState.sites[id].mode === 'custom'; });
+    var kv = $('ap-kv'); kv.innerHTML = '';
+    [['預設信箱', bkState.defaultEmails.length ? uniq(bkState.defaultEmails).join('、') : '（尚未填寫）'], ['逾時通知', $('bk-timeout').value + ' 分鐘'], ['套用範圍', ids.length + ' 個場站']].forEach(function(r){ kv.appendChild(el('dt', '', r[0])); kv.appendChild(el('dd', '', r[1])); });
+    $('ap-note').textContent = (ids.length - custom.length) + ' 場沿用預設；' + custom.length + ' 場另行指定' + (custom.length ? '（' + custom.map(siteLabel).join('、') + '）' : '') + '。';
+    document.querySelector('[name=ap-mode][value=keep]').checked = true;
+    $('e-ap').textContent = ''; $('apply-dlg').showModal(); $('ap-no').focus();
   };
-  function testMail(text, siteName, out, btn){
-    var list = splitEmails(text), bad = list.filter(function(x){ return !okEmail(x); });
-    if (!list.length) { out.textContent = AERR.no_emails; out.style.color = 'var(--err)'; return; }
-    if (bad.length) { out.textContent = '信箱格式不正確：' + bad.join('、'); out.style.color = 'var(--err)'; return; }
+  $('ap-no').onclick = function(){ $('apply-dlg').close(); };
+  $('apply-dlg').addEventListener('close', function(){ $('bk-applyall').focus(); });
+  $('ap-ok').onclick = function(){
+    var over = document.querySelector('[name=ap-mode]:checked').value === 'overwrite';
+    if (!uniq(bkState.defaultEmails).length) { $('e-ap').textContent = '請先填寫預設備援信箱。'; return; }
+    var prev = JSON.stringify(bkState.sites);
+    if (over) { Object.keys(bkState.sites).forEach(function(k){ bkState.sites[k] = { mode: 'default', emails: [] }; }); setDirty(true); }
+    var btn = this;
+    saveAll(btn, '確認套用', $('e-ap')).then(function(ok){
+      if (ok) { $('apply-dlg').close(); $('bk-default-r').textContent = '已套用到全部場站' + (over ? '（已覆寫另行指定）' : '（保留另行指定）') + '。'; drawSitePanel(); drawSum(); }
+      else if (over) { bkState.sites = JSON.parse(prev); drawSitePanel(); drawSum(); }
+    });
+  };
+  function testMail(list, siteName, out, btn){
+    list = uniq(list);
+    var bad = list.filter(function(x){ return !okEmail(x); });
+    out.style.color = 'var(--err)';
+    if (!list.length) { out.textContent = AERR.no_emails; return; }
+    if (bad.length) { out.textContent = '信箱格式不正確：' + bad.join('、'); return; }
     btn.disabled = true; out.style.color = ''; out.textContent = '寄送測試信中…';
     API.admin('testEmail', { to: list, siteName: siteName }).then(function(j){ out.textContent = (j.demo ? '（試用版模擬）' : '') + '已寄出測試信給 ' + j.sent + ' 個信箱，請到信箱確認（也請看垃圾郵件匣）。'; if (bk && typeof bk.quota === 'number' && !j.demo) { bk.quota -= j.sent; drawBackupStat(); } })
       .catch(function(e){ out.textContent = aerr(e); out.style.color = 'var(--err)'; })
       .then(function(){ btn.disabled = false; });
   }
-  $('bk-test-default').onclick = function(){ testMail($('bk-default').value, '', $('bk-default-r'), this); };
-  $('bk-save').onclick = function(){
-    var e = $('e-bk'); e.textContent = '';
-    var check = function(list, f, name){
-      var bad = list.filter(function(x){ return !okEmail(x); });
-      if (bad.length) { e.textContent = name + '的信箱格式不正確：' + bad.join('、'); f.focus(); return false; }
-      if (list.length > 10) { e.textContent = name + '最多 10 個信箱。'; f.focus(); return false; }
-      return true;
-    };
-    var def = splitEmails($('bk-default').value);
-    if (!check(def, $('bk-default'), '預設備援信箱')) return;
-    var sites = {}, ok = true;
-    Array.prototype.forEach.call(document.querySelectorAll('.bksite'), function(d){
-      if (!ok) return;
-      var id = d.dataset.site, mode = d.querySelector('select').value, ta = d.querySelector('textarea'), list = splitEmails(ta.value);
-      if (mode === 'custom' && !check(list, ta, siteLabel(id))) { ok = false; return; }
-      if (mode === 'custom' && !list.length) { e.textContent = siteLabel(id) + '選了「另外指定」，請填寫信箱，或改回「使用預設信箱」。'; ta.focus(); ok = false; return; }
-      sites[id] = { mode: mode, emails: mode === 'custom' ? list : [] };
-    });
-    if (!ok) return;
-    var settings = { timeoutMin: Number($('bk-timeout').value), defaultEmails: def, sites: sites };
-    var btn = this, ver = bkVer; btn.disabled = true; btn.textContent = '儲存中…';
-    API.admin('saveSettings', { settings: settings }).then(function(){
-      bk.settings = settings; say('已儲存備援通知設定。');
-      // 儲存期間又有修改：保留畫面上的內容與「尚未儲存」提示，不重新載入
-      if (ver !== bkVer) { $('bk-note').textContent = '已儲存先前內容；之後的修改尚未儲存'; return; }
-      setDirty(false);
-      return API.admin('getSettings').then(function(j){ if (ver !== bkVer) return; bk = j; drawBackup(); }).catch(function(){}).then(function(){ if (ver === bkVer) $('bk-note').textContent = '已儲存（' + hm(Date.now()) + '）'; });
-    })
-      .catch(function(x){ e.textContent = aerr(x); })
-      .then(function(){ btn.disabled = false; btn.textContent = '儲存設定'; });
-  };
+  $('bk-test-default').onclick = function(){ testMail(bkState.defaultEmails, '', $('bk-default-r'), this); };
+  $('bk-test-site').onclick = function(){ testMail(siteMode() === 'custom' ? bkState.sites[bkSel].emails : bkState.defaultEmails, siteLabel(bkSel), $('bk-site-r'), this); };
   window.addEventListener('beforeunload', function(ev){ if (bkDirty) { ev.preventDefault(); ev.returnValue = ''; } });
+
 
   // 試用資料清除（按兩次確認）
   $('reset').onclick = function(){ if (this.dataset.armed) { API.resetDemo(); this.dataset.armed = ''; this.textContent = '已清除試用資料'; } else { this.dataset.armed = 1; this.textContent = '再按一次確認清除'; } };

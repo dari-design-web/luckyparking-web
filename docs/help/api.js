@@ -15,6 +15,7 @@
   'use strict';
   var KEY = 'dari-help-demo-v1';
   var listeners = [];
+  var curRole = '';   // 試用版：這個分頁登入的是跨場管理員（admin）或場站管理室
   var bc = ('BroadcastChannel' in global) ? new BroadcastChannel(KEY) : null;
 
   function load() {
@@ -94,15 +95,17 @@
           if (c.status === 'new') fail('not_new');
           if (c.acceptedDev !== dev) fail('not_assignee');
         }
-        c.messages.push({ id: uid(), from: from, text: String(text).slice(0, 500), at: Date.now(), cycle: c.cycle, clientMsgId: clientMsgId });
+        c.messages.push({ id: uid(), from: from, role: from === 'staff' && curRole === 'admin' ? 'admin' : '', text: String(text).slice(0, 500), at: Date.now(), cycle: c.cycle, clientMsgId: clientMsgId });
         if (from === 'staff' && c.status === 'accepted') { c.status = 'working'; c.workingAt = Date.now(); }
         return true;
       });
     },
     // 管理室：試用版選場站即可、不驗證密碼；正式版為帳號密碼登入，場站由後台指定
-    staffLogin: function (site, name) { return Promise.resolve({ site: site === '*' ? '' : site, name: name || '值班人員', role: site === '*' ? 'admin' : 'site' }); },
+    staffLogin: function (site, name) { curRole = site === '*' ? 'admin' : 'site'; return Promise.resolve({ site: site === '*' ? '' : site, name: name || '值班人員', role: site === '*' ? 'admin' : 'site' }); },
     staffSession: function () { return Promise.resolve(null); },
-    staffLogout: function () { return Promise.resolve(); },
+    staffLogout: function () { curRole = ''; return Promise.resolve(); },
+    // 試用版重新整理後恢復角色（正式版由登入身分決定）
+    demoRole: function (r) { curRole = r === 'admin' ? 'admin' : 'site'; },
     watchSite: function (site, cb) {
       var last = '';
       function run() {
@@ -125,7 +128,7 @@
         var c = get(db, id);
         if (c.status !== 'new') return { ok: false, by: c.acceptedBy };
         c.status = 'accepted'; c.acceptedAt = Date.now(); c.acceptedBy = by; c.acceptedDev = dev; c.assignVer += 1;
-        sys(c, '管理室已接手');
+        sys(c, curRole === 'admin' ? '跨場管理員已接手' : '管理室已接手');
         return { ok: true, by: by, ver: c.assignVer };
       });
     },
@@ -136,7 +139,7 @@
         if (!active(c)) return { ok: false, reason: 'state' };
         if (ver != null && c.assignVer !== ver) return { ok: false, reason: 'changed', by: c.acceptedBy };
         c.acceptedBy = by; c.acceptedDev = dev; c.assignVer += 1;
-        sys(c, '已改由其他管理員協助');
+        sys(c, curRole === 'admin' ? '已改由跨場管理員協助' : '已改由其他管理員協助');
         return { ok: true, ver: c.assignVer };
       });
     },

@@ -46,7 +46,7 @@ import {
     TS.forEach(k => { c[k] = ms(d[k]); });
     return c;
   }
-  let ready = null;
+  let ready = null, sessRole = '';   // sessRole：目前登入的是 'admin'（跨場管理員）或 'site'（場站管理室）
   function authReady() {
     if (!ready) ready = new Promise(res => { const off = onAuthStateChanged(auth, u => { off(); res(u); }); });
     return ready.then(() => auth.currentUser);
@@ -109,7 +109,7 @@ import {
         if (stopped) return;
         offs.push(onSnapshot(caseRef(id), s => { c = s.exists() ? toCase(s) : null; emit(); }, bad));
         offs.push(onSnapshot(query(collection(db, 'cases', id, 'messages'), orderBy('at')), s => {
-          msgs = s.docs.map(d => { const m = d.data({ serverTimestamps: 'estimate' }); return { id: d.id, from: m.from, text: m.text, at: ms(m.at), cycle: m.cycle, clientMsgId: d.id }; });
+          msgs = s.docs.map(d => { const m = d.data({ serverTimestamps: 'estimate' }); return { id: d.id, from: m.from, role: m.role === 'admin' ? 'admin' : '', text: m.text, at: ms(m.at), cycle: m.cycle, clientMsgId: d.id }; });
           emit();
         }, e => { if (c !== null) bad(e); }));
       }).catch(bad);
@@ -133,7 +133,7 @@ import {
             if (c.acceptedDev !== dev || c.acceptedUid !== u.uid) throw fail('not_assignee');
           }
           const doc_ = { from: from, text: text, at: serverTimestamp(), cycle: c.cycle, uid: u.uid };
-          if (from === 'staff') doc_.dev = dev;
+          if (from === 'staff') { doc_.dev = dev; if (sessRole === 'admin') doc_.role = 'admin'; }
           t.set(msgRef(id, clientMsgId), doc_);
           if (from === 'customer') {
             t.update(caseRef(id), { custCount: (c.custCount || 0) + 1, lastCustomerText: text, lastCustomerAt: serverTimestamp(), lastCustomerMsg: clientMsgId });
@@ -161,9 +161,10 @@ import {
       let s;
       try { s = await getDoc(doc(db, 'staff', u.uid)); } catch (e) { throw wrap(e); }
       if (!s.exists() || s.data().active !== true) { await signOut(auth); throw fail('no_staff'); }
+      sessRole = s.data().role === 'admin' ? 'admin' : 'site';
       return { uid: u.uid, email: u.email, site: s.data().site || '', name: s.data().name || '', role: s.data().role === 'admin' ? 'admin' : 'site' };
     },
-    staffLogout: function () { ready = Promise.resolve(null); return signOut(auth); },
+    staffLogout: function () { ready = Promise.resolve(null); sessRole = ''; return signOut(auth); },
 
     // 管理室清單：本場進行中的案件＋今天結案的案件（兩個查詢都只用等值條件，不需要另建索引）
     // 兩個清單各自更新：其中一個出錯，另一個照常運作；跨過臺北午夜時重新訂閱「今日結案」
@@ -221,7 +222,7 @@ import {
           const c = cs.data();
           if (c.status !== 'new') return { ok: false, by: c.acceptedBy };
           t.update(caseRef(id), { status: 'accepted', acceptedAt: serverTimestamp(), acceptedBy: clip(by, 20) || '管理室', acceptedUid: u.uid, acceptedDev: dev, assignVer: (c.assignVer || 0) + 1 });
-          sysMsg(t, id, c, u.uid, '管理室已接手');
+          sysMsg(t, id, c, u.uid, sessRole === 'admin' ? '跨場管理員已接手' : '管理室已接手');
           return { ok: true, by: by, ver: (c.assignVer || 0) + 1 };
         });
       } catch (e) { throw wrap(e); }
@@ -237,7 +238,7 @@ import {
           if (!active(c)) return { ok: false, reason: 'state' };
           if (ver != null && c.assignVer !== ver) return { ok: false, reason: 'changed', by: c.acceptedBy };
           t.update(caseRef(id), { acceptedBy: clip(by, 20) || '管理室', acceptedUid: u.uid, acceptedDev: dev, assignVer: c.assignVer + 1 });
-          sysMsg(t, id, c, u.uid, '已改由其他管理員協助');
+          sysMsg(t, id, c, u.uid, sessRole === 'admin' ? '已改由跨場管理員協助' : '已改由其他管理員協助');
           return { ok: true, ver: c.assignVer + 1 };
         });
       } catch (e) { throw wrap(e); }

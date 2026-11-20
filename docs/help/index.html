@@ -120,6 +120,23 @@ header a{display:inline-flex;align-items:center;min-height:44px}
 .casebox span{display:block;color:var(--ink2);font-size:15px}
 .casebox strong{color:var(--navy);font-size:20px;font-variant-numeric:tabular-nums}
 .hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
+/* ───── S18 設計：安靜的值班工作台 ───── */
+:root{--warn:#FFF3E8;--warnink:#8A3F0C;--err:#A92E31;--errbg:#FFF0F0;--ok:#176448;--okbg:#EAF5EF}
+body{font-variant-numeric:tabular-nums}
+header .wrap{position:relative}
+.status{position:relative;border-radius:16px;padding:14px 16px 14px 28px}
+.status::before{content:"";position:absolute;left:14px;top:14px;bottom:14px;width:3px;border-radius:2px;background:var(--navy)}
+.status.ok::before{background:var(--ok)}
+.status.warn::before{background:var(--warnink)}
+.cat span,.primary,.ghost,.send,select,input[type=text],textarea{border-radius:10px}
+.cat span{border-width:1px}
+.ghost{border-width:1px}
+.msg{border-radius:12px}
+.card{border-width:1px;border-radius:16px}
+.quick button{border-width:1px;border-radius:10px}
+.where{border-radius:16px}
+.cardd.urgent{background:var(--warn);border-radius:12px;padding:0 14px;margin:10px 0}
+.cardd.urgent summary{color:var(--warnink)}
 [hidden]{display:none!important}
 @media (min-width:960px){
   body{background:var(--soft)}
@@ -172,11 +189,11 @@ header a{display:inline-flex;align-items:center;min-height:44px}
   <div class="status" id="st" role="status"><p class="t" id="st-t"></p><p id="st-p"></p></div>
   <p class="note" id="keep">請保持此頁開啟，回覆會顯示在這裡。<button type="button" class="linkbtn" id="vib" hidden>支援時開啟震動提醒</button><span id="novib" hidden>此裝置不支援震動；回覆仍顯示於本頁。</span></p>
 
-  <div id="escal" hidden>
-    <h2 style="font-size:20px;margin:16px 0 6px">也可以直接找現場人員</h2>
+  <details class="cardd urgent" id="escal" hidden>
+    <summary>也可以直接找現場人員（出示筆談卡）</summary>
     <p class="note">請使用現場實體求助，或依指標前往管理室；不方便說話可出示下方文字。</p>
     <div class="card"><p class="big">我需要停車協助。</p><p class="big2">請用文字或筆談與我溝通。</p></div>
-  </div>
+  </details>
   <details class="cardd" id="cardd" hidden>
     <summary>不想等？出示筆談卡給現場人員</summary>
     <p class="note">請依指標前往管理室，或把這張卡給現場人員看。</p>
@@ -223,11 +240,11 @@ header a{display:inline-flex;align-items:center;min-height:44px}
 </div>
 
 <script>window.HELP_FB = {"apiKey":"AIzaSyDUoIG3FCxiyzixCDwM1m-5w5MF7-Ak4qs","authDomain":"wedding-seating-37b71.firebaseapp.com","projectId":"wedding-seating-37b71","appId":"1:830651084062:web:fc326c270926d742bf2d0f"}; window.HELP_ROLE = 'customer';</script>
-<script src="api.js?v=3aabe777fc"></script>
+<script src="api.js?v=5ed1910a2c"></script>
 <script>
 (function(){
   if (!window.HELP_FB || /[?&]demo=1/.test(location.search)) return;
-  var s = document.createElement('script'); s.src = 'api-fb.js?v=3aabe777fc';
+  var s = document.createElement('script'); s.src = 'api-fb.js?v=5ed1910a2c';
   s.onerror = function(){ window.dispatchEvent(new Event('helpapi-fail')); };
   document.head.appendChild(s);
 })();
@@ -360,8 +377,12 @@ header a{display:inline-flex;align-items:center;min-height:44px}
     else if (c.status === 'new' && c.escalateFailed) { t = '暫時無法送出備援通知'; p += '　請改用現場實體求助，或向現場人員出示筆談卡。'; cls += ' warn'; }
     else if (c.status === 'new' && away) { t = '管理室人員暫離，正在通知備援人員'; cls += ' warn'; }
     else if (c.status === 'new') { t = c.cycle > 1 ? '已再次通知管理室，尚待人員接手' : '已收到，尚待人員接手'; }
-    else if (c.status === 'accepted') { t = '管理員已接手'; cls += ' ok'; }
-    else if (c.status === 'working') { t = '管理員已接手・正在處理'; cls += ' ok'; }
+    else if (c.status === 'accepted' || c.status === 'working') {
+      // 由跨場管理員接手時明確標示，不冒稱本場管理室
+      var who = '管理員';
+      c.messages.forEach(function(m){ if (m.from === 'system' && m.cycle === c.cycle && /接手|協助$/.test(m.text) && m.text.indexOf('本次') < 0) who = m.text.indexOf('跨場管理員') >= 0 ? '跨場管理員' : '管理員'; });
+      t = who + '已接手' + (c.status === 'working' ? '・正在處理' : ''); cls += ' ok';
+    }
     var st = $('st');
     // 狀態框只在內容真的改變時更新，避免螢幕閱讀器重複朗讀
     if (t + p !== lastSt) { st.className = cls; $('st-t').textContent = t; $('st-p').textContent = p; lastSt = t + p; }
@@ -407,7 +428,7 @@ header a{display:inline-flex;align-items:center;min-height:44px}
     c.messages.forEach(function(m){
       if (shown[m.id]) return; shown[m.id] = 1;
       if (m.from !== 'customer') fromThem = true;
-      var d = m.from === 'system' ? bubble('sys', '', m.text) : bubble(m.from === 'customer' ? 'me' : 'them', (m.from === 'customer' ? '我' : '管理室') + '　' + fmt(m.at), m.text);
+      var d = m.from === 'system' ? bubble('sys', '', m.text) : bubble(m.from === 'customer' ? 'me' : 'them', (m.from === 'customer' ? '我' : m.role === 'admin' ? '跨場管理員' : '管理室') + '　' + fmt(m.at), m.text);
       d.dataset.id = m.id; log.appendChild(d); added = d;
       if (m.clientMsgId && pending[m.clientMsgId]) { delete pending[m.clientMsgId]; }
     });
@@ -447,6 +468,8 @@ header a{display:inline-flex;align-items:center;min-height:44px}
   $('draft').addEventListener('input', grow);
   $('send').onclick = function(){ var t = $('draft'), v = t.value.trim(); if (!v || !caseId) { t.focus(); return; } send(v); t.value = ''; grow(); t.focus(); };
   $('draft').addEventListener('keydown', function(e){ if (e.key === 'Enter' && !e.shiftKey && !e.isComposing) { e.preventDefault(); $('send').click(); } });
+  // 按「送出」時不讓輸入框失去焦點：避免手機鍵盤收合、版面位移，使點擊落空
+  $('send').addEventListener('mousedown', function(e){ e.preventDefault(); });
   QUICK.forEach(function(w){ var b = document.createElement('button'); b.type = 'button'; b.textContent = w; b.onclick = function(){ $('draft').value = w; grow(); $('quick').hidden = true; $('qtoggle').setAttribute('aria-expanded', 'false'); $('draft').focus(); }; $('quick').appendChild(b); });
   $('qtoggle').onclick = function(){ var open = $('quick').hidden; $('quick').hidden = !open; this.setAttribute('aria-expanded', open ? 'true' : 'false'); if (open) $('quick').firstChild.focus(); };
 

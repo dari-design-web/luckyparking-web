@@ -163,25 +163,28 @@ service cloud.firestore {
         }
         allow read: if canSee();
         allow create: if validMsg(request.resource.data, getAfter(casePath(id)).data);
-        // 系統訊息必須對應同一筆寫入中真的發生的狀態變化
-        function sysOk(text, before, after) {
-          return (text == '管理室已接手' && before.status == 'new' && after.status == 'accepted')
-            || (text == '已改由其他管理員協助' && before.status in ['accepted', 'working']
+        // 系統訊息必須對應同一筆寫入中真的發生的狀態變化；跨場管理員接手時寫明「跨場管理員」
+        function sysOk(text, before, after, admin) {
+          return (text == (admin ? '跨場管理員已接手' : '管理室已接手') && before.status == 'new' && after.status == 'accepted')
+            || (text == (admin ? '已改由跨場管理員協助' : '已改由其他管理員協助') && before.status in ['accepted', 'working']
               && after.status == before.status && after.assignVer == before.assignVer + 1)
             || (text in ['本次協助已完成', '本次對話已結束'] && before.status in ['accepted', 'working'] && after.status == 'closed');
         }
         function validMsg(m, c) {
-          return m.keys().hasOnly(['from', 'text', 'at', 'cycle', 'uid', 'dev'])
+          return m.keys().hasOnly(['from', 'text', 'at', 'cycle', 'uid', 'dev', 'role'])
             && m.keys().hasAll(['from', 'text', 'at', 'cycle', 'uid'])
             && m.at == request.time && m.uid == request.auth.uid && m.cycle == c.cycle
             && str(m.text, 1, 500) && mid.matches('^[A-Za-z0-9]{8,40}$')
             && (
               (m.from == 'customer' && anon() && c.customerUid == request.auth.uid
-                && c.lastCustomerMsg == mid && c.lastCustomerAt == request.time && !('dev' in m))
-              || (m.from == 'staff' && canOperate(c.site) && c.acceptedUid == request.auth.uid
+                && c.lastCustomerMsg == mid && c.lastCustomerAt == request.time && !('dev' in m) && !('role' in m))
+              // 管理室回覆不帶 role；跨場管理員回覆必須標 role: 'admin'，客人端顯示「跨場管理員」
+              || (m.from == 'staff' && ((isStaff(c.site) && !('role' in m)) || (isAdmin() && m.get('role', '') == 'admin'))
+                && c.acceptedUid == request.auth.uid
                 && m.dev == c.acceptedDev && c.lastStaffAt == request.time && c.lastStaffMsg == mid)
-              || (m.from == 'system' && canOperate(c.site) && !('dev' in m)
-                && sysOk(m.text, get(casePath(id)).data, c))
+              || (m.from == 'system' && !('dev' in m) && !('role' in m)
+                && ((isStaff(c.site) && sysOk(m.text, get(casePath(id)).data, c, false))
+                  || (isAdmin() && sysOk(m.text, get(casePath(id)).data, c, true))))
             );
         }
       }
