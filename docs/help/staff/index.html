@@ -819,11 +819,11 @@ html.day .tpl button{border:1px solid var(--bctl)}
 </dialog>
 
 <script>window.HELP_FB = {"apiKey":"AIzaSyDUoIG3FCxiyzixCDwM1m-5w5MF7-Ak4qs","authDomain":"wedding-seating-37b71.firebaseapp.com","projectId":"wedding-seating-37b71","appId":"1:830651084062:web:fc326c270926d742bf2d0f"}; window.HELP_ROLE = 'staff'; window.HELP_ADMIN_API = "https://script.google.com/macros/s/AKfycbzyDwNWCSRTxHYcr3_Cl7HlMLQ1pIDIpLWhSeu3z79l8_0BkwI3atVRj01dB4cnr3KI0w/exec";</script>
-<script src="../api.js?v=0f5bc646bc"></script>
+<script src="../api.js?v=3640fd7de6"></script>
 <script>
 (function(){
   if (!window.HELP_FB || /[?&]demo=1/.test(location.search)) return;
-  var s = document.createElement('script'); s.src = '../api-fb.js?v=0f5bc646bc';
+  var s = document.createElement('script'); s.src = '../api-fb.js?v=3640fd7de6';
   s.onerror = function(){ window.dispatchEvent(new Event('helpapi-fail')); };
   document.head.appendChild(s);
 })();
@@ -915,7 +915,7 @@ html.day .tpl button{border:1px solid var(--bctl)}
   var SND = { loading: false };
   function loadSounds(){
     if (!ac || SND.loading) return; SND.loading = true;
-    [['newcase', '../alert-new.mp3?v=0f5bc646bc'], ['msg', '../alert-msg.mp3?v=0f5bc646bc']].forEach(function(p){
+    [['newcase', '../alert-new.mp3?v=3640fd7de6'], ['msg', '../alert-msg.mp3?v=3640fd7de6']].forEach(function(p){
       fetch(p[1]).then(function(r){ if (!r.ok) throw 0; return r.arrayBuffer(); })
         .then(function(b){ return new Promise(function(ok, no){ var q = ac.decodeAudioData(b, ok, no); if (q && q.then) q.then(ok, no); }); })
         .then(function(buf){ SND[p[0]] = buf; }).catch(function(){});
