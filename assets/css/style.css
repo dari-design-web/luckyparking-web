@@ -496,11 +496,9 @@ body.menu-open .nav{-webkit-backdrop-filter:none;backdrop-filter:none;background
 .intro-img img{width:100%;aspect-ratio:16/10;object-fit:cover;border-radius:var(--r-lg)}
 .intro-img p{font-size:clamp(17px,1.8vw,21px);line-height:1.8;color:var(--ink)}
 @media (max-width:760px){.intro-img{grid-template-columns:1fr;gap:16px;margin-bottom:28px}}
-/* 多元化：五張卡等高（6 欄格線，第二列置中） */
+/* 多元化：六張卡等高（每列三張） */
 .vcards{display:grid;grid-template-columns:repeat(6,1fr);grid-auto-rows:1fr;gap:20px}
 .vcard,.vcard:nth-child(4),.vcard:nth-child(5){grid-column:span 2;flex:none}
-.vcard:nth-child(4){grid-column:2 / span 2}
-.vcard:nth-child(5){grid-column:4 / span 2}
 @media (max-width:980px){.vcards{grid-template-columns:repeat(2,1fr);grid-auto-rows:auto}.vcard,.vcard:nth-child(4),.vcard:nth-child(5){grid-column:auto}}
 @media (max-width:640px){.vcards{grid-template-columns:1fr}}
 .brands .bn a{color:var(--blue)}

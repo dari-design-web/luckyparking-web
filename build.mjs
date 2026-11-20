@@ -293,7 +293,7 @@ pages['about.html'] = {
 <section class="ph"><div class="wrap"><p class="eyebrow">關於大日</p><h1>深入在地，<br>便利停車，智慧生活。</h1><p class="lead">從${esc(SITE.founded)}成立至今，大日已走過二十餘年。我們從停車場經營起步，一步步深入在地，再跨足商業空間、旅遊景點與遊憩產業。我們的目標，是以停車場為入口，串起一個完整的服務生態，讓每一次停車，都是美好體驗的開始。</p></div></section>
 <section class="band tight"><div class="wrap">
   <div class="group">
-    <article><p class="eyebrow">民國 88 年成立</p><h3 style="margin-top:6px">大日開發有限公司</h3><p>集團核心，資本額${esc(SITE.capital)}，約有 ${esc(String(SITE.employees).replace(/^約\s*/, ""))}同仁。經營公有與民間停車場，也在國家檔案館經營附屬商業空間與地下停車場。多元化經營場域包括東三東四旅客服務中心「叁肆行」、桃園青年體驗學習園區、後湖溪生態園區與舟日咖啡，以及深澳鐵道自行車。</p></article>
+    <article><p class="eyebrow">民國 88 年成立</p><h3 style="margin-top:6px">大日開發有限公司</h3><p>集團核心，資本額${esc(SITE.capital)}，約有 ${esc(String(SITE.employees).replace(/^約\s*/, ""))}同仁。經營公有與民間停車場，也在國家檔案館經營附屬商業空間與地下停車場。多元化經營場域包括東三東四旅客服務中心「叁肆行」、桃園青年體驗學習園區、後湖溪生態園區、舟日咖啡，以及深澳鐵道自行車。</p></article>
     <article><p class="eyebrow">民國 93 年成立</p><h3 style="margin-top:6px">千斗開發有限公司</h3><p>關係企業。承襲大日開發的經營經驗，導入智慧停車管理設備，經營臺北、新北多處公有地下與平面停車場。</p></article>
   </div>
 </div></section>
@@ -356,7 +356,7 @@ pages['parking.html'] = {
 };
 
 pages['venues.html'] = {
-  title: '多元化經營', desc: '國家檔案館、叁肆行、桃園青年體驗學習園區、後湖溪生態園區與舟日咖啡、深澳鐵道自行車。',
+  title: '多元化經營', desc: '國家檔案館、叁肆行、桃園青年體驗學習園區、後湖溪生態園區、舟日咖啡、深澳鐵道自行車。',
   body: `
 <section class="ph"><div class="wrap"><p class="eyebrow">多元化經營</p><h1>不只停車，<br>還有值得停留的地方。</h1><p class="lead">除了停車，我們更將經營經驗延伸至商業空間、餐飲與休閒遊憩，提供從停車開始的完整到訪體驗。</p></div></section>
 <section class="band tight" style="padding-top:8px"><div class="wrap"><div class="vcards">

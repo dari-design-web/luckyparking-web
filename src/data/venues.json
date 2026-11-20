@@ -109,20 +109,22 @@
  },
  {
   "id": "houhu",
-  "name": "後湖溪生態園區｜舟日咖啡",
-  "kind": "水岸遊憩＋餐飲",
+  "name": "後湖溪生態園區",
+  "kind": "水岸遊憩・親水體驗",
   "city": "桃園市新屋區",
-  "address": "舟日咖啡：桃園市新屋區永安里新港路 166 號",
-  "summary": "大日在新屋後湖溪的水岸園區經營水域活動與咖啡。舟日咖啡的大片玻璃窗面向河口與紅樹林，遊客玩水後可在此休息。",
+  "address": "桃園市新屋區新港路 166 號",
+  "summary": "後湖溪全長約 1.3 公里，河道半封閉、兩側有防風林，水面平穩，適合親子與初學者。大日在此經營獨木舟、輕艇與 SUP 立式划槳等親水活動。",
   "points": [
-   "獨木舟、SUP 等水域活動",
-   "舟日咖啡：面向水景的玻璃窗座位",
-   "可串連永安漁港、海螺文化體驗園區"
+   "獨木舟、輕艇、SUP 立式划槳",
+   "半封閉水域，不易受東北季風與潮汐影響",
+   "堤頂自行車道串聯永安漁港、海螺文化館"
   ],
   "img": "assets/img/venues/houhu.jpg",
   "link": null,
   "src": [
-   "https://travel.tycg.gov.tw/zh-tw/consume/detail/3252"
+   "https://udn.com/news/story/7324/9227935",
+   "https://udn.com/news/story/7324/9297095",
+   "https://health.udn.com/health/story/5999/9407060"
   ],
   "todo": false,
   "imgNote": "依實景照片製作",
@@ -130,6 +132,27 @@
   "video": "assets/video/v-houhu.mp4",
   "poster": "assets/img/venues/v-houhu-poster.jpg",
   "videoNote": "依實景照片製作"
+ },
+ {
+  "id": "zhouri",
+  "name": "舟日咖啡",
+  "kind": "湖畔咖啡・餐飲",
+  "city": "桃園市新屋區",
+  "address": "桃園市新屋區永安里新港路 166 號（後湖溪生態園區內）",
+  "summary": "位在後湖溪生態園區內的湖畔咖啡屋，以大片玻璃窗與水岸景觀為特色。划完船可以坐下來喝咖啡、看水景，也可上二樓觀景。",
+  "points": [
+   "大片玻璃窗面向水岸",
+   "二樓觀景座位",
+   "可串連園區的獨木舟與 SUP 體驗"
+  ],
+  "img": "assets/img/venues/zhouri.jpg",
+  "link": null,
+  "src": [
+   "https://travel.tycg.gov.tw/zh-tw/consume/detail/3252",
+   "https://smiletaiwan.cw.com.tw/article/9080"
+  ],
+  "todo": false,
+  "imgNote": "實景"
  },
  {
   "id": "railbike",
