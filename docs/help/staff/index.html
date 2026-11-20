@@ -578,11 +578,11 @@ dialog{border-radius:var(--r-panel);box-shadow:0 16px 48px rgb(18 26 38 / 16%)}
 </dialog>
 
 <script>window.HELP_FB = {"apiKey":"AIzaSyDUoIG3FCxiyzixCDwM1m-5w5MF7-Ak4qs","authDomain":"wedding-seating-37b71.firebaseapp.com","projectId":"wedding-seating-37b71","appId":"1:830651084062:web:fc326c270926d742bf2d0f"}; window.HELP_ROLE = 'staff'; window.HELP_ADMIN_API = "https://script.google.com/macros/s/AKfycbzyDwNWCSRTxHYcr3_Cl7HlMLQ1pIDIpLWhSeu3z79l8_0BkwI3atVRj01dB4cnr3KI0w/exec";</script>
-<script src="../api.js?v=5ed1910a2c"></script>
+<script src="../api.js?v=e71f4c6528"></script>
 <script>
 (function(){
   if (!window.HELP_FB || /[?&]demo=1/.test(location.search)) return;
-  var s = document.createElement('script'); s.src = '../api-fb.js?v=5ed1910a2c';
+  var s = document.createElement('script'); s.src = '../api-fb.js?v=e71f4c6528';
   s.onerror = function(){ window.dispatchEvent(new Event('helpapi-fail')); };
   document.head.appendChild(s);
 })();
@@ -730,7 +730,7 @@ dialog{border-radius:var(--r-panel);box-shadow:0 16px 48px rgb(18 26 38 / 16%)}
       $('site-sort').onchange = function(){ drawSites(); };
       $('sites-more').onclick = function(){ showAllSites = !showAllSites; drawSites(); };
       $('closed-toggle').onclick = function(){ var o = $('closed-list').hidden; $('closed-list').hidden = !o; this.setAttribute('aria-expanded', o ? 'true' : 'false'); drawSites(); };
-      $('jump-cases').onclick = function(e){ e.preventDefault(); $('v-list').scrollIntoView({ block: 'start' }); $('list-title').focus(); };
+      $('jump-cases').onclick = function(e){ e.preventDefault(); if (sel && !$('v-list').offsetParent) $('back').click(); $('v-list').scrollIntoView({ block: 'start' }); $('list-title').focus(); };
       unsub = API.watchAll(onCases, connErr);
       return;
     }
@@ -753,7 +753,7 @@ dialog{border-radius:var(--r-panel);box-shadow:0 16px 48px rgb(18 26 38 / 16%)}
     var btn = $('duty-btn'); btn.disabled = true; $('e-duty').textContent = '';
     API.setPresence(me.site, away, me.name).then(function(){ say(away ? '已設為暫時離開，新求助會立即通知備援。' : '已恢復值守。'); })
       .catch(function(){ $('e-duty').textContent = '連線中斷，值守狀態尚未變更；請再按一次。'; })
-      .then(function(){ btn.disabled = false; });
+      .then(function(){ btn.disabled = false; btn.focus(); });
   }
   $('duty-btn').onclick = function(){
     if (myPres && myPres.away) { setAway(false); return; }
@@ -767,7 +767,7 @@ dialog{border-radius:var(--r-panel);box-shadow:0 16px 48px rgb(18 26 38 / 16%)}
   };
   $('aw-no').onclick = function(){ $('away-dlg').close(); };
   $('aw-ok').onclick = function(){ $('away-dlg').close('ok'); };
-  $('away-dlg').addEventListener('close', function(){ if ($('away-dlg').returnValue === 'ok') setAway(true); $('duty-btn').focus(); });
+  $('away-dlg').addEventListener('close', function(){ if ($('away-dlg').returnValue === 'ok') setAway(true); else $('duty-btn').focus(); });
   var lastSync = 0;
   function connErr(e){
     var t = e && e.code === 'denied' ? '此帳號沒有' + (ADMIN ? '管理員' : '本場') + '權限，請登出後重新登入。' : '連線中斷' + (lastSync ? '，以下為 ' + hm(lastSync) + ' 的資料' : '') + '；請確認網路。';
@@ -815,7 +815,7 @@ dialog{border-radius:var(--r-panel);box-shadow:0 16px 48px rgb(18 26 38 / 16%)}
   }
   function dutyText(id){ var p = presence[id]; return p && p.away ? '暫離' + (p.since ? ' ' + hm(p.since) + ' 起' : '') : '值守中'; }
   function el(tag, cls, text){ var e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; }
-  function filterSite(id){ siteF = siteF === id ? '' : id; $('site-filter').value = siteF; drawList(); drawSites(); $('v-list').scrollIntoView({ block: 'start' }); $('list-title').focus(); }
+  function filterSite(id){ if (sel && !$('v-list').offsetParent) $('back').click(); siteF = siteF === id ? '' : id; $('site-filter').value = siteF; drawList(); drawSites(); $('v-list').scrollIntoView({ block: 'start' }); $('list-title').focus(); }
   function drawSites(){
     if (!ADMIN) return;
     var opens = openSites(), openIds = {}; opens.forEach(function(s){ openIds[s.id] = 1; });
@@ -1193,7 +1193,7 @@ dialog{border-radius:var(--r-panel);box-shadow:0 16px 48px rgb(18 26 38 / 16%)}
   };
 
   // ───────── 管理員：備援通知（左：預設與逾時；右：各場設定）─────────
-  var bk = null, bkDirty = false, bkVer = 0, bkState = null, bkSel = '', TIMEOUTS = [1, 2, 3, 5, 10, 15];
+  var bk = null, bkDirty = false, bkBusy = false, bkState = null, bkSel = '', TIMEOUTS = [1, 2, 3, 5, 10, 15];
   TIMEOUTS.forEach(function(m){ var o = document.createElement('option'); o.value = m; o.textContent = m + ' 分鐘'; $('bk-timeout').appendChild(o); });
   function okEmail(x){ return x.length <= 120 && /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$/.test(x); }
   function uniq(list){ return list.map(function(x){ return String(x || '').trim().toLowerCase(); }).filter(Boolean).filter(function(x, i, a){ return a.indexOf(x) === i; }); }
@@ -1207,9 +1207,9 @@ dialog{border-radius:var(--r-panel);box-shadow:0 16px 48px rgb(18 26 38 / 16%)}
         var row = el('div', 'rcp'), inp = el('input');
         inp.type = 'email'; inp.value = v; inp.autocomplete = 'off'; inp.spellcheck = false; inp.setAttribute('autocapitalize', 'none'); inp.placeholder = 'name@example.com';
         inp.setAttribute('aria-label', label + ' ' + (i + 1));
-        inp.oninput = function(){ rows[i] = inp.value; set(uniq(rows)); setDirty(true); };
+        inp.oninput = function(){ rows[i] = inp.value; set(uniq(rows)); setDirty(); };
         var rm = el('button', 'btn line', '移除'); rm.type = 'button'; rm.setAttribute('aria-label', '移除' + label + ' ' + (i + 1));
-        rm.onclick = function(){ rows.splice(i, 1); set(uniq(rows)); setDirty(true); draw(); var f = box.querySelector('input'); if (f) f.focus(); };
+        rm.onclick = function(){ rows.splice(i, 1); set(uniq(rows)); setDirty(); draw(); var f = box.querySelector('input'); if (f) f.focus(); };
         row.appendChild(inp); row.appendChild(rm); box.appendChild(row);
       });
       addBtn.disabled = rows.length >= 10;
@@ -1222,7 +1222,7 @@ dialog{border-radius:var(--r-panel);box-shadow:0 16px 48px rgb(18 26 38 / 16%)}
   var siteEd = rcpEditor($('bk-site-list'), $('bk-site-add'), '本場收件人', function(){ return (bkState.sites[bkSel] || {}).emails || []; }, function(v){ bkState.sites[bkSel] = { mode: 'custom', emails: v }; drawSiteUse(); drawSum(); });
   function loadBackup(){
     var st = $('bk-st'); st.hidden = false; st.className = 'loadst'; st.textContent = '讀取設定中…';
-    API.admin('getSettings').then(function(j){ bk = j; st.hidden = true; $('bk-form').hidden = false; drawBackup(); setDirty(false); $('bk-note').hidden = true; })
+    API.admin('getSettings').then(function(j){ bk = j; st.hidden = true; $('bk-form').hidden = false; drawBackup(); setDirty(); $('bk-note').hidden = true; })
       .catch(function(e){ st.className = 'loadst bad'; st.textContent = aerr(e); });
   }
   function bkSiteIds(){
@@ -1254,10 +1254,7 @@ dialog{border-radius:var(--r-panel);box-shadow:0 16px 48px rgb(18 26 38 / 16%)}
     sel.innerHTML = '';
     ids.forEach(function(id){ var o = el('option', '', siteLabel(id) + (open.indexOf(id) < 0 ? '（未開放）' : '')); o.value = id; sel.appendChild(o); });
     if (ids.indexOf(bkSel) < 0) bkSel = ids[0] || '';
-    sel.value = bkSel; drawSitePanel(); drawSum();
-    var lg = $('bk-log'); lg.innerHTML = '';
-    (bk.log || []).slice(0, 20).forEach(function(x){ var li = el('li'); li.appendChild(el('time', '', dt(x.t))); li.appendChild(document.createTextNode((x.kind ? '［' + x.kind + '］' : '') + x.text)); lg.appendChild(li); });
-    if (!lg.children.length) lg.appendChild(el('li', 'muted', '尚無紀錄。'));
+    sel.value = bkSel; drawSitePanel(); drawSum(); drawLog();
   }
   function siteMode(){ var v = bkState.sites[bkSel]; return v && v.mode === 'custom' ? 'custom' : 'default'; }
   function drawSitePanel(){
@@ -1292,66 +1289,103 @@ dialog{border-radius:var(--r-panel);box-shadow:0 16px 48px rgb(18 26 38 / 16%)}
     r.onchange = function(){
       if (!bkSel) return;
       var cur = bkState.sites[bkSel] || { emails: [] };
-      bkState.sites[bkSel] = { mode: r.value, emails: r.value === 'custom' ? (cur.emails || []) : [] };
-      setDirty(true); drawSitePanel(); drawSum();
+      bkState.sites[bkSel] = { mode: r.value, emails: cur.emails || [] };   // 改回沿用預設時保留草稿，儲存時才略過
+      setDirty(); drawSitePanel(); drawSum();
       if (r.value === 'custom') { var f = $('bk-site-list').querySelector('input'); if (f) f.focus(); }
     };
   });
-  $('bk-timeout').onchange = function(){ bkState.timeoutMin = Number(this.value); setDirty(true); };
-  function setDirty(v){
-    if (v) bkVer++; bkDirty = v;
-    if (v) { $('bk-note').hidden = false; $('bk-note').className = 'note-box warn'; $('bk-note').textContent = '有尚未儲存的變更'; }
+  $('bk-timeout').onchange = function(){ bkState.timeoutMin = Number(this.value); setDirty(); };
+  // 正規化：只保留另行指定的場站、信箱去重；用來比較「畫面草稿」與「已儲存」是否不同
+  function norm(st){
+    var sites = {}; Object.keys(st.sites || {}).sort().forEach(function(k){ var v = st.sites[k]; if (v && v.mode === 'custom') sites[k] = { mode: 'custom', emails: uniq(v.emails || []) }; });
+    return { timeoutMin: Number(st.timeoutMin) || 3, defaultEmails: uniq(st.defaultEmails || []), sites: sites };
   }
-  // 檢查格式：錯誤顯示在對應欄位旁並移焦
-  function validate(){
-    $('e-bk-def').textContent = ''; $('e-bk-site').textContent = '';
+  function setDirty(){
+    if (!bk || !bkState) return;
+    var d = norm(bkState), sv = norm(bk.settings || {});
+    var defDirty = d.timeoutMin !== sv.timeoutMin || JSON.stringify(d.defaultEmails) !== JSON.stringify(sv.defaultEmails);
+    var siteDirty = JSON.stringify(d.sites) !== JSON.stringify(sv.sites);
+    bkDirty = defDirty || siteDirty;
+    if (bkDirty) { $('bk-note').hidden = false; $('bk-note').className = 'note-box warn'; $('bk-note').textContent = '有尚未儲存的變更：' + [defDirty ? '預設與逾時' : '', siteDirty ? '各場設定' : ''].filter(Boolean).join('、'); }
+    else if ($('bk-note').className.indexOf('warn') >= 0) $('bk-note').hidden = true;
+  }
+  function focusBad(box, val){
+    var ins = Array.prototype.slice.call(box.querySelectorAll('input'));
+    var hit = ins.filter(function(x){ return val != null && x.value.trim().toLowerCase() === val; })[0] || ins.filter(function(x){ return !x.value.trim(); })[0] || ins[0];
+    if (hit) hit.focus();
+  }
+  // 依按鈕範圍儲存：「預設與逾時」只送出預設與逾時；「本場」只送出這一場；其他草稿保留在畫面上
+  // 同一時間只送一個請求，避免較舊的內容後到覆蓋較新的
+  function lockBk(on){ bkBusy = on; ['bk-save-def', 'bk-save-site', 'bk-applyall', 'ap-ok'].forEach(function(id){ $(id).disabled = on; }); }
+  function sendSettings(settings, btn, label, out){
+    if (bkBusy) return Promise.resolve(false);
+    lockBk(true); var old = btn.textContent; btn.textContent = '儲存中…';
+    return API.admin('saveSettings', { settings: settings }).then(function(){
+      bk.settings = JSON.parse(JSON.stringify(settings)); say('已儲存備援通知設定。');
+      $('bk-note').hidden = false; $('bk-note').className = 'note-box ok'; $('bk-note').textContent = '已儲存（' + hm(Date.now()) + '）';
+      setDirty(); drawSum();
+      API.admin('getSettings').then(function(j){ bk.quota = j.quota; bk.lastRun = j.lastRun; bk.lastError = j.lastError; bk.triggerOk = j.triggerOk; bk.log = j.log; drawBackupStat(); drawLog(); }).catch(function(){});
+      return true;
+    }).catch(function(x){ out.textContent = aerr(x); return false; })
+      .then(function(r){ lockBk(false); btn.textContent = label || old; return r; });
+  }
+  function drawLog(){
+    var lg = $('bk-log'); lg.innerHTML = '';
+    (bk.log || []).slice(0, 20).forEach(function(x){ var li = el('li'); li.appendChild(el('time', '', dt(x.t))); li.appendChild(document.createTextNode((x.kind ? '［' + x.kind + '］' : '') + x.text)); lg.appendChild(li); });
+    if (!lg.children.length) lg.appendChild(el('li', 'muted', '尚無紀錄。'));
+  }
+  function validDefault(){
+    $('e-bk-def').textContent = '';
     var bad = bkState.defaultEmails.filter(function(x){ return !okEmail(x); });
-    if (bad.length) { $('e-bk-def').textContent = '信箱格式不正確：' + bad.join('、'); var f = $('bk-def-list').querySelector('input'); if (f) f.focus(); return false; }
-    var ids = Object.keys(bkState.sites);
-    for (var i = 0; i < ids.length; i++) {
-      var v = bkState.sites[ids[i]];
-      if (v.mode !== 'custom') continue;
-      var b2 = (v.emails || []).filter(function(x){ return !okEmail(x); });
-      var msg = b2.length ? siteLabel(ids[i]) + '的信箱格式不正確：' + b2.join('、') : !(v.emails || []).length ? siteLabel(ids[i]) + '選了「另行指定」，請填寫收件人，或改回「沿用預設信箱」。' : '';
-      if (msg) { bkSel = ids[i]; $('bk-site').value = ids[i]; drawSitePanel(); $('e-bk-site').textContent = msg; var g = $('bk-site-list').querySelector('input'); if (g) g.focus(); return false; }
-    }
+    if (bad.length) { $('e-bk-def').textContent = '信箱格式不正確：' + bad.join('、'); focusBad($('bk-def-list'), bad[0]); return false; }
+    if (uniq(bkState.defaultEmails).length > 10) { $('e-bk-def').textContent = AERR.too_many_emails; return false; }
     return true;
   }
-  function saveAll(btn, label, out){
-    if (!validate()) return Promise.resolve(false);
-    var sites = {}; Object.keys(bkState.sites).forEach(function(k){ var v = bkState.sites[k]; if (v.mode === 'custom') sites[k] = { mode: 'custom', emails: uniq(v.emails) }; });
-    var settings = { timeoutMin: Number($('bk-timeout').value), defaultEmails: uniq(bkState.defaultEmails), sites: sites };
-    var ver = bkVer; btn.disabled = true; btn.textContent = '儲存中…';
-    return API.admin('saveSettings', { settings: settings }).then(function(){
-      bk.settings = settings; say('已儲存備援通知設定。');
-      if (ver !== bkVer) { $('bk-note').textContent = '已儲存先前的內容；之後的修改尚未儲存'; return true; }
-      bkDirty = false; $('bk-note').hidden = false; $('bk-note').className = 'note-box ok'; $('bk-note').textContent = '已儲存（' + hm(Date.now()) + '）';
-      return API.admin('getSettings').then(function(j){ if (ver === bkVer) { bk = j; drawBackupStat(); drawBackup(); } }).catch(function(){}).then(function(){ return true; });
-    }).catch(function(x){ out.textContent = aerr(x); return false; })
-      .then(function(r){ btn.disabled = false; btn.textContent = label; return r; });
+  function validSite(id){
+    $('e-bk-site').textContent = '';
+    var v = bkState.sites[id];
+    if (!v || v.mode !== 'custom') return true;
+    var list = uniq(v.emails || []), bad = list.filter(function(x){ return !okEmail(x); });
+    var msg = bad.length ? '信箱格式不正確：' + bad.join('、') : !list.length ? '選了「另行指定」，請填寫收件人，或改回「沿用預設信箱」。' : list.length > 10 ? AERR.too_many_emails : '';
+    if (msg) { $('e-bk-site').textContent = msg; focusBad($('bk-site-list'), bad[0]); return false; }
+    return true;
   }
-  $('bk-save-def').onclick = function(){ saveAll(this, '儲存預設與逾時設定', $('e-bk-def')); };
-  $('bk-save-site').onclick = function(){ saveAll(this, '儲存本場備援設定', $('e-bk-site')); };
-  // 套用全部場站：先預覽影響；預設保留各場另行指定，覆寫須另選
+  $('bk-save-def').onclick = function(){
+    if (!validDefault()) return;
+    var sv = norm(bk.settings || {}), d = norm(bkState);
+    sendSettings({ timeoutMin: d.timeoutMin, defaultEmails: d.defaultEmails, sites: sv.sites }, this, '儲存預設與逾時設定', $('e-bk-def'));
+  };
+  $('bk-save-site').onclick = function(){
+    if (!bkSel || !validSite(bkSel)) return;
+    var sv = norm(bk.settings || {}), d = norm(bkState);
+    if (d.sites[bkSel]) sv.sites[bkSel] = d.sites[bkSel]; else delete sv.sites[bkSel];
+    sendSettings(sv, this, '儲存本場備援設定', $('e-bk-site'));
+  };
+  // 套用全部場站：先預覽影響；預設保留各場另行指定，覆寫須另選；成功後才更新畫面草稿
   $('bk-applyall').onclick = function(){
-    var ids = bkSiteIds(), custom = ids.filter(function(id){ return bkState.sites[id] && bkState.sites[id].mode === 'custom'; });
+    if (!validDefault()) return;
+    if (!uniq(bkState.defaultEmails).length) { $('e-bk-def').textContent = '請先填寫預設備援信箱。'; focusBad($('bk-def-list')); return; }
+    var ids = bkSiteIds(), sv = norm(bk.settings || {}), custom = ids.filter(function(id){ return sv.sites[id]; });
     var kv = $('ap-kv'); kv.innerHTML = '';
-    [['預設信箱', bkState.defaultEmails.length ? uniq(bkState.defaultEmails).join('、') : '（尚未填寫）'], ['逾時通知', $('bk-timeout').value + ' 分鐘'], ['套用範圍', ids.length + ' 個場站']].forEach(function(r){ kv.appendChild(el('dt', '', r[0])); kv.appendChild(el('dd', '', r[1])); });
+    [['預設信箱', uniq(bkState.defaultEmails).join('、')], ['逾時通知', $('bk-timeout').value + ' 分鐘'], ['套用範圍', ids.length + ' 個場站']].forEach(function(r){ kv.appendChild(el('dt', '', r[0])); kv.appendChild(el('dd', '', r[1])); });
     $('ap-note').textContent = (ids.length - custom.length) + ' 場沿用預設；' + custom.length + ' 場另行指定' + (custom.length ? '（' + custom.map(siteLabel).join('、') + '）' : '') + '。';
     document.querySelector('[name=ap-mode][value=keep]').checked = true;
     $('e-ap').textContent = ''; $('apply-dlg').showModal(); $('ap-no').focus();
   };
-  $('ap-no').onclick = function(){ $('apply-dlg').close(); };
+  $('ap-no').onclick = function(){ if (!bkBusy) $('apply-dlg').close(); };
+  $('apply-dlg').addEventListener('cancel', function(e){ if (bkBusy) e.preventDefault(); });
   $('apply-dlg').addEventListener('close', function(){ $('bk-applyall').focus(); });
   $('ap-ok').onclick = function(){
     var over = document.querySelector('[name=ap-mode]:checked').value === 'overwrite';
-    if (!uniq(bkState.defaultEmails).length) { $('e-ap').textContent = '請先填寫預設備援信箱。'; return; }
-    var prev = JSON.stringify(bkState.sites);
-    if (over) { Object.keys(bkState.sites).forEach(function(k){ bkState.sites[k] = { mode: 'default', emails: [] }; }); setDirty(true); }
-    var btn = this;
-    saveAll(btn, '確認套用', $('e-ap')).then(function(ok){
-      if (ok) { $('apply-dlg').close(); $('bk-default-r').textContent = '已套用到全部場站' + (over ? '（已覆寫另行指定）' : '（保留另行指定）') + '。'; drawSitePanel(); drawSum(); }
-      else if (over) { bkState.sites = JSON.parse(prev); drawSitePanel(); drawSum(); }
+    var sv = norm(bk.settings || {}), d = norm(bkState);
+    var snap = { timeoutMin: d.timeoutMin, defaultEmails: d.defaultEmails, sites: over ? {} : sv.sites };
+    $('ap-no').disabled = true;
+    sendSettings(snap, this, '確認套用', $('e-ap')).then(function(ok){
+      $('ap-no').disabled = false;
+      if (!ok) return;
+      if (over) Object.keys(bkState.sites).forEach(function(k){ bkState.sites[k] = { mode: 'default', emails: bkState.sites[k].emails || [] }; });
+      setDirty(); drawSitePanel(); drawSum();
+      $('apply-dlg').close(); $('bk-default-r').textContent = '已套用到全部場站' + (over ? '（已覆寫另行指定）' : '（保留另行指定）') + '。';
     });
   };
   function testMail(list, siteName, out, btn){
@@ -1360,10 +1394,10 @@ dialog{border-radius:var(--r-panel);box-shadow:0 16px 48px rgb(18 26 38 / 16%)}
     out.style.color = 'var(--err)';
     if (!list.length) { out.textContent = AERR.no_emails; return; }
     if (bad.length) { out.textContent = '信箱格式不正確：' + bad.join('、'); return; }
-    btn.disabled = true; out.style.color = ''; out.textContent = '寄送測試信中…';
-    API.admin('testEmail', { to: list, siteName: siteName }).then(function(j){ out.textContent = (j.demo ? '（試用版模擬）' : '') + '已寄出測試信給 ' + j.sent + ' 個信箱，請到信箱確認（也請看垃圾郵件匣）。'; if (bk && typeof bk.quota === 'number' && !j.demo) { bk.quota -= j.sent; drawBackupStat(); } })
+    btn.disabled = true; $('bk-site').disabled = true; out.style.color = ''; out.textContent = '寄送測試信中…';
+    API.admin('testEmail', { to: list, siteName: siteName }).then(function(j){ out.textContent = (j.demo ? '（試用版模擬）' : '') + '已寄出' + (siteName ? '「' + siteName + '」的' : '') + '測試信給 ' + j.sent + ' 個信箱，請到信箱確認（也請看垃圾郵件匣）。'; if (bk && typeof bk.quota === 'number' && !j.demo) { bk.quota -= j.sent; drawBackupStat(); } })
       .catch(function(e){ out.textContent = aerr(e); out.style.color = 'var(--err)'; })
-      .then(function(){ btn.disabled = false; });
+      .then(function(){ btn.disabled = false; $('bk-site').disabled = !bkSel; });
   }
   $('bk-test-default').onclick = function(){ testMail(bkState.defaultEmails, '', $('bk-default-r'), this); };
   $('bk-test-site').onclick = function(){ testMail(siteMode() === 'custom' ? bkState.sites[bkSel].emails : bkState.defaultEmails, siteLabel(bkSel), $('bk-site-r'), this); };
@@ -1394,6 +1428,8 @@ dialog{border-radius:var(--r-panel);box-shadow:0 16px 48px rgb(18 26 38 / 16%)}
     }).catch(function(e){ $('e-login').textContent = LOGIN_ERR[e && e.code] || '請重新登入。'; $('login-title').focus(); });
   }
   window.addEventListener('helpapi-fail', function(){ if (!API) $('login-wait').textContent = '無法連線，請確認網路後重新整理。'; });
+  // 同一瀏覽器的其他分頁換了帳號或登出：這頁的身分已不同，重新整理避免用錯身分操作
+  window.addEventListener('helpauthchange', function(){ if (me) location.reload(); });
   if (window.HelpAPI) setTimeout(ready, 0); else window.addEventListener('helpapi', ready, { once: true });
 })();
 </script>

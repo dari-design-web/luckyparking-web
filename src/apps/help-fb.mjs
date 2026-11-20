@@ -46,7 +46,13 @@ import {
     TS.forEach(k => { c[k] = ms(d[k]); });
     return c;
   }
-  let ready = null, sessRole = '';   // sessRole：目前登入的是 'admin'（跨場管理員）或 'site'（場站管理室）
+  // 其他分頁換帳號／登出時（不是這個分頁自己登入登出），通知頁面重新整理
+  let ready = null, sessRole = '', seenUid = null, selfChange = false;
+  if (role === 'staff') onAuthStateChanged(auth, u => {
+    const uid = u ? u.uid : '';
+    if (seenUid !== null && uid !== seenUid && !selfChange) { sessRole = ''; window.dispatchEvent(new Event('helpauthchange')); }
+    seenUid = uid; selfChange = false;
+  });   // sessRole：目前登入的是 'admin'（跨場管理員）或 'site'（場站管理室）
   function authReady() {
     if (!ready) ready = new Promise(res => { const off = onAuthStateChanged(auth, u => { off(); res(u); }); });
     return ready.then(() => auth.currentUser);
@@ -150,10 +156,11 @@ import {
     // 管理室登入：帳號必須在 staff 集合中、且 active＝true；場站由後台決定，不能自己選
     staffLogin: async function (email, password) {
       try {
+        selfChange = true;
         const cred = await signInWithEmailAndPassword(auth, String(email).trim(), password);
         ready = Promise.resolve(cred.user);
         return await api.staffSession();
-      } catch (e) { throw wrap(e); }
+      } catch (e) { if (!auth.currentUser) selfChange = false; throw wrap(e); }
     },
     staffSession: async function () {
       const u = await authReady();
@@ -164,7 +171,7 @@ import {
       sessRole = s.data().role === 'admin' ? 'admin' : 'site';
       return { uid: u.uid, email: u.email, site: s.data().site || '', name: s.data().name || '', role: s.data().role === 'admin' ? 'admin' : 'site' };
     },
-    staffLogout: function () { ready = Promise.resolve(null); sessRole = ''; return signOut(auth); },
+    staffLogout: function () { ready = Promise.resolve(null); sessRole = ''; selfChange = true; return signOut(auth); },
 
     // 管理室清單：本場進行中的案件＋今天結案的案件（兩個查詢都只用等值條件，不需要另建索引）
     // 兩個清單各自更新：其中一個出錯，另一個照常運作；跨過臺北午夜時重新訂閱「今日結案」
