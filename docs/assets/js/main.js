@@ -17,7 +17,7 @@
   var grid=document.getElementById('sites-grid'), cnt=document.getElementById('results');
   var state={city:'全部',company:'全部',q:''};
   var qi=document.getElementById('q');
-  try{ var qp=new URLSearchParams(location.search).get('q'); if(qp&&qi){ qi.value=qp; state.q=qp; } }catch(e){}
+  try{ var sp=new URLSearchParams(location.search), qp=sp.get('q'), sc=sp.get('s'); if(!qp&&sc){ for(var k=0;k<sites.length;k++){ if(sites[k].code===sc){ qp=sites[k].name; break; } } } if(qp&&qi){ qi.value=qp; state.q=qp; } }catch(e){}  // ?s=場站代碼 直接列出該場（給 Google 地圖等外部連結用）
   if(qi) qi.addEventListener('input',function(){ state.q=qi.value.trim(); render(); try{ var u=new URL(location.href); if(state.q) u.searchParams.set('q',state.q); else u.searchParams.delete('q'); history.replaceState(null,'',u); }catch(e){} });
   function norm(t){ t=String(t||''); try{ t=t.normalize('NFKC'); }catch(e){} return t.replace(/台/g,'臺').replace(/\s+/g,'').toLowerCase(); }
   function esc(s){return String(s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
