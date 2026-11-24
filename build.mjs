@@ -698,3 +698,22 @@ fs.writeFileSync(path.join(OUT, 'robots.txt'), `User-agent: *\nAllow: /\nSitemap
   fs.writeFileSync(path.join(helpDir, 'staff', 'index.html'), helpPage('src/apps/help-staff.html'));
 }
 console.log('built', Object.keys(pages).length, 'pages →', OUT);
+
+// 舊官網（luckyparking.mobuy.tw/web/index.html）搬家告示，單一檔案、圖片內嵌：
+//   docs/moved/index.html        → GitHub 上的預覽版（noindex）
+//   release/old-site-index.html  → 要換掉舊官網首頁的正式版（新網址取自 site.json 的 baseUrl，換網域後重新建置即可）
+{
+  const tpl = fs.readFileSync(path.join(ROOT, 'src/moved/template.html'), 'utf8');
+  const b64 = f => fs.readFileSync(path.join(ROOT, f)).toString('base64');
+  const fill = robots => tpl
+    .replaceAll('{{NEW_URL}}', SITE.baseUrl)
+    .replaceAll('{{NEW_URL_TEXT}}', SITE.baseUrl.replace(/^https?:\/\//, '').replace(/\/$/, '').replace(/\//g, '<wbr>/'))
+    .replace('{{ROBOTS}}', robots)
+    .replace('{{BG}}', () => b64('src/moved/bg.jpg'))
+    .replace('{{LOGO}}', () => b64('assets/img/logo-dari-full.png'))
+    .replace('{{FAVICON}}', () => b64('assets/img/favicon.png'));
+  fs.mkdirSync(path.join(OUT, 'moved'), { recursive: true });
+  fs.writeFileSync(path.join(OUT, 'moved/index.html'), fill('<meta name="robots" content="noindex">\n'));
+  fs.mkdirSync(path.join(ROOT, 'release'), { recursive: true });
+  fs.writeFileSync(path.join(ROOT, 'release/old-site-index.html'), fill(''));
+}

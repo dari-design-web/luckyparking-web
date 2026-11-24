@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>官網已搬家｜大日開發有限公司 DARI GROUP</title>
+<meta name="description" content="大日開發（Lucky Parking）官方網站已搬到新網址，內容全面更新。本頁將自動為您前往新官網。">
+{{ROBOTS}}<link rel="canonical" href="{{NEW_URL}}">
+<noscript><meta http-equiv="refresh" content="8;url={{NEW_URL}}"></noscript>
+<link rel="icon" href="data:image/png;base64,{{FAVICON}}">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@600;700;800&family=Noto+Sans+TC:wght@400;500;700;900&display=swap">
+<style>
+:root{
+  --sign:#1d5aa6; --asphalt:#0f1722; --amber:#ffb12b; --orange:#ef7836; --orange-dark:#d9631f;
+  --cjk:"Noto Sans TC","PingFang TC","Microsoft JhengHei",system-ui,sans-serif;
+  --num:"Inter Tight","Noto Sans TC",system-ui,sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%}
+body{min-height:100vh;min-height:100svh;display:flex;flex-direction:column;font-family:var(--cjk);color:#fff;
+  background:var(--asphalt) url("data:image/jpeg;base64,{{BG}}") 70% center/cover no-repeat}
+body::before{content:"";position:fixed;inset:0;z-index:0;
+  background:linear-gradient(100deg,rgba(9,14,22,.9) 0%,rgba(9,14,22,.74) 48%,rgba(9,14,22,.3) 100%)}
+main{position:relative;z-index:1;flex:1;display:flex;align-items:center;justify-content:center;padding:clamp(20px,5vw,64px) clamp(16px,5vw,64px) 12px}
+
+/* 指示牌：藍底、白色內框，像停車場的導引牌 */
+.sign{width:min(880px,100%);background:var(--sign);border-radius:22px;padding:9px;box-shadow:0 34px 90px rgba(0,0,0,.5)}
+.sign-in{border:3px solid rgba(255,255,255,.94);border-radius:15px;padding:clamp(22px,4.2vw,46px)}
+.plate{display:inline-flex;align-items:center;background:#fff;border-radius:8px;padding:9px 14px}
+.plate img{display:block;height:28px;width:auto}
+
+.row{display:grid;grid-template-columns:1fr auto;gap:clamp(16px,3vw,32px);align-items:center;margin-top:clamp(22px,3.6vw,38px)}
+h1{font-weight:900;font-size:clamp(46px,8.4vw,96px);line-height:1.02;letter-spacing:.03em;word-break:keep-all}
+.en{font-family:var(--num);font-weight:700;font-size:clamp(14px,1.7vw,19px);letter-spacing:.05em;margin-top:12px;color:rgba(255,255,255,.82)}
+.arrow{width:clamp(84px,13vw,152px);aspect-ratio:1;border-radius:16px;background:#fff;color:var(--sign);display:grid;place-items:center}
+.arrow svg{width:62%;height:62%;transition:transform .35s cubic-bezier(.3,.7,.2,1)}
+.arrow.nudge svg{transform:translateX(9%)}
+
+.lead{margin-top:clamp(18px,2.6vw,26px);font-size:clamp(15px,1.75vw,18px);line-height:1.8;max-width:33em;color:rgba(255,255,255,.93)}
+.url{display:inline-block;margin-top:14px;font-family:var(--num);font-weight:700;font-size:clamp(15px,2vw,21px);line-height:1.45;color:#fff;text-decoration:none;border-bottom:2px solid rgba(255,255,255,.45);overflow-wrap:break-word}
+.url:hover{border-bottom-color:#fff}
+
+/* 下緣：剩餘車位看板樣式的倒數 */
+.bar{display:flex;flex-wrap:wrap;align-items:center;gap:14px 16px;margin-top:clamp(24px,3.6vw,38px);padding-top:clamp(20px,3vw,28px);border-top:2px dashed rgba(255,255,255,.34)}
+.led{display:flex;align-items:center;gap:14px;background:#090c10;border:1px solid #262e39;border-radius:10px;padding:8px 18px 8px 10px;min-height:60px}
+.led .d{position:relative;display:block;min-width:2.1ch;padding:2px 6px;font-family:var(--num);font-weight:800;font-size:44px;line-height:1;text-align:center;color:var(--amber);font-variant-numeric:tabular-nums;text-shadow:0 0 14px rgba(255,177,43,.6)}
+.led .d::after{content:"";position:absolute;inset:0;background:radial-gradient(circle,transparent 1.35px,rgba(9,12,16,.92) 1.75px) 0 0/3.6px 3.6px;pointer-events:none}
+.led .t{font-size:14px;line-height:1.45;color:#dfe4ea}
+.led .t small{display:block;font-family:var(--num);font-size:11.5px;letter-spacing:.06em;color:#8f99a6}
+.btns{display:flex;flex-wrap:wrap;gap:10px;margin-left:auto}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:50px;padding:0 24px;border-radius:999px;font:700 16px/1 var(--cjk);text-decoration:none;cursor:pointer;border:0;transition:background-color .2s ease,color .2s ease}
+.btn svg{width:18px;height:18px}
+.go{background:var(--orange);color:#fff}
+.go:hover{background:var(--orange-dark)}
+.stay{background:transparent;color:#fff;box-shadow:inset 0 0 0 1.5px rgba(255,255,255,.72)}
+.stay:hover{background:#fff;color:var(--sign)}
+.btn:focus-visible,.url:focus-visible{outline:3px solid var(--amber);outline-offset:3px}
+
+footer{position:relative;z-index:1;display:flex;flex-wrap:wrap;justify-content:center;gap:4px 22px;padding:14px 20px calc(20px + env(safe-area-inset-bottom));font-size:13px;line-height:1.6;color:rgba(255,255,255,.72)}
+footer a{color:inherit;text-underline-offset:3px}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+
+@media (max-width:640px){
+  body{background-position:62% center}
+  body::before{background:linear-gradient(180deg,rgba(9,14,22,.55) 0%,rgba(9,14,22,.86) 38%,rgba(9,14,22,.92) 100%)}
+  main{align-items:flex-start;padding-top:max(20px,env(safe-area-inset-top))}
+  .sign{border-radius:18px;padding:7px}
+  .sign-in{border-width:2.5px;border-radius:12px}
+  .plate img{height:23px}
+  .sign-in{padding:20px 18px 22px}
+  .row{grid-template-columns:1fr 56px;gap:12px}
+  h1{font-size:clamp(30px,10vw,46px);letter-spacing:.02em}
+  .arrow{width:56px;border-radius:10px}
+  .bar{gap:12px}
+  .led{width:100%}
+  .btns{width:100%;margin-left:0;display:grid;grid-template-columns:1fr}
+  footer{justify-content:flex-start;padding-inline:24px}
+}
+@media (max-width:360px){.led{gap:10px;padding-right:12px}.led .t{font-size:13px}}
+@media (prefers-reduced-motion:reduce){.arrow svg,.btn{transition:none}.arrow.nudge svg{transform:none}}
+</style>
+</head>
+<body>
+<main>
+  <div class="sign">
+    <div class="sign-in">
+      <span class="plate"><img src="data:image/png;base64,{{LOGO}}" alt="大日開發有限公司 DARI GROUP"></span>
+      <div class="row">
+        <div>
+          <h1>官網已搬家</h1>
+          <p class="en">Our website has moved</p>
+        </div>
+        <div class="arrow" id="arrow" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h15M13 6l6 6-6 6"/></svg></div>
+      </div>
+      <p class="lead">大日開發（Lucky Parking）的官方網站已換到新網址，停車場據點、多元化經營與最新消息都在新官網。請更新您的書籤。</p>
+      <a class="url" href="{{NEW_URL}}">{{NEW_URL_TEXT}}</a>
+      <div class="bar">
+        <div class="led" aria-hidden="true"><span class="d" id="n">06</span><span class="t"><span id="msg">秒後自動前往新官網</span><small>AUTO REDIRECT</small></span></div>
+        <div class="btns">
+          <a class="btn go" href="{{NEW_URL}}">前往新官網<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h13M13 6l6 6-6 6"/></svg></a>
+          <button type="button" class="btn stay" id="stay">留在這一頁</button>
+        </div>
+      </div>
+      <p class="sr" id="live" role="status"></p>
+    </div>
+  </div>
+</main>
+<footer>
+  <span>大日開發有限公司 DARI GROUP</span>
+  <span>電話 <a href="tel:+886225023333">(02) 2502-3333</a></span>
+  <span>臺北市中山區建國北路二段 258 巷 27 號 1 樓</span>
+</footer>
+<script>
+(function(){
+  var NEW_URL = '{{NEW_URL}}';   // 新官網網址：換網域時改這裡
+  var SECS = 6;                  // 幾秒後自動前往
+  var preview = /[?&]preview(=|&|$)/.test(location.search);  // 網址加 ?preview 可停在本頁檢查版面
+  var n = document.getElementById('n'), msg = document.getElementById('msg'), stay = document.getElementById('stay'),
+      live = document.getElementById('live'), arrow = document.getElementById('arrow');
+  var left = SECS, timer = null;
+  function pad(x){ return (x < 10 ? '0' : '') + x; }
+  function nudge(){ arrow.classList.add('nudge'); setTimeout(function(){ arrow.classList.remove('nudge'); }, 380); }
+  function tick(){
+    left--;
+    n.textContent = pad(Math.max(left, 0));
+    nudge();
+    if (left <= 0){ clearInterval(timer); timer = null; location.replace(NEW_URL); }
+  }
+  function start(){
+    left = SECS; n.textContent = pad(left);
+    msg.textContent = '秒後自動前往新官網'; stay.textContent = '留在這一頁';
+    live.textContent = '本頁將在 ' + SECS + ' 秒後自動前往新官網，可按「留在這一頁」暫停。';
+    timer = setInterval(tick, 1000);
+  }
+  function stop(){
+    clearInterval(timer); timer = null;
+    n.textContent = '--'; msg.textContent = '已暫停自動前往'; stay.textContent = '繼續自動前往';
+    live.textContent = '已暫停自動前往。';
+  }
+  stay.addEventListener('click', function(){ if (timer) stop(); else start(); });
+  if (preview) stop(); else start();
+})();
+</script>
+</body>
+</html>
