@@ -322,7 +322,7 @@ ${sunBand()}
 };
 
 pages['about.html'] = {
-  title: '關於大日', desc: '大日開發成立於民國 88 年，經營停車場與多元化場域。',
+  title: '關於大日', desc: '大日開發有限公司（DARI GROUP）民國 88 年成立，經營公有與民間停車場，並經營國家檔案館商業空間、叁肆行、桃園青年體驗學習園區等多元化場域；關係企業千斗開發。',
   body: `
 <section class="ph"><div class="wrap"><p class="eyebrow">關於大日</p><h1>深入在地，<br>便利停車，智慧生活。</h1><p class="lead">從${esc(SITE.founded)}成立至今，大日已走過二十餘年。我們從停車場經營起步，一步步深入在地，再跨足商業空間、旅遊景點與遊憩產業。我們的目標，是以停車場為入口，串起一個完整的服務生態，讓每一次停車，都是美好體驗的開始。</p></div></section>
 <section class="band tight"><div class="wrap">
@@ -375,7 +375,7 @@ const siteCard = x => {
 };
 const cities = ['全部', ...new Set(PARKING.map(p => p.city))];
 pages['parking.html'] = {
-  title: '停車場經營', desc: `大日開發與千斗開發的 ${PARKING.length} 處停車場據點。`,
+  title: '停車場經營', desc: `大日開發與千斗開發在${[...new Set(PARKING.map(p => p.city))].join('、')}經營的 ${PARKING.length} 處停車場，列出各場地址、電話與地圖，可依縣市、公司或路名搜尋。`,
   body: `
 <section class="ph"><div class="wrap"><p class="eyebrow">停車場經營</p><h1>${PARKING.length} 處停車場，<br>遍及北北桃基。</h1><p class="lead">公有地下、立體與平面停車場的委外經營。瀏覽各地停車據點，點「地圖」查看位置。</p></div></section>
 <section class="band tight" style="padding-top:8px"><div class="wrap">
@@ -530,7 +530,7 @@ pages['careers.html'] = {
 };
 
 pages['news.html'] = {
-  title: '最新消息', desc: '大日開發公告與動態。',
+  title: '最新消息', desc: '大日開發最新消息：公司公告、新場域動態，以及金擘獎、金停獎等獲獎消息。',
   body: `
 <section class="ph"><div class="wrap"><p class="eyebrow">最新消息</p><h1>公告與動態</h1></div></section>
 <section class="band tight" style="padding-top:8px"><div class="wrap"><div class="nlist">
@@ -539,7 +539,7 @@ pages['news.html'] = {
 };
 
 pages['contact.html'] = {
-  title: '合作洽詢', desc: '停車場委外經營與商業空間多元化合作洽詢。',
+  title: '合作洽詢', desc: '公有停車場委外、民間停車場代管、商業空間與遊憩場域合作洽詢。電話 (02) 2502-3333，或填寫線上表單直接寄到大日開發信箱。',
   body: `
 <section class="ph"><div class="wrap"><p class="eyebrow">合作洽詢</p><h1>兩種合作方式，<br>找到適合您的選擇。</h1><nav class="anchors" aria-label="本頁導覽"><a href="#modes">看合作方式</a><a href="#cform">直接洽詢</a></nav></div></section>
 <section class="band tight" id="modes"><div class="wrap reorder"><div class="intro-img"><img src="assets/img/img-contact.jpg" alt="" loading="lazy"><p>合作項目包括公有停車場委外、民間停車場代管，以及商業空間與遊憩場域的整體經營。我們會先了解場域條件與目標，再提出可行的經營規劃。</p></div><div class="coop">
