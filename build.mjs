@@ -369,8 +369,9 @@ const siteCard = x => {
   const im = img ? `<div class="im">${img}${cap}</div>` : '<div class="im ph-img"><span class="imcap">照片準備中</span></div>';
   const map = x.map ? `<a class="map" href="${esc(x.map)}" target="_blank" rel="noopener" aria-label="在地圖上查看${esc(x.name)}${x.mapLabel ? '周邊' : ''}（另開新視窗）">${esc(x.mapLabel || '地圖')}</a>` : '';
   const tel = x.phone ? `<a class="tel num" href="tel:${x.phone.replace(/\D/g, '').replace(/^0/, '+886')}" aria-label="撥打${esc(x.name)}電話 ${esc(x.phone)}"><svg viewBox="0 0 24 24" aria-hidden="true">${ICON.phone}</svg>${esc(x.phone)}</a>` : '';
+  const soon = !x.phone && x.soon ? `<span class="soon">${esc(x.soon)}</span>` : '';
   const addr = x.address ? `<p class="addr"><svg viewBox="0 0 24 24" aria-hidden="true">${ICON.pin}</svg><span>${esc(x.address).replace(/\s+(B\d[^\s]*)$/, ' <span class="fl">$1</span>')}</span></p>` : '';
-  return `<article class="site"><div class="bd"><h3>${esc(x.name)}</h3><div class="meta"><span class="chip">${esc(x.city)}${x.district ? ' ' + esc(x.district) : ''}</span><span class="chip b">${esc(x.type)}</span></div>${addr}${x.imgCredit ? `<a class="credit" href="${esc(x.imgCredit.url)}" target="_blank" rel="noopener">${esc(x.imgCredit.label)}</a>` : ''}${(tel || map) ? `<div class="loc">${tel}${map}</div>` : ''}</div>${im}</article>`;
+  return `<article class="site"><div class="bd"><h3>${esc(x.name)}</h3><div class="meta"><span class="chip">${esc(x.city)}${x.district ? ' ' + esc(x.district) : ''}</span><span class="chip b">${esc(x.type)}</span></div>${addr}${x.imgCredit ? `<a class="credit" href="${esc(x.imgCredit.url)}" target="_blank" rel="noopener">${esc(x.imgCredit.label)}</a>` : ''}${(tel || soon || map) ? `<div class="loc">${tel}${soon}${map}</div>` : ''}</div>${im}</article>`;
 };
 const cities = ['全部', ...new Set(PARKING.map(p => p.city))];
 pages['parking.html'] = {

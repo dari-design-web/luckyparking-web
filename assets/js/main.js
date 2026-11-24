@@ -37,7 +37,8 @@
     var map=s.map?'<a class="map" href="'+esc(s.map)+'" target="_blank" rel="noopener" aria-label="在地圖上查看'+esc(s.name)+(s.mapLabel?'周邊':'')+'（另開新視窗）">'+esc(s.mapLabel||'地圖')+'</a>':'';
     var tel=s.phone?'<a class="tel num" href="tel:'+String(s.phone).replace(/\D/g,'').replace(/^0/,'+886')+'" aria-label="撥打'+esc(s.name)+'電話 '+esc(s.phone)+'"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2z"/></svg>'+esc(s.phone)+'</a>':'';
     var addr=s.address?'<p class="addr"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-6-5.5-6-10a6 6 0 1 1 12 0c0 4.5-6 10-6 10z"/><circle cx="12" cy="11" r="2"/></svg><span>'+esc(s.address).replace(/\s+(B\d[^\s]*)$/,' <span class="fl">$1</span>')+'</span></p>':'';
-    var loc=(tel||map)?'<div class="loc">'+tel+map+'</div>':'';
+    var soon=(!s.phone&&s.soon)?'<span class="soon">'+esc(s.soon)+'</span>':'';
+    var loc=(tel||soon||map)?'<div class="loc">'+tel+soon+map+'</div>':'';
     return '<article class="site"><div class="bd"><h3>'+ph(s.name)+'</h3><div class="meta"><span class="chip">'+esc(s.city)+(s.district?' '+esc(s.district):'')+'</span><span class="chip b">'+esc(s.type)+'</span></div>'+addr+credit+loc+'</div>'+im+'</article>';
   }
 

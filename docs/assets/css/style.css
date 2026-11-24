@@ -757,3 +757,5 @@ p.lead{text-align:justify;text-align-last:left;text-justify:inter-character;line
   .site .loc .map{padding:3px 10px}
 }
 .site .addr .fl{white-space:nowrap}
+.site .loc .soon{margin-right:auto;font-size:13px;font-weight:700;line-height:1.4;color:#b4501a;background:#fde9dc;border-radius:999px;padding:4px 12px;white-space:nowrap}
+@media (max-width:560px){.site .loc .soon{font-size:12px;padding:3px 9px}}
