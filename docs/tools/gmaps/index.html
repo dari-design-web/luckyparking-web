@@ -20,34 +20,23 @@ body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 "Noto Sans TC
 .wrap{max-width:1080px;margin:0 auto;padding:clamp(20px,4vw,40px) max(4vw,16px) 64px}
 h1{font-size:clamp(26px,4vw,36px);line-height:1.15;font-weight:900;margin:0}
 .lead{color:var(--ink2);margin:8px 0 0;max-width:46em}
-.bar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:22px 0 6px}
-.btn{appearance:none;border:0;border-radius:999px;min-height:46px;padding:0 22px;font-family:inherit;font-size:16px;font-weight:700;line-height:1;cursor:pointer}
-.btn.primary{background:var(--blue);color:#fff}.btn.primary:hover{background:var(--blue-d)}
-.btn.ghost{background:transparent;color:var(--blue);box-shadow:inset 0 0 0 1.5px rgba(37,97,169,.5)}
-.btn:disabled{opacity:.55;cursor:progress}
-.btn:focus-visible,.f button:focus-visible,summary:focus-visible,a:focus-visible,input:focus-visible{outline:3px solid var(--orange);outline-offset:2px}
-.status{font-size:14px;color:var(--ink2)}
-.msg{margin:10px 0 0;padding:10px 14px;border-radius:10px;background:var(--orange-bg);color:#8a3b12;font-size:14px}
-.msg[hidden]{display:none}
+.asof{margin:14px 0 0;font-size:14px;color:var(--ink2);background:var(--surface);border-radius:10px;padding:10px 14px}
+.asof b{color:var(--ink)}
+.f button:focus-visible,a:focus-visible{outline:3px solid var(--orange);outline-offset:2px}
 .meters{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin:22px 0 8px}
 .meter{background:var(--surface);border-radius:14px;padding:14px 16px}
 .meter b{display:block;font:800 clamp(24px,3.4vw,32px)/1.1 "Inter Tight",sans-serif;font-variant-numeric:tabular-nums}
 .meter span{font-size:14px;color:var(--ink2)}
 .track{height:8px;border-radius:99px;background:#dde3ea;margin-top:10px;overflow:hidden}
 .track i{display:block;height:100%;background:var(--green);border-radius:99px;transition:width .4s ease}
-details.key{margin:18px 0 0;border:1px solid var(--line);border-radius:12px;padding:0 16px}
-details.key summary{cursor:pointer;padding:12px 0;font-weight:700;color:var(--blue)}
-details.key .in{padding:0 0 16px;font-size:14px;color:var(--ink2)}
-details.key ol{padding-left:20px;margin:8px 0}
-.keyrow{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
-.keyrow input{flex:1 1 260px;min-height:44px;border:1px solid #c9d1db;border-radius:10px;padding:0 12px;font:16px "Inter Tight",monospace}
 .f{display:flex;gap:6px;flex-wrap:wrap;margin:26px 0 4px}
 .f button{border:1px solid var(--line);background:#fff;border-radius:999px;min-height:40px;padding:0 16px;font-family:inherit;font-size:15px;font-weight:500;cursor:pointer;color:var(--ink)}
 .f button[aria-pressed=true]{background:var(--ink);color:#fff;border-color:var(--ink)}
 h2{font-size:18px;margin:26px 0 8px;font-weight:800}
 h2 small{font-weight:500;color:var(--ink2);font-size:14px;margin-left:6px}
-ul.rows{list-style:none;margin:0;padding:0;border-top:1px solid var(--line)}
-.row{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr) auto;gap:6px 18px;align-items:center;padding:13px 4px;border-bottom:1px solid var(--line)}
+ul.rows{list-style:none;margin:0;padding:0}
+.row,.head{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,6fr) 220px;gap:6px 20px;align-items:center;padding:13px 4px;border-bottom:1px solid var(--line)}
+.head{padding:8px 4px;font-size:13px;font-weight:700;color:var(--ink2);border-bottom:1px solid var(--line)}
 .row.todo{background:linear-gradient(90deg,rgba(224,102,42,.06),transparent 60%)}
 .gname{font-weight:700;color:var(--ink);text-decoration:none}
 .gname:hover{color:var(--blue);text-decoration:underline}
@@ -55,7 +44,7 @@ ul.rows{list-style:none;margin:0;padding:0;border-top:1px solid var(--line)}
 .web{font-size:14px;overflow-wrap:anywhere;color:var(--ink2)}
 .web a{color:var(--blue)}
 .web .none{color:#9aa1ab}
-.tags{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}
+.tags{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-start}
 .tag{font-size:13px;font-weight:700;border-radius:999px;padding:3px 10px;white-space:nowrap}
 .tag.bad{background:var(--orange-bg);color:#a8461a}
 .tag.ok{background:var(--green-bg);color:#22704a}
@@ -71,7 +60,7 @@ ul.rows{list-style:none;margin:0;padding:0;border-top:1px solid var(--line)}
   .meter b{font-size:22px}
   .meter span{font-size:12.5px}
   .row{grid-template-columns:1fr}
-  .tags{justify-content:flex-start}
+  .head{display:none}
 }
 @media(prefers-reduced-motion:reduce){.track i{transition:none}}
 </style>
@@ -79,29 +68,10 @@ ul.rows{list-style:none;margin:0;padding:0;border-top:1px solid var(--line)}
 <body>
 <main class="wrap">
   <h1>Google 地圖更新進度</h1>
-  <p class="lead">各停車場在 Google 地圖上的名稱要以「大日」或「千斗」開頭，網站欄位要填官網該場的專屬連結。按「狀態更新」只會重新讀取還沒更新的場站。</p>
-
-  <div class="bar">
-    <button type="button" class="btn primary" id="go">狀態更新</button>
-    <button type="button" class="btn ghost" id="all">全部重查</button>
-    <span class="status" id="st" role="status"></span>
-  </div>
-  <p class="msg" id="msg" hidden></p>
+  <p class="lead">各停車場在 Google 地圖上的名稱要以「大日」或「千斗」開頭，網站欄位要填官網該場的專屬連結。</p>
+  <p class="asof" id="asof"></p>
 
   <div class="meters" id="meters"></div>
-
-  <details class="key" id="keybox">
-    <summary>Google API 金鑰設定</summary>
-    <div class="in">
-      <p>讀取 Google 地圖資料需要一組 Google Maps Platform 的 API 金鑰。金鑰只存在這台電腦的瀏覽器裡，不會上傳到網站。</p>
-      <ol>
-        <li>Google Cloud Console 建立專案並啟用計費（每月有免費額度）。</li>
-        <li>啟用「Maps JavaScript API」與「Places API (New)」。</li>
-        <li>建立 API 金鑰，應用程式限制選「網站」，填 <code>https://www.dari.com.tw/tools/*</code>；API 限制只勾上面兩個。</li>
-      </ol>
-      <div class="keyrow"><label class="sr" for="key" style="position:absolute;left:-9999px">API 金鑰</label><input id="key" type="password" autocomplete="off" placeholder="貼上 API 金鑰"><button type="button" class="btn ghost" id="savekey">儲存</button></div>
-    </div>
-  </details>
 
   <div class="f" role="group" aria-label="篩選">
     <button type="button" data-f="all" aria-pressed="true">全部</button>
@@ -110,22 +80,16 @@ ul.rows{list-style:none;margin:0;padding:0;border-top:1px solid var(--line)}
   </div>
   <div id="list"></div>
 
-  <p class="foot" id="foot"></p>
 </main>
 <script>
 {
 const D = {"asOf":"2026-11-24T17:20:00+08:00","lots":[{"code":"zhonghe","name":"中和國小地下停車場","company":"大日開發","soon":false,"cid":"7118317615507326693","dup":"","gname":"大日-中和國小地下停車場","web":"http://luckyparking.mobuy.tw/web/index.html","expected":"https://www.dari.com.tw/parking.html?s=zhonghe","query":"大日-中和國小地下停車場 中和區"},{"code":"tucheng-central","name":"土城中央公園地下停車場","company":"大日開發","soon":false,"cid":"10391863757442245862","dup":"","gname":"大日-土城區中央公園地下停車場","web":"https://www.parkinginfo.ntpc.gov.tw/parkinginfo/public/?parkinglotid=130084","expected":"https://www.dari.com.tw/parking.html?s=tucheng-central","query":"大日-土城區中央公園地下停車場 土城區"},{"code":"ruifang","name":"瑞芳立體停車場","company":"大日開發","soon":false,"cid":"16125216156140739771","dup":"","gname":"大日-瑞芳區立體停車場","web":"","expected":"https://www.dari.com.tw/parking.html?s=ruifang","query":"大日-瑞芳區立體停車場 瑞芳區"},{"code":"tpmc","name":"臺北流行音樂中心地下停車場","company":"大日開發","soon":false,"cid":"457229933388604900","dup":"","gname":"大日-台北流行音樂中心地下停車場","web":"https://itaipeiparking.pma.gov.taipei/","expected":"https://www.dari.com.tw/parking.html?s=tpmc","query":"大日-台北流行音樂中心地下停車場 南港區"},{"code":"rongxing","name":"榮星花園地下停車場","company":"大日開發","soon":false,"cid":"15074776412204934487","dup":"","gname":"榮星花園地下停車場","web":"https://www.dari.com.tw/parking.html?s=rongxing","expected":"https://www.dari.com.tw/parking.html?s=rongxing","query":"榮星花園地下停車場 中山區"},{"code":"minquan","name":"民權公園地下停車場","company":"大日開發","soon":false,"cid":"11852762211203476150","dup":"","gname":"民權公園地下停車場","web":"https://www.dari.com.tw/parking.html?s=minquan","expected":"https://www.dari.com.tw/parking.html?s=minquan","query":"民權公園地下停車場 松山區"},{"code":"taoyuan","name":"桃園國際原住民族文化創意產業園區地下停車場","company":"大日開發","soon":false,"cid":"73024161327810619","dup":"","gname":"大日-桃園國際原住民族文創產業園區地下停車場","web":"https://communityspace.com.tw/info-park","expected":"https://www.dari.com.tw/parking.html?s=taoyuan","query":"大日-桃園國際原住民族文創產業園區地下停車場 大園區"},{"code":"jinhe","name":"錦和運動公園地下停車場","company":"大日開發","soon":false,"cid":"9209146962960404765","dup":"","gname":"大日錦和運動公園地下停車場","web":"https://www.dari.com.tw/parking.html?s=jinhe","expected":"https://www.dari.com.tw/parking.html?s=jinhe","query":"大日錦和運動公園地下停車場 中和區"},{"code":"xinggu","name":"興榖國小操場地下停車場","company":"大日開發","soon":false,"cid":"9279493999846165106","dup":"","gname":"大日-興穀國小操場地下停車場","web":"","expected":"https://www.dari.com.tw/parking.html?s=xinggu","query":"大日-興穀國小操場地下停車場 三重區"},{"code":"archives","name":"國家檔案館地下停車場","company":"大日開發","soon":false,"cid":"3890042432800451272","dup":"","gname":"大日-國家檔案館停車場","web":"https://www.archives.gov.tw/","expected":"https://www.dari.com.tw/parking.html?s=archives","query":"大日-國家檔案館停車場 林口區"},{"code":"xiulang","name":"秀朗國小地下停車場","company":"大日開發","soon":false,"cid":"15282730677968775859","dup":"","gname":"大日秀朗國小地下停車場","web":"","expected":"https://www.dari.com.tw/parking.html?s=xiulang","query":"大日秀朗國小地下停車場 永和區"},{"code":"fuhe","name":"福和國中地下停車場","company":"大日開發","soon":false,"cid":"14991800572753879184","dup":"","gname":"福和國中地下停車場","web":"","expected":"https://www.dari.com.tw/parking.html?s=fuhe","query":"福和國中地下停車場 永和區"},{"code":"lujiang","name":"鷺江立體停車場","company":"大日開發","soon":false,"cid":"918986856185710391","dup":"","gname":"大日-蘆洲鷺江立體停車場","web":"","expected":"https://www.dari.com.tw/parking.html?s=lujiang","query":"大日-蘆洲鷺江立體停車場 蘆洲區"},{"code":"xinguang","name":"新光國際金融中心地下停車場","company":"大日開發","soon":false,"cid":"8888572404803922562","dup":"","gname":"大日-新光國際金融中心停車場","web":"","expected":"https://www.dari.com.tw/parking.html?s=xinguang","query":"大日-新光國際金融中心停車場 桃園區"},{"code":"ruifang-back","name":"瑞芳後火車站平面停車場","company":"大日開發","soon":false,"cid":"5092021870283042932","dup":"","gname":"大日-瑞芳區後火車站臨時平面停車場","web":"","expected":"https://www.dari.com.tw/parking.html?s=ruifang-back","query":"大日-瑞芳區後火車站臨時平面停車場 瑞芳區"},{"code":"binjiang","name":"濱江國中地下停車場","company":"大日開發","soon":false,"cid":"13398539482531583818","dup":"","gname":"市立濱江國中地下停車場","web":"http://www.pma.gov.taipei/ct.asp?xitem=121237&CtNode=13493&mp=117021","expected":"https://www.dari.com.tw/parking.html?s=binjiang","query":"市立濱江國中地下停車場 中山區"},{"code":"tucheng-yanji","name":"土城延吉立體停車場","company":"大日開發","soon":false,"cid":"16110213461121792362","dup":"","gname":"土城延吉立體停車場","web":"http://www.parkinginfo.ntpc.gov.tw/parkinginfo/public/Googlemap.aspx?Lat=24.987516&Lng=121.469174","expected":"https://www.dari.com.tw/parking.html?s=tucheng-yanji","query":"土城延吉立體停車場 土城區"},{"code":"tucheng-yusheng","name":"土城裕生立體停車場","company":"大日開發","soon":false,"cid":"2346160363778784309","dup":"","gname":"大日-裕生停車場","web":"https://www.parkinginfo.ntpc.gov.tw/parkinginfo/public/?parkinglotid=130004","expected":"https://www.dari.com.tw/parking.html?s=tucheng-yusheng","query":"大日-裕生停車場 土城區"},{"code":"banqiao-hs","name":"板橋高中地下停車場","company":"大日開發","soon":false,"cid":"6608084122985646632","dup":"","gname":"板橋高級中學停車場","web":"http://www.pcsh.ntpc.edu.tw/","expected":"https://www.dari.com.tw/parking.html?s=banqiao-hs","query":"板橋高級中學停車場 板橋區"},{"code":"siliconvalley","name":"臺北矽谷大樓地下停車場","company":"大日開發","soon":false,"cid":"14699585543467030869","dup":"","gname":"大日-台北矽谷大樓停車場","web":"https://www.youparking.com.tw/parking-detail.php?id=405","expected":"https://www.dari.com.tw/parking.html?s=siliconvalley","query":"大日-台北矽谷大樓停車場 新店區"},{"code":"guangrong","name":"光榮國小地下停車場","company":"大日開發","soon":false,"cid":"17727506775672795122","dup":"","gname":"三重區光榮國小地下停車場","web":"https://www.parkinginfo.ntpc.gov.tw/parkinginfo/public/GoogleMap.aspx","expected":"https://www.dari.com.tw/parking.html?s=guangrong","query":"三重區光榮國小地下停車場 三重區"},{"code":"keelung-e34","name":"基隆港東三東四停車場","company":"大日開發","soon":false,"cid":"16798674134554336554","dup":"","gname":"大日-基隆港東3東4停車場","web":"https://www.facebook.com/profile.php?id=100083318313417","expected":"https://www.dari.com.tw/parking.html?s=keelung-e34","query":"大日-基隆港東3東4停車場 中正區"},{"code":"xiufeng","name":"秀峰段平面停車場","company":"大日開發","soon":false,"cid":"17249906408841304266","dup":"","gname":"大日-秀峰停車場","web":"https://www.parkinginfo.ntpc.gov.tw/parkinginfo/public/?parkinglotid=030150","expected":"https://www.dari.com.tw/parking.html?s=xiufeng","query":"大日-秀峰停車場 中和區"},{"code":"yangguang","name":"陽光段平面停車場","company":"大日開發","soon":false,"cid":"16878908860400162840","dup":"","gname":"大日-新店區陽光段平面停車場","web":"https://www.parkinginfo.ntpc.gov.tw/parkinginfo/public/?parkinglotid=060160","expected":"https://www.dari.com.tw/parking.html?s=yangguang","query":"大日-新店區陽光段平面停車場 新店區"},{"code":"jinhe-flat","name":"錦和平面停車場","company":"大日開發","soon":false,"cid":"7150836316728796589","dup":"","gname":"大日-錦和平面停車場","web":"","expected":"https://www.dari.com.tw/parking.html?s=jinhe-flat","query":"大日-錦和平面停車場 中和區"},{"code":"tyc-youth","name":"北區青少年活動中心地下停車場","company":"大日開發","soon":false,"cid":"10820708545655388301","dup":"","gname":"大日-桃園市八德北區青少年活動中心地下停車場","web":"","expected":"https://www.dari.com.tw/parking.html?s=tyc-youth","query":"大日-桃園市八德北區青少年活動中心地下停車場 八德區"},{"code":"guangci1","name":"廣慈1區社會住宅地下停車場","company":"大日開發","soon":false,"cid":"10190336061516905275","dup":"11538232385472350949","gname":"廣慈1區停車場","web":"","expected":"https://www.dari.com.tw/parking.html?s=guangci1","query":"廣慈1區停車場 信義區"},{"code":"guangci2","name":"廣慈2區社會住宅地下停車場","company":"大日開發","soon":false,"cid":"12111870563949248752","dup":"","gname":"廣慈2區","web":"","expected":"https://www.dari.com.tw/parking.html?s=guangci2","query":"廣慈2區 信義區"},{"code":"yonghe","name":"雍和園區地下停車場","company":"千斗開發","soon":false,"cid":"3852742660895654418","dup":"","gname":"千斗-雍和台北園區停車場","web":"","expected":"https://www.dari.com.tw/parking.html?s=yonghe","query":"千斗-雍和台北園區停車場 汐止區"},{"code":"shezi","name":"社子國小地下停車場","company":"千斗開發","soon":false,"cid":"14412428403893060847","dup":"","gname":"社子國小地下停車場","web":"","expected":"https://www.dari.com.tw/parking.html?s=shezi","query":"社子國小地下停車場 士林區"},{"code":"jinan","name":"進安公園地下停車場","company":"千斗開發","soon":false,"cid":"17549354642052782062","dup":"","gname":"千斗-進安公園地下停車場","web":"","expected":"https://www.dari.com.tw/parking.html?s=jinan","query":"千斗-進安公園地下停車場 中山區"},{"code":"fengshu","name":"楓樹腳公園地下停車場","company":"千斗開發","soon":false,"cid":"1611989554269208419","dup":"","gname":"千斗-新北市泰山區楓樹腳公園地下停車場","web":"","expected":"https://www.dari.com.tw/parking.html?s=fengshu","query":"千斗-新北市泰山區楓樹腳公園地下停車場 泰山區"},{"code":"ntsec","name":"國立臺灣科學教育館地下停車場","company":"千斗開發","soon":false,"cid":"12404016707437195991","dup":"","gname":"國立臺灣科學教育館停車場","web":"","expected":"https://www.dari.com.tw/parking.html?s=ntsec","query":"國立臺灣科學教育館停車場 士林區"},{"code":"linkou-j1","name":"林口機一平面停車場","company":"千斗開發","soon":false,"cid":"10677945152094885313","dup":"","gname":"千斗-林口區機一臨時平面停車場","web":"","expected":"https://www.dari.com.tw/parking.html?s=linkou-j1","query":"千斗-林口區機一臨時平面停車場 林口區"},{"code":"shipai","name":"石牌國小地下停車場","company":"千斗開發","soon":false,"cid":"4722956874297677052","dup":"","gname":"千斗-台北市石牌國小地下停車場","web":"https://web.spps.tp.edu.tw/nss/p/index","expected":"https://www.dari.com.tw/parking.html?s=shipai","query":"千斗-台北市石牌國小地下停車場 北投區"},{"code":"tongxing","name":"同興平面停車場","company":"千斗開發","soon":false,"cid":"8145203771837348925","dup":"","gname":"千斗-同興平面停車場","web":"https://www.majortek.com.tw/","expected":"https://www.dari.com.tw/parking.html?s=tongxing","query":"千斗-同興平面停車場 泰山區"},{"code":"tw64","name":"台64橋下平面停車場","company":"千斗開發","soon":false,"cid":"7255230686408751456","dup":"","gname":"千斗-台64橋下平面停車場","web":"https://www.majortek.com.tw/","expected":"https://www.dari.com.tw/parking.html?s=tw64","query":"千斗-台64橋下平面停車場 五股區"},{"code":"shuidui","name":"水碓三路平面停車場","company":"千斗開發","soon":false,"cid":"4677177246222186538","dup":"","gname":"千斗-水碓三路平面停車場","web":"","expected":"https://www.dari.com.tw/parking.html?s=shuidui","query":"千斗-水碓三路平面停車場 五股區"},{"code":"xinwu","name":"新五平面停車場","company":"千斗開發","soon":false,"cid":"8894223948509403547","dup":"","gname":"千斗-新北市五股區新五平面停車場","web":"","expected":"https://www.dari.com.tw/parking.html?s=xinwu","query":"千斗-新北市五股區新五平面停車場 五股區"},{"code":"hean","name":"合安路停車場","company":"千斗開發","soon":false,"cid":"3391088400906895363","dup":"","gname":"千斗-新北市板橋區合安路停車場","web":"","expected":"https://www.dari.com.tw/parking.html?s=hean","query":"千斗-新北市板橋區合安路停車場 板橋區"},{"code":"nanlin","name":"南林段平面停車場","company":"千斗開發","soon":true,"cid":"2238085954597809661","dup":"","gname":"Times 泰山南林段平面停車場","web":"","expected":"https://www.dari.com.tw/parking.html?s=nanlin","query":"Times 泰山南林段平面停車場 泰山區"},{"code":"yixue","name":"義學立體停車場","company":"千斗開發","soon":true,"cid":"8512459115602307485","dup":"2094695247881122279","gname":"泰山區義學立體停車場","web":"","expected":"https://www.dari.com.tw/parking.html?s=yixue","query":"泰山區義學立體停車場 泰山區"}]};
 const LOTS = D.lots;
-const store = (() => { try { const t = '__t'; localStorage.setItem(t, t); localStorage.removeItem(t); return localStorage; } catch (e) { return null; } })();
-const load = (k, d) => { try { const v = store && store.getItem(k); return v ? JSON.parse(v) : d; } catch (e) { return d; } };
-const save = (k, v) => { try { store && store.setItem(k, JSON.stringify(v)); } catch (e) {} };
 const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 
 const SNAP_AT = Date.parse(D.asOf);
-const state = load('gm.state', {});
-const ids = load('gm.ids', {});
-const errs = {};
-for (const l of LOTS) { const s = state[l.code]; if (!s || !(s.at > SNAP_AT)) state[l.code] = { gname: l.gname, web: l.web, at: SNAP_AT }; }
+const state = {};
+for (const l of LOTS) state[l.code] = { gname: l.gname, web: l.web, at: SNAP_AT };
 
 const prefixOf = l => l.company === '千斗開發' ? '千斗' : '大日';
 const normU = u => String(u || '').trim().replace(/^http:\/\//i, 'https://').replace(/\/+$/, '').toLowerCase();
@@ -140,7 +104,7 @@ function judge(l) {
   return { nameOK, web, done: nameOK && web === 'ok' };
 }
 const active = LOTS.filter(l => !l.soon);
-let filter = 'all', busy = false;
+let filter = 'all';
 
 const $ = id => document.getElementById(id);
 const fmt = t => { const d = new Date(t); return isNaN(d) ? '' : d.toLocaleString('zh-TW', { month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit', hour12: false }); };
@@ -149,13 +113,10 @@ function meters() {
   const n = active.length, j = active.map(judge);
   const m = [['名稱已更新', j.filter(x => x.nameOK).length], ['網站已更新', j.filter(x => x.web === 'ok').length], ['兩項都完成', j.filter(x => x.done).length]];
   $('meters').innerHTML = m.map(([t, v]) => `<div class="meter"><b>${v}<span style="font-size:.55em;color:var(--ink2)"> / ${n}</span></b><span>${t}</span><div class="track"><i style="width:${n ? Math.round(v / n * 100) : 0}%"></i></div></div>`).join('');
-  const todo = j.filter(x => !x.done).length;
-  $('go').textContent = todo ? `狀態更新（${todo} 場未更新）` : '狀態更新';
 }
 
 function tags(l) {
   if (l.soon) return '<span class="tag wait">2027/03 接場，暫不檢查</span>';
-  if (errs[l.code]) return `<span class="tag err">${esc(errs[l.code])}</span>`;
   const j = judge(l), out = [];
   if (!j.nameOK) out.push('<span class="tag bad">名稱未更新</span>');
   if (j.web === 'site') out.push('<span class="tag mid">網站是官網，非專屬連結</span>');
@@ -178,72 +139,13 @@ function render() {
   for (const [t, ls] of groups) {
     const shown = ls.filter(pick).sort((a, b) => judge(a).done - judge(b).done);
     if (!shown.length) continue;
-    html += `<h2>${t}<small>${shown.length} 場</small></h2><ul class="rows">${shown.map(row).join('')}</ul>`;
+    html += `<h2>${t}<small>${shown.length} 場</small></h2><div class="head" aria-hidden="true"><span>場域名稱</span><span>目前網站</span><span>更新狀態</span></div><ul class="rows">${shown.map(row).join('')}</ul>`;
   }
   $('list').innerHTML = html || '<p class="empty">這個篩選目前沒有場站。</p>';
-  const last = Math.max(...active.map(l => state[l.code].at));
-  $('foot').textContent = `資料時間：最近一次讀取 ${fmt(last)}。初始資料為 ${fmt(SNAP_AT)} 從 Google 地圖逐筆讀取。Google 審核通過後才會顯示新的名稱與網站。`;
+  const todo = active.filter(l => !judge(l).done).length;
+  $('asof').innerHTML = `資料更新時間 <b>${esc(fmt(SNAP_AT))}</b>，由 Claude 在 Google 地圖逐筆讀取。目前還有 <b>${todo}</b> 場未更新；要更新狀態，跟 Claude 說「更新 Google 地圖狀態」，只會重查未更新的場站。`;
 }
 
-/* Google Maps JavaScript API 動態載入（官方 bootstrap loader） */
-let placesLib = null, authFailed = false;
-window.gm_authFailure = () => { authFailed = true; showMsg('Google 拒絕了這組 API 金鑰：請確認金鑰正確、已啟用 Maps JavaScript API 與 Places API (New)，且網站限制包含 https://www.dari.com.tw/tools/*。'); };
-function boot(key) {
-  (g=>{var h,a,k,p="The Google Maps JavaScript API",c="google",l="importLibrary",q="__ib__",m=document,b=window;b=b[c]||(b[c]={});var d=b.maps||(b.maps={}),r=new Set,e=new URLSearchParams,u=()=>h||(h=new Promise(async(f,n)=>{await (a=m.createElement("script"));e.set("libraries",[...r]+"");for(k in g)e.set(k.replace(/[A-Z]/g,t=>"_"+t[0].toLowerCase()),g[k]);e.set("callback",c+".maps."+q);a.src=`https://maps.${c}apis.com/maps/api/js?`+e;d[q]=f;a.onerror=()=>h=n(Error(p+" could not load."));a.nonce=m.querySelector("script[nonce]")?.nonce||"";m.head.append(a)}));d[l]?console.warn(p+" only loads once. Ignoring:",g):d[l]=(f,...n)=>r.add(f)&&u().then(()=>d[l](f,...n))})({ key, v: 'weekly', language: 'zh-TW', region: 'TW' });
-}
-async function lib() {
-  if (placesLib) return placesLib;
-  const key = load('gm.key', '');
-  if (!key) throw new Error('nokey');
-  boot(key);
-  placesLib = await google.maps.importLibrary('places');
-  return placesLib;
-}
-async function fetchOne(l) {
-  const { Place } = await lib();
-  if (!ids[l.code]) {
-    const { places } = await Place.searchByText({ textQuery: l.query, fields: ['id', 'displayName', 'websiteURI', 'googleMapsURI'], language: 'zh-TW', region: 'tw', maxResultCount: 10 });
-    const list = places || [];
-    const hit = list.find(p => String(p.googleMapsURI || '').includes('cid=' + l.cid)) || list.find(p => p.displayName === (state[l.code] || {}).gname);
-    if (!hit) throw new Error('在 Google 地圖找不到這個地點');
-    ids[l.code] = hit.id; save('gm.ids', ids);
-    return { gname: hit.displayName || '', web: hit.websiteURI || '' };
-  }
-  const p = new Place({ id: ids[l.code], requestedLanguage: 'zh-TW' });
-  await p.fetchFields({ fields: ['displayName', 'websiteURI'] });
-  return { gname: p.displayName || '', web: p.websiteURI || '' };
-}
-
-function showMsg(t) { const m = $('msg'); m.textContent = t; m.hidden = !t; }
-async function run(onlyTodo) {
-  if (busy) return;
-  const targets = active.filter(l => !onlyTodo || !judge(l).done);
-  if (!targets.length) { $('st').textContent = '全部場站都已更新，不需要重新讀取。'; return; }
-  if (!load('gm.key', '')) { $('keybox').open = true; showMsg('請先在下方「Google API 金鑰設定」貼上金鑰。'); $('key').focus(); return; }
-  busy = true; $('go').disabled = $('all').disabled = true; showMsg('');
-  let ok = 0, bad = 0;
-  for (let i = 0; i < targets.length; i++) {
-    const l = targets[i];
-    $('st').textContent = `讀取中 ${i + 1} / ${targets.length}：${l.name}`;
-    try {
-      const r = await fetchOne(l);
-      state[l.code] = { gname: r.gname, web: r.web, at: Date.now() }; delete errs[l.code]; ok++;
-    } catch (e) {
-      bad++; errs[l.code] = e && e.message === 'nokey' ? '缺少金鑰' : '讀取失敗';
-      if (authFailed) break;
-    }
-    save('gm.state', state); render();
-    await new Promise(r => setTimeout(r, 120));
-  }
-  busy = false; $('go').disabled = $('all').disabled = false;
-  const left = active.filter(l => !judge(l).done).length;
-  $('st').textContent = `已讀取 ${ok} 場${bad ? `，${bad} 場失敗` : ''}；目前還有 ${left} 場未更新。`;
-}
-
-$('go').addEventListener('click', () => run(true));
-$('all').addEventListener('click', () => run(false));
-$('savekey').addEventListener('click', () => { const v = $('key').value.trim(); save('gm.key', v); $('key').value = ''; $('key').placeholder = v ? '已儲存（重新貼上可更換）' : '貼上 API 金鑰'; showMsg(v ? '' : '已清除金鑰。'); if (v) { $('keybox').open = false; $('st').textContent = '金鑰已儲存，可以按「狀態更新」。'; } });
-if (load('gm.key', '')) $('key').placeholder = '已儲存（重新貼上可更換）';
 document.querySelectorAll('[data-f]').forEach(b => b.addEventListener('click', () => { filter = b.dataset.f; document.querySelectorAll('[data-f]').forEach(x => x.setAttribute('aria-pressed', x === b)); render(); }));
 render();
 }

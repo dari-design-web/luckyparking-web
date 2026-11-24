@@ -40,3 +40,8 @@ Settings → Pages → Build and deployment → Source 選「Deploy from a branc
 - `site.json` 的 `feedbackTo`＝收件信箱；`feedbackEndpoint`＝Apps Script 網頁應用程式網址。尚未填網址時，頁面為「試用版」，送出不會寄信。
 - 新增或改名停車場後，要重新執行 `node build.mjs`，並**先**把新的 `apps-script/feedback.gs` 貼回 Apps Script、執行 setup、重新部署（管理部署作業 → 編輯 → 新版本），再推上網頁。
 - 後端行為：內容相同的重送帶同一個送出代碼（欄位名 reqid；不能用 sid，Google 會直接回 400），不會重複建立案件；內容改過就算新的一則。寄信失敗標「待補寄」、卡在「寄送中」超過 20 分鐘的也會補寄（標示可能重複），每小時自動處理，一筆失敗不影響其他案件。狀態更新依「送出代碼」定位，承辦人排序試算表不會寫錯列（建議用篩選檢視）。外部輸入以文字寫入，不會被當成公式。
+
+## Google 地圖更新進度（`docs/tools/gmaps/`，內部用、noindex）
+- 網址：`https://www.dari.com.tw/tools/gmaps/`；頁面原始檔 `src/tools/gmaps.html`，資料 `src/data/gmaps.json`（各場 Google 地點的 cid、Google 上的名稱 `gname`、網站欄位 `web`、讀取時間 `asOf`）。
+- 判定：名稱以「大日」（大日開發）或「千斗」（千斗開發）開頭；網站等於 `https://www.dari.com.tw/parking.html?s=場站代碼`。
+- 不用 API 金鑰：Dari 說「更新 Google 地圖狀態」時，由 Claude 用內建瀏覽器開 `https://maps.google.com/?cid=…`，讀 `h1` 名稱與 `a[data-item-id=authority]` 網站，只重查未完成的場站，改 `gmaps.json` 的 `gname`／`web` 與 `asOf` 後執行 `node build.mjs` 並推上。
