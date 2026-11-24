@@ -35,10 +35,6 @@ const SITES = {
   "name": "民權公園地下停車場",
   "city": "臺北市"
  },
- "yonghe": {
-  "name": "雍和園區地下停車場",
-  "city": "臺北市"
- },
  "shezi": {
   "name": "社子國小地下停車場",
   "city": "臺北市"
@@ -93,6 +89,10 @@ const SITES = {
  },
  "xiulang": {
   "name": "秀朗國小地下停車場",
+  "city": "新北市"
+ },
+ "yonghe": {
+  "name": "雍和園區地下停車場",
   "city": "新北市"
  },
  "fengshu": {

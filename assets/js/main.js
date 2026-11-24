@@ -34,10 +34,11 @@
     else if(TYPE[s.type]){ img='<img src="assets/img/sites/type-'+TYPE[s.type]+'.jpg" alt="" loading="lazy">'; cap='<span class="imcap"><span>場型示意</span><span class="sep">｜</span><span>非現場照片</span></span>'; }
     im=img?'<div class="im">'+img+cap+'</div>':'<div class="im ph-img"><span class="imcap">照片準備中</span></div>';
     var credit=s.imgCredit?'<a class="credit" href="'+esc(s.imgCredit.url)+'" target="_blank" rel="noopener">'+esc(s.imgCredit.label)+'</a>':'';
-    var status=s.status==='營運中'?'<span class="chip g">營運中</span>':(s.status?'<span class="chip o">'+esc(s.status)+'</span>':'');
-    var map=s.map?'<a class="map" href="'+esc(s.map)+'" target="_blank" rel="noopener" aria-label="在地圖上查看'+esc(s.name)+(s.mapLabel?'周邊':'')+'">'+esc(s.mapLabel||'地圖')+'</a>':'';
-    var loc=(s.address||map)?'<div class="loc">'+(s.address?'<span class="addr">'+esc(s.address)+'</span>':'')+map+'</div>':'';
-    return '<article class="site"><div class="bd"><h3>'+ph(s.name)+'</h3><div class="meta"><span class="chip">'+esc(s.city)+(s.district?' '+esc(s.district):'')+'</span><span class="chip b">'+esc(s.type)+'</span>'+status+'</div><span class="co">'+esc(s.company)+'</span>'+credit+loc+'</div>'+im+'</article>';
+    var map=s.map?'<a class="map" href="'+esc(s.map)+'" target="_blank" rel="noopener" aria-label="在地圖上查看'+esc(s.name)+(s.mapLabel?'周邊':'')+'（另開新視窗）">'+esc(s.mapLabel||'地圖')+'</a>':'';
+    var tel=s.phone?'<a class="tel num" href="tel:'+String(s.phone).replace(/\D/g,'').replace(/^0/,'+886')+'" aria-label="撥打'+esc(s.name)+'電話 '+esc(s.phone)+'"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2z"/></svg>'+esc(s.phone)+'</a>':'';
+    var addr=s.address?'<p class="addr"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-6-5.5-6-10a6 6 0 1 1 12 0c0 4.5-6 10-6 10z"/><circle cx="12" cy="11" r="2"/></svg><span>'+esc(s.address).replace(/\s+(B\d[^\s]*)$/,' <span class="fl">$1</span>')+'</span></p>':'';
+    var loc=(tel||map)?'<div class="loc">'+tel+map+'</div>':'';
+    return '<article class="site"><div class="bd"><h3>'+ph(s.name)+'</h3><div class="meta"><span class="chip">'+esc(s.city)+(s.district?' '+esc(s.district):'')+'</span><span class="chip b">'+esc(s.type)+'</span></div>'+addr+credit+loc+'</div>'+im+'</article>';
   }
 
   function render(){

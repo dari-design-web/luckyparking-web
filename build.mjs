@@ -11,6 +11,9 @@ const OUT = path.join(ROOT, 'docs');
 const read = f => JSON.parse(fs.readFileSync(path.join(ROOT, 'src/data', f), 'utf8'));
 const SITE = read('site.json');
 const PARKING = read('parking.json');
+// 沒有地圖連結的場站：用地址（去掉樓層與括號說明）或「縣市＋行政區＋場名」產生 Google 地圖搜尋連結
+const gmapSearch = q => 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(q);
+PARKING.forEach(p => { if (!p.map) p.map = gmapSearch(p.address ? p.address.replace(/（[^）]*）/g, '').replace(/\s+B\d.*$/, '').trim() : `${p.city}${p.district || ''}${p.name}`); });
 const VENUES = read('venues.json');
 const AWARDS = read('awards.json');
 const NEWS = read('news.json');
@@ -148,6 +151,7 @@ ${body}
 const ICON = {
   car: '<path d="M5 16h14M6 16l1.5-5h9L18 16M7 16v2M17 16v2"/><circle cx="8.5" cy="13.5" r=".6"/><circle cx="15.5" cy="13.5" r=".6"/>',
   pin: '<path d="M12 21s-6-5.5-6-10a6 6 0 1 1 12 0c0 4.5-6 10-6 10z"/><circle cx="12" cy="11" r="2"/>',
+  phone: '<path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2z"/>',
   pay: '<rect x="3" y="6" width="18" height="12" rx="2"/><path d="M3 10h18M7 15h3"/>',
   eye: '<path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6S2 12 2 12z"/><circle cx="12" cy="12" r="2.5"/>',
   shield: '<path d="M12 3l7 3v6c0 4-3 7-7 9-4-2-7-5-7-9V6z"/><path d="M9 12l2 2 4-4"/>',
@@ -363,8 +367,10 @@ const siteCard = x => {
   else if (SITE_TYPE[x.type]) { img = `<img src="assets/img/sites/type-${SITE_TYPE[x.type]}.jpg" alt="" loading="lazy">`; cap = '<span class="imcap"><span>場型示意</span><span class="sep">｜</span><span>非現場照片</span></span>'; }
   else img = '';
   const im = img ? `<div class="im">${img}${cap}</div>` : '<div class="im ph-img"><span class="imcap">照片準備中</span></div>';
-  const map = x.map ? `<a class="map" href="${esc(x.map)}" target="_blank" rel="noopener" aria-label="在地圖上查看${esc(x.name)}${x.mapLabel ? '周邊' : ''}">${esc(x.mapLabel || '地圖')}</a>` : '';
-  return `<article class="site"><div class="bd"><h3>${esc(x.name)}</h3><div class="meta"><span class="chip">${esc(x.city)}${x.district ? ' ' + esc(x.district) : ''}</span><span class="chip b">${esc(x.type)}</span>${x.status === '營運中' ? '<span class="chip g">營運中</span>' : ''}</div><span class="co">${esc(x.company)}</span>${x.imgCredit ? `<a class="credit" href="${esc(x.imgCredit.url)}" target="_blank" rel="noopener">${esc(x.imgCredit.label)}</a>` : ''}${(x.address || map) ? `<div class="loc">${x.address ? `<span class="addr">${esc(x.address)}</span>` : ''}${map}</div>` : ''}</div>${im}</article>`;
+  const map = x.map ? `<a class="map" href="${esc(x.map)}" target="_blank" rel="noopener" aria-label="在地圖上查看${esc(x.name)}${x.mapLabel ? '周邊' : ''}（另開新視窗）">${esc(x.mapLabel || '地圖')}</a>` : '';
+  const tel = x.phone ? `<a class="tel num" href="tel:${x.phone.replace(/\D/g, '').replace(/^0/, '+886')}" aria-label="撥打${esc(x.name)}電話 ${esc(x.phone)}"><svg viewBox="0 0 24 24" aria-hidden="true">${ICON.phone}</svg>${esc(x.phone)}</a>` : '';
+  const addr = x.address ? `<p class="addr"><svg viewBox="0 0 24 24" aria-hidden="true">${ICON.pin}</svg><span>${esc(x.address).replace(/\s+(B\d[^\s]*)$/, ' <span class="fl">$1</span>')}</span></p>` : '';
+  return `<article class="site"><div class="bd"><h3>${esc(x.name)}</h3><div class="meta"><span class="chip">${esc(x.city)}${x.district ? ' ' + esc(x.district) : ''}</span><span class="chip b">${esc(x.type)}</span></div>${addr}${x.imgCredit ? `<a class="credit" href="${esc(x.imgCredit.url)}" target="_blank" rel="noopener">${esc(x.imgCredit.label)}</a>` : ''}${(tel || map) ? `<div class="loc">${tel}${map}</div>` : ''}</div>${im}</article>`;
 };
 const cities = ['全部', ...new Set(PARKING.map(p => p.city))];
 pages['parking.html'] = {
@@ -373,7 +379,7 @@ pages['parking.html'] = {
 <section class="ph"><div class="wrap"><p class="eyebrow">停車場經營</p><h1>${PARKING.length} 處停車場，<br>遍及北北桃基。</h1><p class="lead">公有地下、立體與平面停車場的委外經營。瀏覽各地停車據點，點「地圖」查看位置。</p></div></section>
 <section class="band tight" style="padding-top:8px"><div class="wrap">
   <p class="note nojs-note">以下可直接瀏覽 ${PARKING.length} 處停車據點，點「地圖」查看位置。搜尋與篩選功能需要瀏覽器啟用 JavaScript。</p>
-  <div class="search pk-ctl"><label for="q" class="sr">搜尋停車場</label><input id="q" type="search" placeholder="搜尋名稱、行政區或路名，例如：中和、榮星" autocomplete="off" aria-describedby="qhint"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4.5 4.5"/></svg></div>
+  <div class="search pk-ctl"><label for="q" class="sr">搜尋停車場</label><input id="q" type="search" placeholder="搜尋名稱、行政區或路名，例如：中和、榮星、民權東路" autocomplete="off" aria-describedby="qhint"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4.5 4.5"/></svg></div>
   <div class="qhint pk-ctl" id="qhint"><span id="qhint-t" role="status"></span><a href="#results" id="qhint-go" hidden>看結果 ↓</a><button type="button" class="linkbtn" id="qhint-clear" hidden>清除關鍵字</button></div>
   <div class="citymap" aria-label="依縣市分布">${cities.filter(c => c !== '全部').map(c => `<button type="button" class="cm" data-city="${c}"><b class="num">${PARKING.filter(p => p.city === c).length}</b><span>${c}</span></button>`).join('')}</div>
   <div class="filters pk-ctl" role="group" aria-label="依縣市篩選">${cities.map(c => `<button type="button" data-f="city" data-v="${c}" aria-pressed="${c === '全部'}">${c}</button>`).join('')}</div>

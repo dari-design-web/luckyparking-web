@@ -737,3 +737,23 @@ p.lead{text-align:justify;text-align-last:left;text-justify:inter-character;line
 .btn.big{padding:16px 28px;font-size:17px}
 /* 叁肆行：兩個 Facebook 按鈕只寫名稱（叁肆行藍底、基隆好食城白底） */
 .vbtn.named span{text-transform:none;letter-spacing:.02em}
+
+/* ===== v0.3.2 停車場卡：不顯示營運狀態與公司；加地址、電話；地圖按鈕固定在右下 ===== */
+.site .addr{display:flex;align-items:flex-start;gap:6px;margin:2px 0 0;font-size:13.5px;line-height:1.55;color:var(--ink-2)}
+.site .addr svg,.site .tel svg{flex:none;width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.site .addr svg{margin-top:3px;color:#8a93a0}
+.site .loc{display:flex;align-items:center;justify-content:flex-end;gap:10px;margin-top:auto;padding-top:10px}
+.site .loc .tel{display:inline-flex;align-items:center;gap:6px;min-height:32px;font-size:14px;font-weight:700;color:var(--ink);text-decoration:none;white-space:nowrap;margin-right:auto}
+.site .loc .tel svg{color:var(--blue)}
+.site .loc .tel:hover{color:var(--blue)}
+.site .loc .map{margin-left:auto}
+.site .loc .tel:focus-visible,.site .loc .map:focus-visible{outline:2px solid var(--orange);outline-offset:2px;border-radius:999px}
+@media (max-width:560px){
+  .site .addr{font-size:12.5px;gap:4px}
+  .site .addr svg{width:13px;height:13px;margin-top:2px}
+  .site .loc{gap:6px;padding-top:6px}
+  .site .loc .tel{font-size:13px;gap:4px;min-height:30px}
+  .site .loc .tel svg{width:13px;height:13px}
+  .site .loc .map{padding:3px 10px}
+}
+.site .addr .fl{white-space:nowrap}
