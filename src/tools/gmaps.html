@@ -1,0 +1,252 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Google 地圖更新進度｜大日開發</title>
+<link rel="icon" href="../../assets/img/favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@600;700;800&family=Noto+Sans+TC:wght@400;500;700;900&display=swap">
+<style>
+/* VOICE  內部工作表：直接、清楚，一眼看出哪幾場還沒改
+   IDEA   像場站巡檢單：每一場一列，沒過的項目用橘色章蓋上
+   PICTURE 上方三條進度條就是主圖（名稱／網站／全部完成）
+   COLOUR 官網藍為主、橘色＝待處理、綠色＝完成，白底
+   LAYOUT 標題與按鈕在上，進度條，依公司分組的清單；手機一欄 */
+:root{--blue:#2561a9;--blue-d:#1b4a83;--orange:#e0662a;--orange-bg:#fdebe0;--green:#2f8f5b;--green-bg:#e3f3ea;--ink:#1d1f22;--ink2:#5b6068;--line:#e2e6ec;--bg:#fff;--surface:#f3f5f8}
+*{box-sizing:border-box;min-width:0}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 "Noto Sans TC","PingFang TC","Microsoft JhengHei",system-ui,sans-serif}
+.wrap{max-width:1080px;margin:0 auto;padding:clamp(20px,4vw,40px) max(4vw,16px) 64px}
+h1{font-size:clamp(26px,4vw,36px);line-height:1.15;font-weight:900;margin:0}
+.lead{color:var(--ink2);margin:8px 0 0;max-width:46em}
+.bar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:22px 0 6px}
+.btn{appearance:none;border:0;border-radius:999px;min-height:46px;padding:0 22px;font-family:inherit;font-size:16px;font-weight:700;line-height:1;cursor:pointer}
+.btn.primary{background:var(--blue);color:#fff}.btn.primary:hover{background:var(--blue-d)}
+.btn.ghost{background:transparent;color:var(--blue);box-shadow:inset 0 0 0 1.5px rgba(37,97,169,.5)}
+.btn:disabled{opacity:.55;cursor:progress}
+.btn:focus-visible,.f button:focus-visible,summary:focus-visible,a:focus-visible,input:focus-visible{outline:3px solid var(--orange);outline-offset:2px}
+.status{font-size:14px;color:var(--ink2)}
+.msg{margin:10px 0 0;padding:10px 14px;border-radius:10px;background:var(--orange-bg);color:#8a3b12;font-size:14px}
+.msg[hidden]{display:none}
+.meters{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin:22px 0 8px}
+.meter{background:var(--surface);border-radius:14px;padding:14px 16px}
+.meter b{display:block;font:800 clamp(24px,3.4vw,32px)/1.1 "Inter Tight",sans-serif;font-variant-numeric:tabular-nums}
+.meter span{font-size:14px;color:var(--ink2)}
+.track{height:8px;border-radius:99px;background:#dde3ea;margin-top:10px;overflow:hidden}
+.track i{display:block;height:100%;background:var(--green);border-radius:99px;transition:width .4s ease}
+details.key{margin:18px 0 0;border:1px solid var(--line);border-radius:12px;padding:0 16px}
+details.key summary{cursor:pointer;padding:12px 0;font-weight:700;color:var(--blue)}
+details.key .in{padding:0 0 16px;font-size:14px;color:var(--ink2)}
+details.key ol{padding-left:20px;margin:8px 0}
+.keyrow{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.keyrow input{flex:1 1 260px;min-height:44px;border:1px solid #c9d1db;border-radius:10px;padding:0 12px;font:16px "Inter Tight",monospace}
+.f{display:flex;gap:6px;flex-wrap:wrap;margin:26px 0 4px}
+.f button{border:1px solid var(--line);background:#fff;border-radius:999px;min-height:40px;padding:0 16px;font-family:inherit;font-size:15px;font-weight:500;cursor:pointer;color:var(--ink)}
+.f button[aria-pressed=true]{background:var(--ink);color:#fff;border-color:var(--ink)}
+h2{font-size:18px;margin:26px 0 8px;font-weight:800}
+h2 small{font-weight:500;color:var(--ink2);font-size:14px;margin-left:6px}
+ul.rows{list-style:none;margin:0;padding:0;border-top:1px solid var(--line)}
+.row{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr) auto;gap:6px 18px;align-items:center;padding:13px 4px;border-bottom:1px solid var(--line)}
+.row.todo{background:linear-gradient(90deg,rgba(224,102,42,.06),transparent 60%)}
+.gname{font-weight:700;color:var(--ink);text-decoration:none}
+.gname:hover{color:var(--blue);text-decoration:underline}
+.ours{display:block;font-size:13px;color:var(--ink2)}
+.web{font-size:14px;overflow-wrap:anywhere;color:var(--ink2)}
+.web a{color:var(--blue)}
+.web .none{color:#9aa1ab}
+.tags{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}
+.tag{font-size:13px;font-weight:700;border-radius:999px;padding:3px 10px;white-space:nowrap}
+.tag.bad{background:var(--orange-bg);color:#a8461a}
+.tag.ok{background:var(--green-bg);color:#22704a}
+.tag.mid{background:#fff4d6;color:#7a5a00}
+.tag.wait{background:var(--surface);color:var(--ink2)}
+.tag.err{background:#fbe3e3;color:#a12a2a}
+.note{display:block;font-size:12.5px;color:#a8461a;margin-top:2px}
+.empty{padding:18px 4px;color:var(--ink2)}
+.foot{margin-top:28px;font-size:13px;color:var(--ink2)}
+@media(max-width:700px){
+  .meters{gap:8px}
+  .meter{padding:10px 12px}
+  .meter b{font-size:22px}
+  .meter span{font-size:12.5px}
+  .row{grid-template-columns:1fr}
+  .tags{justify-content:flex-start}
+}
+@media(prefers-reduced-motion:reduce){.track i{transition:none}}
+</style>
+</head>
+<body>
+<main class="wrap">
+  <h1>Google 地圖更新進度</h1>
+  <p class="lead">各停車場在 Google 地圖上的名稱要以「大日」或「千斗」開頭，網站欄位要填官網該場的專屬連結。按「狀態更新」只會重新讀取還沒更新的場站。</p>
+
+  <div class="bar">
+    <button type="button" class="btn primary" id="go">狀態更新</button>
+    <button type="button" class="btn ghost" id="all">全部重查</button>
+    <span class="status" id="st" role="status"></span>
+  </div>
+  <p class="msg" id="msg" hidden></p>
+
+  <div class="meters" id="meters"></div>
+
+  <details class="key" id="keybox">
+    <summary>Google API 金鑰設定</summary>
+    <div class="in">
+      <p>讀取 Google 地圖資料需要一組 Google Maps Platform 的 API 金鑰。金鑰只存在這台電腦的瀏覽器裡，不會上傳到網站。</p>
+      <ol>
+        <li>Google Cloud Console 建立專案並啟用計費（每月有免費額度）。</li>
+        <li>啟用「Maps JavaScript API」與「Places API (New)」。</li>
+        <li>建立 API 金鑰，應用程式限制選「網站」，填 <code>https://www.dari.com.tw/tools/*</code>；API 限制只勾上面兩個。</li>
+      </ol>
+      <div class="keyrow"><label class="sr" for="key" style="position:absolute;left:-9999px">API 金鑰</label><input id="key" type="password" autocomplete="off" placeholder="貼上 API 金鑰"><button type="button" class="btn ghost" id="savekey">儲存</button></div>
+    </div>
+  </details>
+
+  <div class="f" role="group" aria-label="篩選">
+    <button type="button" data-f="all" aria-pressed="true">全部</button>
+    <button type="button" data-f="todo" aria-pressed="false">未更新</button>
+    <button type="button" data-f="done" aria-pressed="false">已完成</button>
+  </div>
+  <div id="list"></div>
+
+  <p class="foot" id="foot"></p>
+</main>
+<script>
+{
+const D = __DATA__;
+const LOTS = D.lots;
+const store = (() => { try { const t = '__t'; localStorage.setItem(t, t); localStorage.removeItem(t); return localStorage; } catch (e) { return null; } })();
+const load = (k, d) => { try { const v = store && store.getItem(k); return v ? JSON.parse(v) : d; } catch (e) { return d; } };
+const save = (k, v) => { try { store && store.setItem(k, JSON.stringify(v)); } catch (e) {} };
+const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+
+const SNAP_AT = Date.parse(D.asOf);
+const state = load('gm.state', {});
+const ids = load('gm.ids', {});
+const errs = {};
+for (const l of LOTS) { const s = state[l.code]; if (!s || !(s.at > SNAP_AT)) state[l.code] = { gname: l.gname, web: l.web, at: SNAP_AT }; }
+
+const prefixOf = l => l.company === '千斗開發' ? '千斗' : '大日';
+const normU = u => String(u || '').trim().replace(/^http:\/\//i, 'https://').replace(/\/+$/, '').toLowerCase();
+function judge(l) {
+  const s = state[l.code] || {};
+  const nameOK = String(s.gname || '').startsWith(prefixOf(l));
+  const w = normU(s.web);
+  let web = 'none';
+  if (w && w === normU(l.expected)) web = 'ok';
+  else if (/^https:\/\/(www\.)?dari\.com\.tw/.test(w)) web = 'site';
+  else if (w) web = 'other';
+  return { nameOK, web, done: nameOK && web === 'ok' };
+}
+const active = LOTS.filter(l => !l.soon);
+let filter = 'all', busy = false;
+
+const $ = id => document.getElementById(id);
+const fmt = t => { const d = new Date(t); return isNaN(d) ? '' : d.toLocaleString('zh-TW', { month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit', hour12: false }); };
+
+function meters() {
+  const n = active.length, j = active.map(judge);
+  const m = [['名稱已更新', j.filter(x => x.nameOK).length], ['網站已更新', j.filter(x => x.web === 'ok').length], ['兩項都完成', j.filter(x => x.done).length]];
+  $('meters').innerHTML = m.map(([t, v]) => `<div class="meter"><b>${v}<span style="font-size:.55em;color:var(--ink2)"> / ${n}</span></b><span>${t}</span><div class="track"><i style="width:${n ? Math.round(v / n * 100) : 0}%"></i></div></div>`).join('');
+  const todo = j.filter(x => !x.done).length;
+  $('go').textContent = todo ? `狀態更新（${todo} 場未更新）` : '狀態更新';
+}
+
+function tags(l) {
+  if (l.soon) return '<span class="tag wait">2027/03 接場，暫不檢查</span>';
+  if (errs[l.code]) return `<span class="tag err">${esc(errs[l.code])}</span>`;
+  const j = judge(l), out = [];
+  if (!j.nameOK) out.push('<span class="tag bad">名稱未更新</span>');
+  if (j.web === 'site') out.push('<span class="tag mid">網站是官網，非專屬連結</span>');
+  else if (j.web !== 'ok') out.push('<span class="tag bad">網站未更新</span>');
+  return out.length ? out.join('') : '<span class="tag ok">已更新</span>';
+}
+
+function row(l) {
+  const s = state[l.code] || {}, j = judge(l);
+  const web = s.web ? `<a href="${esc(s.web)}" target="_blank" rel="noopener">${esc(s.web)}</a>` : '<span class="none">未填網站</span>';
+  const note = l.dup ? `<span class="note">Google 地圖上有兩筆同名地點，<a href="https://maps.google.com/?cid=${esc(l.dup)}" target="_blank" rel="noopener">另一筆</a></span>` : '';
+  return `<li class="row${!l.soon && !j.done ? ' todo' : ''}"><div><a class="gname" href="https://maps.google.com/?cid=${esc(l.cid)}" target="_blank" rel="noopener">${esc(s.gname || '（讀不到名稱）')}</a><span class="ours">官網名稱：${esc(l.name)}</span>${note}</div><div class="web">${web}</div><div class="tags">${tags(l)}</div></li>`;
+}
+
+function render() {
+  meters();
+  const pick = l => filter === 'all' ? true : filter === 'todo' ? (!l.soon && !judge(l).done) : (!l.soon && judge(l).done);
+  const groups = [['大日開發', LOTS.filter(l => !l.soon && l.company === '大日開發')], ['千斗開發', LOTS.filter(l => !l.soon && l.company === '千斗開發')], ['即將接場', LOTS.filter(l => l.soon)]];
+  let html = '';
+  for (const [t, ls] of groups) {
+    const shown = ls.filter(pick).sort((a, b) => judge(a).done - judge(b).done);
+    if (!shown.length) continue;
+    html += `<h2>${t}<small>${shown.length} 場</small></h2><ul class="rows">${shown.map(row).join('')}</ul>`;
+  }
+  $('list').innerHTML = html || '<p class="empty">這個篩選目前沒有場站。</p>';
+  const last = Math.max(...active.map(l => state[l.code].at));
+  $('foot').textContent = `資料時間：最近一次讀取 ${fmt(last)}。初始資料為 ${fmt(SNAP_AT)} 從 Google 地圖逐筆讀取。Google 審核通過後才會顯示新的名稱與網站。`;
+}
+
+/* Google Maps JavaScript API 動態載入（官方 bootstrap loader） */
+let placesLib = null, authFailed = false;
+window.gm_authFailure = () => { authFailed = true; showMsg('Google 拒絕了這組 API 金鑰：請確認金鑰正確、已啟用 Maps JavaScript API 與 Places API (New)，且網站限制包含 https://www.dari.com.tw/tools/*。'); };
+function boot(key) {
+  (g=>{var h,a,k,p="The Google Maps JavaScript API",c="google",l="importLibrary",q="__ib__",m=document,b=window;b=b[c]||(b[c]={});var d=b.maps||(b.maps={}),r=new Set,e=new URLSearchParams,u=()=>h||(h=new Promise(async(f,n)=>{await (a=m.createElement("script"));e.set("libraries",[...r]+"");for(k in g)e.set(k.replace(/[A-Z]/g,t=>"_"+t[0].toLowerCase()),g[k]);e.set("callback",c+".maps."+q);a.src=`https://maps.${c}apis.com/maps/api/js?`+e;d[q]=f;a.onerror=()=>h=n(Error(p+" could not load."));a.nonce=m.querySelector("script[nonce]")?.nonce||"";m.head.append(a)}));d[l]?console.warn(p+" only loads once. Ignoring:",g):d[l]=(f,...n)=>r.add(f)&&u().then(()=>d[l](f,...n))})({ key, v: 'weekly', language: 'zh-TW', region: 'TW' });
+}
+async function lib() {
+  if (placesLib) return placesLib;
+  const key = load('gm.key', '');
+  if (!key) throw new Error('nokey');
+  boot(key);
+  placesLib = await google.maps.importLibrary('places');
+  return placesLib;
+}
+async function fetchOne(l) {
+  const { Place } = await lib();
+  if (!ids[l.code]) {
+    const { places } = await Place.searchByText({ textQuery: l.query, fields: ['id', 'displayName', 'websiteURI', 'googleMapsURI'], language: 'zh-TW', region: 'tw', maxResultCount: 10 });
+    const list = places || [];
+    const hit = list.find(p => String(p.googleMapsURI || '').includes('cid=' + l.cid)) || list.find(p => p.displayName === (state[l.code] || {}).gname);
+    if (!hit) throw new Error('在 Google 地圖找不到這個地點');
+    ids[l.code] = hit.id; save('gm.ids', ids);
+    return { gname: hit.displayName || '', web: hit.websiteURI || '' };
+  }
+  const p = new Place({ id: ids[l.code], requestedLanguage: 'zh-TW' });
+  await p.fetchFields({ fields: ['displayName', 'websiteURI'] });
+  return { gname: p.displayName || '', web: p.websiteURI || '' };
+}
+
+function showMsg(t) { const m = $('msg'); m.textContent = t; m.hidden = !t; }
+async function run(onlyTodo) {
+  if (busy) return;
+  const targets = active.filter(l => !onlyTodo || !judge(l).done);
+  if (!targets.length) { $('st').textContent = '全部場站都已更新，不需要重新讀取。'; return; }
+  if (!load('gm.key', '')) { $('keybox').open = true; showMsg('請先在下方「Google API 金鑰設定」貼上金鑰。'); $('key').focus(); return; }
+  busy = true; $('go').disabled = $('all').disabled = true; showMsg('');
+  let ok = 0, bad = 0;
+  for (let i = 0; i < targets.length; i++) {
+    const l = targets[i];
+    $('st').textContent = `讀取中 ${i + 1} / ${targets.length}：${l.name}`;
+    try {
+      const r = await fetchOne(l);
+      state[l.code] = { gname: r.gname, web: r.web, at: Date.now() }; delete errs[l.code]; ok++;
+    } catch (e) {
+      bad++; errs[l.code] = e && e.message === 'nokey' ? '缺少金鑰' : '讀取失敗';
+      if (authFailed) break;
+    }
+    save('gm.state', state); render();
+    await new Promise(r => setTimeout(r, 120));
+  }
+  busy = false; $('go').disabled = $('all').disabled = false;
+  const left = active.filter(l => !judge(l).done).length;
+  $('st').textContent = `已讀取 ${ok} 場${bad ? `，${bad} 場失敗` : ''}；目前還有 ${left} 場未更新。`;
+}
+
+$('go').addEventListener('click', () => run(true));
+$('all').addEventListener('click', () => run(false));
+$('savekey').addEventListener('click', () => { const v = $('key').value.trim(); save('gm.key', v); $('key').value = ''; $('key').placeholder = v ? '已儲存（重新貼上可更換）' : '貼上 API 金鑰'; showMsg(v ? '' : '已清除金鑰。'); if (v) { $('keybox').open = false; $('st').textContent = '金鑰已儲存，可以按「狀態更新」。'; } });
+if (load('gm.key', '')) $('key').placeholder = '已儲存（重新貼上可更換）';
+document.querySelectorAll('[data-f]').forEach(b => b.addEventListener('click', () => { filter = b.dataset.f; document.querySelectorAll('[data-f]').forEach(x => x.setAttribute('aria-pressed', x === b)); render(); }));
+render();
+}
+</script>
+</body>
+</html>
