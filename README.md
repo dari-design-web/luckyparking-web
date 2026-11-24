@@ -42,6 +42,9 @@ Settings → Pages → Build and deployment → Source 選「Deploy from a branc
 - 後端行為：內容相同的重送帶同一個送出代碼（欄位名 reqid；不能用 sid，Google 會直接回 400），不會重複建立案件；內容改過就算新的一則。寄信失敗標「待補寄」、卡在「寄送中」超過 20 分鐘的也會補寄（標示可能重複），每小時自動處理，一筆失敗不影響其他案件。狀態更新依「送出代碼」定位，承辦人排序試算表不會寫錯列（建議用篩選檢視）。外部輸入以文字寫入，不會被當成公式。
 
 ## Google 地圖更新進度（`docs/tools/gmaps/`，內部用、noindex）
-- 網址：`https://www.dari.com.tw/tools/gmaps/`；頁面原始檔 `src/tools/gmaps.html`，資料 `src/data/gmaps.json`（各場 Google 地點的 cid、Google 上的名稱 `gname`、網站欄位 `web`、讀取時間 `asOf`）。
-- 判定：名稱以「大日」（大日開發）或「千斗」（千斗開發）開頭；網站等於 `https://www.dari.com.tw/parking.html?s=場站代碼`。
-- 不用 API 金鑰：Dari 說「更新 Google 地圖狀態」時，由 Claude 用內建瀏覽器開 `https://maps.google.com/?cid=…`，讀 `h1` 名稱與 `a[data-item-id=authority]` 網站，只重查未完成的場站，改 `gmaps.json` 的 `gname`／`web` 與 `asOf` 後執行 `node build.mjs` 並推上。
+- 網址：`https://www.dari.com.tw/tools/gmaps/`；頁面原始檔 `src/tools/gmaps.html`，資料 `src/data/gmaps.json`（各場 Google 地點的 cid、目前名稱 `gname`、網站 `web`、申請狀態 `edits`、讀取時間 `asOf`／`editsAsOf`）。
+- 判定：名稱以「大日」（大日開發）或「千斗」（千斗開發）開頭；網站等於 `https://www.dari.com.tw/parking.html?s=場站代碼`。每個欄位顯示「待處理／已完成／未接受／已接受／未申請」，有「未接受」的場站列為需重新申請。
+- 不用 API 金鑰。Dari 說「更新 Google 地圖狀態」時，由 Claude 用內建瀏覽器（登入 Google 帳號「大日開發DARI」）：
+  1. 開 `https://www.google.com/maps/contrib/@25.05,121.49,12z/data=!4m2!8m1!1e4?hl=zh-TW`（你的貢獻＞編輯），捲到底，對每個 `div[data-factual-edit-index]:not([role=button])` 取「地點名稱|提交日期|狀態|欄位」存成文字檔，執行 `python3 scripts/gmaps_edits.py 檔案 "讀取時間ISO"`。
+  2. 狀態變成「已接受」的場站，再開 `https://maps.google.com/?cid=…` 讀 `h1` 名稱與 `a[data-item-id=authority]` 網站，更新 `gname`／`web`（舊名稱放進 `names` 以便對應），改 `asOf`。
+  3. `node build.mjs` 後推上。

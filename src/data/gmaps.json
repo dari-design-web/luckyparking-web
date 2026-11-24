@@ -5,214 +5,577 @@
   "rongxing": {
    "cid": "15074776412204934487",
    "gname": "榮星花園地下停車場",
-   "web": "https://www.dari.com.tw/parking.html?s=rongxing"
+   "web": "https://www.dari.com.tw/parking.html?s=rongxing",
+   "edits": {
+    "name": {
+     "status": "未接受",
+     "date": "11月24日"
+    },
+    "web": {
+     "status": "待處理",
+     "date": "11月24日"
+    }
+   }
   },
   "binjiang": {
    "cid": "13398539482531583818",
    "gname": "市立濱江國中地下停車場",
-   "web": "http://www.pma.gov.taipei/ct.asp?xitem=121237&CtNode=13493&mp=117021"
+   "web": "http://www.pma.gov.taipei/ct.asp?xitem=121237&CtNode=13493&mp=117021",
+   "edits": {
+    "web": {
+     "status": "待處理",
+     "date": "11月24日"
+    },
+    "name": {
+     "status": "未接受",
+     "date": "11月24日"
+    }
+   }
   },
   "guangci1": {
    "cid": "10190336061516905275",
    "gname": "廣慈1區停車場",
    "web": "",
-   "dup": "11538232385472350949"
+   "dup": "11538232385472350949",
+   "edits": {
+    "name": {
+     "status": "未接受",
+     "date": "11月24日"
+    },
+    "web": {
+     "status": "待處理",
+     "date": "11月24日"
+    }
+   }
   },
   "guangci2": {
    "cid": "12111870563949248752",
    "gname": "廣慈2區",
-   "web": ""
+   "web": "",
+   "edits": {
+    "web": {
+     "status": "待處理",
+     "date": "11月24日"
+    },
+    "name": {
+     "status": "待處理",
+     "date": "11月24日"
+    }
+   }
   },
   "tpmc": {
    "cid": "457229933388604900",
    "gname": "大日-台北流行音樂中心地下停車場",
-   "web": "https://itaipeiparking.pma.gov.taipei/"
+   "web": "https://itaipeiparking.pma.gov.taipei/",
+   "edits": {
+    "web": {
+     "status": "待處理",
+     "date": "11月24日"
+    },
+    "name": {
+     "status": "待處理",
+     "date": "11月24日"
+    }
+   }
   },
   "minquan": {
    "cid": "11852762211203476150",
    "gname": "民權公園地下停車場",
-   "web": "https://www.dari.com.tw/parking.html?s=minquan"
+   "web": "https://www.dari.com.tw/parking.html?s=minquan",
+   "edits": {
+    "web": {
+     "status": "待處理",
+     "date": "11月24日"
+    },
+    "name": {
+     "status": "未接受",
+     "date": "11月24日"
+    }
+   }
   },
   "guangrong": {
    "cid": "17727506775672795122",
    "gname": "三重區光榮國小地下停車場",
-   "web": "https://www.parkinginfo.ntpc.gov.tw/parkinginfo/public/GoogleMap.aspx"
+   "web": "https://www.parkinginfo.ntpc.gov.tw/parkinginfo/public/GoogleMap.aspx",
+   "edits": {
+    "web": {
+     "status": "待處理",
+     "date": "11月24日"
+    },
+    "name": {
+     "status": "未接受",
+     "date": "11月24日"
+    }
+   }
   },
   "xinggu": {
    "cid": "9279493999846165106",
    "gname": "大日-興穀國小操場地下停車場",
-   "web": ""
+   "web": "",
+   "edits": {
+    "web": {
+     "status": "待處理",
+     "date": "11月24日"
+    },
+    "name": {
+     "status": "已接受",
+     "date": "11月24日"
+    }
+   }
   },
   "zhonghe": {
    "cid": "7118317615507326693",
    "gname": "大日-中和國小地下停車場",
-   "web": "http://luckyparking.mobuy.tw/web/index.html"
+   "web": "http://luckyparking.mobuy.tw/web/index.html",
+   "edits": {
+    "web": {
+     "status": "待處理",
+     "date": "11月24日"
+    },
+    "name": {
+     "status": "未接受",
+     "date": "11月24日"
+    }
+   }
   },
   "xiufeng": {
    "cid": "17249906408841304266",
    "gname": "大日-秀峰停車場",
-   "web": "https://www.parkinginfo.ntpc.gov.tw/parkinginfo/public/?parkinglotid=030150"
+   "web": "https://www.parkinginfo.ntpc.gov.tw/parkinginfo/public/?parkinglotid=030150",
+   "edits": {
+    "web": {
+     "status": "待處理",
+     "date": "11月24日"
+    },
+    "name": {
+     "status": "已接受",
+     "date": "11月24日"
+    }
+   }
   },
   "jinhe-flat": {
    "cid": "7150836316728796589",
    "gname": "大日-錦和平面停車場",
-   "web": ""
+   "web": "",
+   "edits": {
+    "web": {
+     "status": "待處理",
+     "date": "11月24日"
+    },
+    "name": {
+     "status": "已接受",
+     "date": "11月24日"
+    }
+   }
   },
   "jinhe": {
    "cid": "9209146962960404765",
    "gname": "大日錦和運動公園地下停車場",
-   "web": "https://www.dari.com.tw/parking.html?s=jinhe"
+   "web": "https://www.dari.com.tw/parking.html?s=jinhe",
+   "edits": {
+    "web": {
+     "status": "待處理",
+     "date": "11月24日"
+    }
+   }
   },
   "tucheng-central": {
    "cid": "10391863757442245862",
    "gname": "大日-土城區中央公園地下停車場",
-   "web": "https://www.parkinginfo.ntpc.gov.tw/parkinginfo/public/?parkinglotid=130084"
+   "web": "https://www.parkinginfo.ntpc.gov.tw/parkinginfo/public/?parkinglotid=130084",
+   "edits": {
+    "web": {
+     "status": "待處理",
+     "date": "11月24日"
+    },
+    "name": {
+     "status": "已接受",
+     "date": "11月24日"
+    }
+   }
   },
   "tucheng-yanji": {
    "cid": "16110213461121792362",
    "gname": "土城延吉立體停車場",
-   "web": "http://www.parkinginfo.ntpc.gov.tw/parkinginfo/public/Googlemap.aspx?Lat=24.987516&Lng=121.469174"
+   "web": "http://www.parkinginfo.ntpc.gov.tw/parkinginfo/public/Googlemap.aspx?Lat=24.987516&Lng=121.469174",
+   "edits": {
+    "web": {
+     "status": "待處理",
+     "date": "11月24日"
+    },
+    "name": {
+     "status": "待處理",
+     "date": "11月24日"
+    }
+   }
   },
   "tucheng-yusheng": {
    "cid": "2346160363778784309",
    "gname": "大日-裕生停車場",
-   "web": "https://www.parkinginfo.ntpc.gov.tw/parkinginfo/public/?parkinglotid=130004"
+   "web": "https://www.parkinginfo.ntpc.gov.tw/parkinginfo/public/?parkinglotid=130004",
+   "edits": {
+    "web": {
+     "status": "待處理",
+     "date": "11月24日"
+    },
+    "name": {
+     "status": "已接受",
+     "date": "11月24日"
+    }
+   }
   },
   "siliconvalley": {
    "cid": "14699585543467030869",
    "gname": "大日-台北矽谷大樓停車場",
-   "web": "https://www.youparking.com.tw/parking-detail.php?id=405"
+   "web": "https://www.youparking.com.tw/parking-detail.php?id=405",
+   "edits": {
+    "web": {
+     "status": "待處理",
+     "date": "11月24日"
+    },
+    "name": {
+     "status": "已接受",
+     "date": "11月24日"
+    }
+   }
   },
   "yangguang": {
    "cid": "16878908860400162840",
    "gname": "大日-新店區陽光段平面停車場",
-   "web": "https://www.parkinginfo.ntpc.gov.tw/parkinginfo/public/?parkinglotid=060160"
+   "web": "https://www.parkinginfo.ntpc.gov.tw/parkinginfo/public/?parkinglotid=060160",
+   "edits": {
+    "web": {
+     "status": "待處理",
+     "date": "11月24日"
+    },
+    "name": {
+     "status": "已接受",
+     "date": "11月24日"
+    }
+   }
   },
   "banqiao-hs": {
    "cid": "6608084122985646632",
    "gname": "板橋高級中學停車場",
-   "web": "http://www.pcsh.ntpc.edu.tw/"
+   "web": "http://www.pcsh.ntpc.edu.tw/",
+   "edits": {
+    "web": {
+     "status": "待處理",
+     "date": "11月24日"
+    },
+    "name": {
+     "status": "待處理",
+     "date": "11月24日"
+    }
+   }
   },
   "archives": {
    "cid": "3890042432800451272",
    "gname": "大日-國家檔案館停車場",
-   "web": "https://www.archives.gov.tw/"
+   "web": "https://www.archives.gov.tw/",
+   "edits": {
+    "web": {
+     "status": "待處理",
+     "date": "11月24日"
+    },
+    "name": {
+     "status": "已接受",
+     "date": "11月24日"
+    }
+   }
   },
   "fuhe": {
    "cid": "14991800572753879184",
    "gname": "福和國中地下停車場",
-   "web": ""
+   "web": "",
+   "edits": {
+    "web": {
+     "status": "待處理",
+     "date": "11月24日"
+    },
+    "name": {
+     "status": "未接受",
+     "date": "11月24日"
+    }
+   }
   },
   "xiulang": {
    "cid": "15282730677968775859",
    "gname": "大日秀朗國小地下停車場",
-   "web": ""
+   "web": "",
+   "edits": {
+    "web": {
+     "status": "待處理",
+     "date": "11月24日"
+    }
+   }
   },
   "ruifang-back": {
    "cid": "5092021870283042932",
    "gname": "大日-瑞芳區後火車站臨時平面停車場",
-   "web": ""
+   "web": "",
+   "edits": {
+    "web": {
+     "status": "待處理",
+     "date": "11月24日"
+    },
+    "name": {
+     "status": "已接受",
+     "date": "11月24日"
+    }
+   }
   },
   "ruifang": {
    "cid": "16125216156140739771",
    "gname": "大日-瑞芳區立體停車場",
-   "web": ""
+   "web": "",
+   "edits": {
+    "web": {
+     "status": "待處理",
+     "date": "11月24日"
+    },
+    "name": {
+     "status": "已接受",
+     "date": "11月24日"
+    }
+   }
   },
   "lujiang": {
    "cid": "918986856185710391",
    "gname": "大日-蘆洲鷺江立體停車場",
-   "web": ""
+   "web": "",
+   "edits": {
+    "web": {
+     "status": "待處理",
+     "date": "11月24日"
+    },
+    "name": {
+     "status": "已接受",
+     "date": "11月24日"
+    }
+   }
   },
   "tyc-youth": {
    "cid": "10820708545655388301",
    "gname": "大日-桃園市八德北區青少年活動中心地下停車場",
-   "web": ""
+   "web": "",
+   "edits": {
+    "web": {
+     "status": "待處理",
+     "date": "11月24日"
+    },
+    "name": {
+     "status": "已接受",
+     "date": "11月24日"
+    }
+   }
   },
   "taoyuan": {
    "cid": "73024161327810619",
    "gname": "大日-桃園國際原住民族文創產業園區地下停車場",
-   "web": "https://communityspace.com.tw/info-park"
+   "web": "https://communityspace.com.tw/info-park",
+   "edits": {
+    "web": {
+     "status": "待處理",
+     "date": "11月24日"
+    },
+    "name": {
+     "status": "已接受",
+     "date": "11月24日"
+    }
+   }
   },
   "xinguang": {
    "cid": "8888572404803922562",
    "gname": "大日-新光國際金融中心停車場",
-   "web": ""
+   "web": "",
+   "edits": {
+    "web": {
+     "status": "待處理",
+     "date": "11月24日"
+    },
+    "name": {
+     "status": "已接受",
+     "date": "11月24日"
+    }
+   }
   },
   "keelung-e34": {
    "cid": "16798674134554336554",
    "gname": "大日-基隆港東3東4停車場",
-   "web": "https://www.facebook.com/profile.php?id=100083318313417"
+   "web": "https://www.facebook.com/profile.php?id=100083318313417",
+   "edits": {
+    "web": {
+     "status": "待處理",
+     "date": "11月24日"
+    },
+    "name": {
+     "status": "已接受",
+     "date": "11月24日"
+    }
+   }
   },
   "jinan": {
    "cid": "17549354642052782062",
    "gname": "千斗-進安公園地下停車場",
-   "web": ""
+   "web": "",
+   "edits": {
+    "web": {
+     "status": "待處理",
+     "date": "11月24日"
+    }
+   }
   },
   "shipai": {
    "cid": "4722956874297677052",
    "gname": "千斗-台北市石牌國小地下停車場",
-   "web": "https://web.spps.tp.edu.tw/nss/p/index"
+   "web": "https://web.spps.tp.edu.tw/nss/p/index",
+   "edits": {
+    "web": {
+     "status": "待處理",
+     "date": "11月24日"
+    }
+   }
   },
   "ntsec": {
    "cid": "12404016707437195991",
    "gname": "國立臺灣科學教育館停車場",
-   "web": ""
+   "web": "",
+   "edits": {
+    "web": {
+     "status": "待處理",
+     "date": "11月24日"
+    },
+    "name": {
+     "status": "待處理",
+     "date": "11月24日"
+    }
+   }
   },
   "shezi": {
    "cid": "14412428403893060847",
    "gname": "社子國小地下停車場",
-   "web": ""
+   "web": "",
+   "edits": {
+    "web": {
+     "status": "待處理",
+     "date": "11月24日"
+    },
+    "name": {
+     "status": "未接受",
+     "date": "11月24日"
+    }
+   }
   },
   "tw64": {
    "cid": "7255230686408751456",
    "gname": "千斗-台64橋下平面停車場",
-   "web": "https://www.majortek.com.tw/"
+   "web": "https://www.majortek.com.tw/",
+   "edits": {
+    "web": {
+     "status": "待處理",
+     "date": "11月24日"
+    }
+   }
   },
   "xinwu": {
    "cid": "8894223948509403547",
    "gname": "千斗-新北市五股區新五平面停車場",
-   "web": ""
+   "web": "",
+   "edits": {
+    "web": {
+     "status": "待處理",
+     "date": "11月24日"
+    }
+   }
   },
   "shuidui": {
    "cid": "4677177246222186538",
    "gname": "千斗-水碓三路平面停車場",
-   "web": ""
+   "web": "",
+   "edits": {
+    "web": {
+     "status": "待處理",
+     "date": "11月24日"
+    }
+   }
   },
   "hean": {
    "cid": "3391088400906895363",
    "gname": "千斗-新北市板橋區合安路停車場",
-   "web": ""
+   "web": "",
+   "edits": {
+    "web": {
+     "status": "待處理",
+     "date": "11月24日"
+    }
+   }
   },
   "linkou-j1": {
    "cid": "10677945152094885313",
    "gname": "千斗-林口區機一臨時平面停車場",
-   "web": ""
+   "web": "",
+   "edits": {
+    "web": {
+     "status": "待處理",
+     "date": "11月24日"
+    },
+    "name": {
+     "status": "已接受",
+     "date": "11月24日"
+    }
+   }
   },
   "yonghe": {
    "cid": "3852742660895654418",
    "gname": "千斗-雍和台北園區停車場",
-   "web": ""
+   "web": "",
+   "edits": {
+    "web": {
+     "status": "待處理",
+     "date": "11月24日"
+    },
+    "name": {
+     "status": "已接受",
+     "date": "11月24日"
+    }
+   }
   },
   "nanlin": {
    "cid": "2238085954597809661",
    "gname": "Times 泰山南林段平面停車場",
-   "web": ""
+   "web": "",
+   "edits": {}
   },
   "tongxing": {
    "cid": "8145203771837348925",
    "gname": "千斗-同興平面停車場",
-   "web": "https://www.majortek.com.tw/"
+   "web": "https://www.majortek.com.tw/",
+   "edits": {
+    "web": {
+     "status": "待處理",
+     "date": "11月24日"
+    }
+   }
   },
   "fengshu": {
    "cid": "1611989554269208419",
    "gname": "千斗-新北市泰山區楓樹腳公園地下停車場",
-   "web": ""
+   "web": "",
+   "edits": {
+    "web": {
+     "status": "待處理",
+     "date": "11月24日"
+    }
+   }
   },
   "yixue": {
    "cid": "8512459115602307485",
    "gname": "泰山區義學立體停車場",
    "web": "",
-   "dup": "2094695247881122279"
+   "dup": "2094695247881122279",
+   "edits": {}
   }
- }
+ },
+ "editsAsOf": "2026-11-24T17:40:00+08:00"
 }

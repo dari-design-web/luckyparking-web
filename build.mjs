@@ -725,13 +725,13 @@ console.log('built', Object.keys(pages).length, 'pages →', OUT);
   const GM = read('gmaps.json');
   const lots = PARKING.map(p => {
     const g = GM.lots[p.code] || {};
-    return { code: p.code, name: p.name, company: p.company, soon: !!p.soon, cid: g.cid || '', dup: g.dup || '', gname: g.gname || p.name, web: g.web || '',
+    return { code: p.code, name: p.name, company: p.company, soon: !!p.soon, cid: g.cid || '', dup: g.dup || '', gname: g.gname || p.name, web: g.web || '', edits: g.edits || {},
       expected: `${SITE.baseUrl}parking.html?s=${p.code}`, query: `${g.gname || p.name} ${p.district || p.city}` };
   });
   const order = { '大日開發': 0, '千斗開發': 1 };
   lots.sort((a, b) => order[a.company] - order[b.company]);
   const html = fs.readFileSync(path.join(ROOT, 'src/tools/gmaps.html'), 'utf8')
-    .replace('__DATA__', () => JSON.stringify({ asOf: GM.asOf, lots }).replace(/</g, '\\u003c'));
+    .replace('__DATA__', () => JSON.stringify({ asOf: GM.asOf, editsAsOf: GM.editsAsOf || GM.asOf, lots }).replace(/</g, '\\u003c'));
   fs.mkdirSync(path.join(OUT, 'tools', 'gmaps'), { recursive: true });
   fs.writeFileSync(path.join(OUT, 'tools', 'gmaps', 'index.html'), html);
 }
