@@ -3,7 +3,7 @@
 大日開發有限公司 DARI GROUP／Lucky Parking 官方網站原始碼。純靜態網站，沒有後台與資料庫；內容改在 `src/data/*.json`，跑一次產生器後推上 GitHub 即更新。
 
 ## 網址
-- 測試版（GitHub Pages）：https://dari-design-web.github.io/luckyparking-web/
+- 正式網址：https://www.dari.com.tw/（GitHub Pages 自訂網域；舊的 https://dari-design-web.github.io/luckyparking-web/ 會自動轉過來）
 - 正式網域：待購買後設定（`docs/CNAME`）。
 
 ## 檔案結構
@@ -34,7 +34,7 @@ Settings → Pages → Build and deployment → Source 選「Deploy from a branc
 - 不使用中國品牌的服務與素材。
 
 ## 線上顧客意見箱（`docs/feedback/`）
-- 網址：`https://dari-design-web.github.io/luckyparking-web/feedback/?s=場站代碼`；只透過各場 QR Code 進入，不放選單、不列入 sitemap、`noindex`。
+- 網址：`https://www.dari.com.tw/feedback/?s=場站代碼`（已印的 QR 立牌是舊的 github.io 網址，GitHub 會自動轉到新網域，所以 repo 名稱與帳號不可更改）；只透過各場 QR Code 進入，不放選單、不列入 sitemap、`noindex`。
 - 場站代碼＝`parking.json` 的 `code`，一場一個，不可重複；**已印在 QR 立牌上，發布後不可更改**，新場站只能新增代碼。
 - 頁面原始檔：`src/apps/feedback.html`；Apps Script 原始檔：`src/apps/feedback.gs`。執行 `node build.mjs` 會產生 `docs/feedback/index.html` 與 `apps-script/feedback.gs`（已帶入 42 場代碼與收件信箱）。
 - `site.json` 的 `feedbackTo`＝收件信箱；`feedbackEndpoint`＝Apps Script 網頁應用程式網址。尚未填網址時，頁面為「試用版」，送出不會寄信。

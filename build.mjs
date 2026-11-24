@@ -639,6 +639,8 @@ for (const [file, p] of Object.entries(pages)) {
   fs.writeFileSync(path.join(OUT, file), phraseHtml(layout({ file, ...p })));
 }
 fs.writeFileSync(path.join(OUT, '.nojekyll'), '');
+// 自訂網域：baseUrl 不是 github.io 時寫入 CNAME（GitHub Pages 依此綁定網域，舊的 github.io 網址會自動轉過來）
+{ const host = new URL(SITE.baseUrl).hostname; if (!host.endsWith('github.io')) fs.writeFileSync(path.join(OUT, 'CNAME'), host + '\n'); }
 const today = new Date().toISOString().slice(0, 10);
 fs.writeFileSync(path.join(OUT, 'sitemap.xml'), `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">

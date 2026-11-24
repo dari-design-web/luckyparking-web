@@ -18,7 +18,7 @@
 var PROJECT = 'wedding-seating-37b71';
 var API_KEY = 'AIzaSyDUoIG3FCxiyzixCDwM1m-5w5MF7-Ak4qs';   // Firebase 網頁設定中的公開金鑰，只用來驗證登入 token
 var DOMAIN = 'staff.dari-help.tw';                         // 管理室帳號的固定網域（使用者只輸入前面的帳號）
-var STAFF_URL = 'https://dari-design-web.github.io/luckyparking-web/help/staff/';
+var STAFF_URL = 'https://www.dari.com.tw/help/staff/';
 var SENDER_NAME = '大日開發 文字求助';
 
 var FS = 'https://firestore.googleapis.com/v1/projects/' + PROJECT + '/databases/(default)/documents';
