@@ -48,8 +48,34 @@ function phraseHtml(html) {
   return html.replace(/(<h[1-3][^>]*>)([\s\S]*?)(<\/h[1-3]>)/g, fix);
 }
 
+// 結構化資料（Google 用來辨識公司名稱、標誌、地址、電話；只放在首頁）
+function orgLd() {
+  const sameAs = [SITE.facebook, SITE.jobs1111].filter(Boolean);
+  return {
+    '@context': 'https://schema.org',
+    '@graph': [
+      {
+        '@type': 'Organization',
+        '@id': `${SITE.baseUrl}#org`,
+        name: SITE.name,
+        alternateName: ['大日開發', SITE.brand, SITE.parkingBrand, '大日幸福停車'].filter(Boolean),
+        url: SITE.baseUrl,
+        logo: `${SITE.baseUrl}assets/img/logo-dari-full.png`,
+        image: `${SITE.baseUrl}assets/img/og.jpg`,
+        description: '大日開發有限公司（DARI GROUP／Lucky Parking）自民國 88 年起經營公有與民間停車場，並經營商業空間與休閒場域等多元化場域。',
+        foundingDate: '1999',
+        telephone: '+886-2-2502-3333',
+        email: SITE.email,
+        address: { '@type': 'PostalAddress', streetAddress: '建國北路二段 258 巷 27 號 1 樓', addressLocality: '中山區', addressRegion: '臺北市', postalCode: '104', addressCountry: 'TW' },
+        sameAs,
+      },
+      { '@type': 'WebSite', '@id': `${SITE.baseUrl}#website`, name: '大日開發有限公司 DARI GROUP', url: SITE.baseUrl, inLanguage: 'zh-Hant', publisher: { '@id': `${SITE.baseUrl}#org` } },
+    ],
+  };
+}
+
 function layout({ file, title, desc, body, base, noindex }) {
-  const t = title ? `${title}｜大日開發 DARI GROUP` : '大日開發 DARI GROUP｜Lucky Parking 停車場經營';
+  const t = title ? `${title}｜大日開發有限公司 DARI GROUP` : '大日開發有限公司 DARI GROUP｜Lucky Parking 停車場經營';
   const menu = NAV.map(([href, label]) => `<a href="${href}"${href === file ? ' aria-current="page"' : ''}>${label}</a>`).join('');
   return `<!doctype html>
 <html lang="zh-Hant">
@@ -61,6 +87,8 @@ ${base ? `<base href="${base}">` : ''}<meta name="viewport" content="width=devic
 <meta property="og:title" content="${esc(t)}">
 <meta property="og:description" content="${esc(desc || '')}">
 <meta property="og:type" content="website">
+<meta property="og:site_name" content="大日開發有限公司 DARI GROUP">
+${noindex ? '' : `<meta property="og:url" content="${SITE.baseUrl}${file === 'index.html' ? '' : file}">`}
 <meta property="og:image" content="${SITE.baseUrl}assets/img/og.jpg">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
@@ -68,6 +96,7 @@ ${base ? `<base href="${base}">` : ''}<meta name="viewport" content="width=devic
 <meta name="twitter:card" content="summary_large_image">
 ${noindex ? '<meta name="robots" content="noindex">' : `<link rel="canonical" href="${SITE.baseUrl}${file === 'index.html' ? '' : file}">`}
 <meta name="theme-color" content="#2561a9">
+${file === 'index.html' ? `<script type="application/ld+json">${JSON.stringify(orgLd())}</script>` : ''}
 <link rel="icon" href="assets/img/favicon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -183,7 +212,7 @@ const DEPTS = ['營運管理部', '工程管理部', '財務管理及計畫預�
 const pages = {};
 
 pages['index.html'] = {
-  title: '', desc: '大日開發（DARI GROUP）經營公有與民間停車場，並跨足商業空間、休閒遊憩等多元化場域。',
+  title: '', desc: '大日開發有限公司（DARI GROUP／Lucky Parking）自民國 88 年起經營公有與民間停車場，並跨足商業空間、休閒遊憩等多元化場域。',
   body: `
 <section class="vhero" aria-label="主視覺">
   <div class="vmedia">${SITE.hero.video ? `<video id="hero-video" class="bgv" data-mobile="1" muted loop playsinline preload="none" poster="${SITE.hero.poster}" data-src="${SITE.hero.video}" aria-hidden="true"></video>` : `<img src="${SITE.hero.poster}" alt="">`}</div>
