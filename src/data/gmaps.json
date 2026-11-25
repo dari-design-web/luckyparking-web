@@ -1,10 +1,10 @@
 {
- "asOf": "2026-11-24T17:20:00+08:00",
+ "asOf": "2026-11-25T10:55:00+08:00",
  "note": "由 Claude 在 Google 地圖逐筆讀取（cid 對應的地點）",
  "lots": {
   "rongxing": {
    "cid": "15074776412204934487",
-   "gname": "榮星花園地下停車場",
+   "gname": "大日榮星花園地下停車場",
    "web": "https://www.dari.com.tw/parking.html?s=rongxing",
    "edits": {
     "name": {
@@ -15,7 +15,10 @@
      "status": "待處理",
      "date": "11月24日"
     }
-   }
+   },
+   "names": [
+    "榮星花園地下停車場"
+   ]
   },
   "binjiang": {
    "cid": "13398539482531583818",
@@ -73,7 +76,7 @@
      "date": "11月24日"
     },
     "name": {
-     "status": "待處理",
+     "status": "已接受",
      "date": "11月24日"
     }
    }
@@ -196,7 +199,7 @@
   },
   "tucheng-yanji": {
    "cid": "16110213461121792362",
-   "gname": "土城延吉立體停車場",
+   "gname": "大日-土城延吉立體停車場",
    "web": "http://www.parkinginfo.ntpc.gov.tw/parkinginfo/public/Googlemap.aspx?Lat=24.987516&Lng=121.469174",
    "edits": {
     "web": {
@@ -204,10 +207,13 @@
      "date": "11月24日"
     },
     "name": {
-     "status": "待處理",
+     "status": "未接受",
      "date": "11月24日"
     }
-   }
+   },
+   "names": [
+    "土城延吉立體停車場"
+   ]
   },
   "tucheng-yusheng": {
    "cid": "2346160363778784309",
@@ -264,7 +270,7 @@
      "date": "11月24日"
     },
     "name": {
-     "status": "待處理",
+     "status": "未接受",
      "date": "11月24日"
     }
    }
@@ -577,5 +583,5 @@
    "edits": {}
   }
  },
- "editsAsOf": "2026-11-24T17:40:00+08:00"
+ "editsAsOf": "2026-11-25T10:52:00+08:00"
 }
