@@ -1,5 +1,5 @@
 {
- "asOf": "2026-11-25T10:55:00+08:00",
+ "asOf": "2026-11-26T14:05:00+08:00",
  "note": "由 Claude 在 Google 地圖逐筆讀取（cid 對應的地點）",
  "lots": {
   "rongxing": {
@@ -23,7 +23,7 @@
   "binjiang": {
    "cid": "13398539482531583818",
    "gname": "市立濱江國中地下停車場",
-   "web": "http://www.pma.gov.taipei/ct.asp?xitem=121237&CtNode=13493&mp=117021",
+   "web": "https://www.dari.com.tw/parking.html?s=binjiang",
    "edits": {
     "web": {
      "status": "待處理",
@@ -38,7 +38,7 @@
   "guangci1": {
    "cid": "10190336061516905275",
    "gname": "廣慈1區停車場",
-   "web": "",
+   "web": "https://www.dari.com.tw/parking.html?s=guangci1",
    "dup": "11538232385472350949",
    "edits": {
     "name": {
@@ -114,7 +114,7 @@
   "xinggu": {
    "cid": "9279493999846165106",
    "gname": "大日-興穀國小操場地下停車場",
-   "web": "",
+   "web": "https://www.dari.com.tw/parking.html?s=xinggu",
    "edits": {
     "web": {
      "status": "待處理",
@@ -144,7 +144,7 @@
   "xiufeng": {
    "cid": "17249906408841304266",
    "gname": "大日-秀峰停車場",
-   "web": "https://www.parkinginfo.ntpc.gov.tw/parkinginfo/public/?parkinglotid=030150",
+   "web": "https://www.dari.com.tw/parking.html?s=xiufeng",
    "edits": {
     "web": {
      "status": "待處理",
@@ -159,7 +159,7 @@
   "jinhe-flat": {
    "cid": "7150836316728796589",
    "gname": "大日-錦和平面停車場",
-   "web": "",
+   "web": "https://www.dari.com.tw/parking.html?s=jinhe-flat",
    "edits": {
     "web": {
      "status": "待處理",
@@ -199,7 +199,7 @@
   },
   "tucheng-yanji": {
    "cid": "16110213461121792362",
-   "gname": "大日-土城延吉立體停車場",
+   "gname": "大日土城延吉立體停車場",
    "web": "http://www.parkinginfo.ntpc.gov.tw/parkinginfo/public/Googlemap.aspx?Lat=24.987516&Lng=121.469174",
    "edits": {
     "web": {
@@ -212,7 +212,8 @@
     }
    },
    "names": [
-    "土城延吉立體停車場"
+    "土城延吉立體停車場",
+    "大日-土城延吉立體停車場"
    ]
   },
   "tucheng-yusheng": {
@@ -262,7 +263,7 @@
   },
   "banqiao-hs": {
    "cid": "6608084122985646632",
-   "gname": "板橋高級中學停車場",
+   "gname": "大日板橋高級中學地下停車場",
    "web": "http://www.pcsh.ntpc.edu.tw/",
    "edits": {
     "web": {
@@ -273,7 +274,10 @@
      "status": "未接受",
      "date": "11月24日"
     }
-   }
+   },
+   "names": [
+    "板橋高級中學停車場"
+   ]
   },
   "archives": {
    "cid": "3890042432800451272",
@@ -583,5 +587,5 @@
    "edits": {}
   }
  },
- "editsAsOf": "2026-11-25T10:52:00+08:00"
+ "editsAsOf": "2026-11-26T13:58:00+08:00"
 }
