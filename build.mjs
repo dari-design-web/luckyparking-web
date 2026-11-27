@@ -632,10 +632,13 @@ const PH_VIDEO = {
   services: { src: 'assets/video/services.mp4', poster: 'assets/img/ph/services-poster.jpg' },
   awards: { src: 'assets/video/awards-ph.mp4', poster: 'assets/img/ph/awards-poster.jpg' },
 };
+// 手機版頁首：影片／圖片鋪滿、文字疊在下方；--phx = 手機直式裁切時畫面主體的水平位置
+// 有影片的頁面手機也播放（data-mobile），海報與影片同一個畫面，避免切換時跳動；沒有影片的頁面用手機專用裁切圖
+const PH_FOCUS = { about: '64%', parking: '50%', venues: '74%', esg: '80%', services: '74%', awards: '80%', news: '40%', contact: '45%', careers: '50%' };
 for (const [file, p] of Object.entries(pages)) {
   const n = PH[file];
   const vid = PH_VIDEO[n];
-  if (n) p.body = p.body.replace('<section class="ph"><div class="wrap">', `<section class="ph has-img${PH_DARK.has(n) ? ' dark' : ''}${vid ? ' has-vid' : ''}${PH_SHORT.has(n) ? ' short' : ''}"><picture class="phimg"><source media="(max-width:700px)" srcset="assets/img/ph/${n}-m.jpg"><img src="${vid ? vid.poster : `assets/img/ph/${n}.jpg`}" alt="" fetchpriority="high"></picture>${vid ? `<video class="bgv" muted loop playsinline preload="none" poster="${vid.poster}" data-src="${vid.src}" aria-hidden="true"></video>` : ''}<div class="wrap">`);
+  if (n) p.body = p.body.replace('<section class="ph"><div class="wrap">', `<section class="ph has-img${PH_DARK.has(n) ? ' dark' : ''}${vid ? ' has-vid' : ''}${PH_SHORT.has(n) ? ' short' : ''}" style="--phx:${PH_FOCUS[n] || '50%'}"><picture class="phimg">${vid ? '' : `<source media="(max-width:700px)" srcset="assets/img/ph/${n}-m.jpg">`}<img src="${vid ? vid.poster : `assets/img/ph/${n}.jpg`}" alt="" fetchpriority="high"></picture>${vid ? `<video class="bgv" data-mobile="1" muted loop playsinline preload="none" poster="${vid.poster}" data-src="${vid.src}" aria-hidden="true"></video>` : ''}<div class="wrap">`);
   fs.writeFileSync(path.join(OUT, file), phraseHtml(layout({ file, ...p })));
 }
 fs.writeFileSync(path.join(OUT, '.nojekyll'), '');

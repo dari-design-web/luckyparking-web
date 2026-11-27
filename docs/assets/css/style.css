@@ -759,3 +759,17 @@ p.lead{text-align:justify;text-align-last:left;text-justify:inter-character;line
 .site .addr .fl{white-space:nowrap}
 .site .loc .soon{margin-right:auto;font-size:13px;font-weight:700;line-height:1.4;color:#b4501a;background:#fde9dc;border-radius:999px;padding:4px 12px;white-space:nowrap}
 @media (max-width:560px){.site .loc .soon{font-size:12px;padding:3px 9px}}
+
+/* v0.3.3 手機版頁首：跟電腦版一樣，影片（或圖片）鋪滿表頭、文字疊在下方，深色漸層托住文字 */
+@media (max-width:700px){
+  .ph.has-img{display:flex;flex-direction:column;justify-content:flex-end;min-height:min(76svh,620px);padding:140px 0 36px;color:#fff;background:#0b1424}
+  .ph.has-img.short{min-height:min(60svh,480px)}
+  .ph.has-img .phimg img,.ph.has-img.short .phimg img{position:absolute;inset:0;width:100%;height:100%;max-height:none;aspect-ratio:auto;object-fit:cover;object-position:var(--phx,50%) center}
+  .ph.has-vid .bgv{display:block;object-position:var(--phx,50%) center}
+  .ph.has-img::before,.ph.has-img.dark::before{display:block;z-index:1;background:linear-gradient(0deg,rgba(8,14,28,.94) 0%,rgba(8,14,28,.82) 36%,rgba(8,14,28,.38) 66%,rgba(8,14,28,.06) 100%)}
+  .ph.has-img .wrap{padding-top:0}
+  .ph.has-img h1{color:#fff;text-shadow:0 2px 18px rgba(0,0,0,.35)}
+  .ph.has-img .lead{color:rgba(255,255,255,.88)}
+  .ph.has-img .eyebrow{color:#ffc39e}
+  .ph.has-img .eyebrow::before{background:#ffb380}
+}
